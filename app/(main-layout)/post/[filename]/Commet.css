@@ -1,0 +1,38 @@
+@import 'artalk/dist/Artalk.css' layer(components);
+
+.artalk {
+  .atk-main-editor {
+    border-radius: 3px;
+  }
+
+  .atk-textarea {
+    padding: 4px 16px;
+  }
+
+  .atk-comment-count-num {
+    font-size: 15px;
+    margin-right: 0;
+  }
+
+  .atk-list-body,
+  .atk-list-no-comment {
+    height: unset;
+    min-height: unset;
+  }
+
+  .atk-list-header {
+    padding: 0;
+  }
+
+  .atk-copyright {
+    display: none;
+  }
+
+  .atk-list-comments-wrap {
+    margin-left: -10px;
+  }
+
+  .atk-send-btn {
+    background: #356daa;
+  }
+}

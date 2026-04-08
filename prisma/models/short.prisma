@@ -1,0 +1,29 @@
+/// 短网址跳转类型
+enum ShortRedirectType {
+  /// 永久重定向 (301)
+  PERMANENTLY
+  /// 临时重定向 (302)
+  TEMPORARY
+  /// JS 重定向
+  JAVASCRIPT
+}
+
+/// 短网址记录
+model Short {
+  id String @id @default(cuid())
+
+  url          String
+  key          String
+  tag          String?
+  redirectType ShortRedirectType @default(PERMANENTLY) @map("redirect_type")
+  expiredAt    DateTime?         @map("expired_at")
+  public       Boolean           @default(false)
+
+  userId String? @map("user_id")
+  author User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("short_item")
+}

@@ -1,0 +1,106 @@
+/// 用户（由 btter-auth 创建）
+model User {
+  id            String  @id
+  name          String
+  email         String
+  emailVerified Boolean @map("email_verified")
+  image         String?
+
+  sessions Session[]
+  accounts Account[]
+  apikeys  Apikey[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  short Short[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+/// 会话（由 btter-auth 创建）
+model Session {
+  id        String   @id
+  expiresAt DateTime @map("expires_at")
+  token     String
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([token])
+  @@map("session")
+}
+
+/// 账户（由 btter-auth 创建）
+model Account {
+  id                    String    @id
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  password              String?
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("account")
+}
+
+/// 验证（由 btter-auth 创建）
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("verification")
+}
+
+/// 账号 API（由 btter-auth 创建）
+model Apikey {
+  id             String    @id
+  name           String?
+  start          String?
+  prefix         String?
+  key            String
+  refillInterval Int?      @map("refill_interval")
+  refillAmount   Int?      @map("refill_amount")
+  lastRefillAt   DateTime? @map("last_refill_at")
+  enabled        Boolean?  @default(true)
+  requestCount   Int?      @default(0) @map("request_count")
+  remaining      Int?
+  lastRequest    DateTime? @map("last_request")
+  expiresAt      DateTime? @map("expires_at")
+  permissions    String?
+  metadata       String?
+
+  rateLimitEnabled    Boolean? @default(true) @map("rate_limit_enabled")
+  rateLimitTimeWindow Int?     @default(86400000) @map("rate_limit_time_window")
+  rateLimitMax        Int?     @default(10) @map("rate_limit_max")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+
+  @@index([key])
+  @@index([userId])
+  @@map("apikey")
+}

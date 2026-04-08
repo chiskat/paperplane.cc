@@ -1,0 +1,60 @@
+/// Awesome 类别，存在父子级别
+model AwesomeCatelog {
+  id    String @id @default(cuid())
+  index Int?   @default(0)
+
+  name String
+  desc String?
+
+  parentId String?          @map("parent_id")
+  parent   AwesomeCatelog?  @relation("awesome_catelog_tree", fields: [parentId], references: [id], onDelete: Cascade)
+  children AwesomeCatelog[] @relation("awesome_catelog_tree")
+
+  underAwesomes AwesomeItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("awesome_catelog")
+}
+
+/// Awesome 的标签
+model AwesomeTag {
+  id    String @id @default(cuid())
+  index Int?   @default(0)
+
+  label String
+  desc  String?
+  color String?
+  icon  String?
+
+  underAwesomes AwesomeItem[] @relation("awesome_item_to_awesome_tag")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("awesome_tag")
+}
+
+/// Awesome 项
+model AwesomeItem {
+  id    String @id @default(cuid())
+  index Int?   @default(0)
+
+  label    String
+  homepage String
+  source   String?
+  registry String?
+  desc     String?
+  stars    Int?    @default(0)
+
+  catelogId String?         @map("catelog_id")
+  catelog   AwesomeCatelog? @relation(fields: [catelogId], references: [id], onDelete: SetNull)
+
+  tags AwesomeTag[] @relation("awesome_item_to_awesome_tag")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("awesome_item")
+}

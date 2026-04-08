@@ -1,0 +1,5 @@
+* text=auto eol=lf
+
+# Ignore files and directories
+logs/ export-ignore
+*.bak export-ignore
