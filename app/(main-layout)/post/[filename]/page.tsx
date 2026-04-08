@@ -77,7 +77,9 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
               src={require('@/assets/article-page/postmark.png').default.src}
               alt=""
             />
-            <h1 className="font-title-serif mt-2.5 mb-7.5 text-4xl">{frontmatter.title}</h1>
+            <h1 className="font-title-serif mt-2.5 mb-7.5 pr-[200px] text-4xl">
+              {frontmatter.title}
+            </h1>
 
             <div className="font-title-serif mb-7.5 flex items-center gap-7 border-y border-[#ddd] py-1.5 text-[18px] text-[#999] *:cursor-pointer [&>*+*]:relative [&>*+*]:before:absolute [&>*+*]:before:top-1/2 [&>*+*]:before:-left-3.5 [&>*+*]:before:h-5 [&>*+*]:before:w-[1.5px] [&>*+*]:before:-translate-y-1/2 [&>*+*]:before:bg-[#ddd] [&>*+*]:before:content-['']">
               <time dateTime={publishDateISO}>{publishDate}</time>
