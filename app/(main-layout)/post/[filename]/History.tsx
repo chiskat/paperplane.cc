@@ -1,6 +1,7 @@
 import 'server-only'
 
 import dayjs from 'dayjs'
+import { toEndsWith } from 'omn'
 
 export interface HistoryProps {
   filename: string
@@ -19,12 +20,18 @@ const HISTORY_LIMIT = 5
 
 async function githubHistory(repo: string, path: string): Promise<PostHistory[]> {
   const query = new URLSearchParams({ path, sha: 'main' })
-  const response = await fetch(`https://api.github.com/repos/${repo}/commits?${query}`, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${process.env.GITHUB_PERSON_TOKEN}`,
-    },
-  })
+  const prefixURL = process.env.GITHUB_API_PROXY_PREFIX
+    ? toEndsWith(process.env.GITHUB_API_PROXY_PREFIX, '/')
+    : ''
+  const response = await fetch(
+    prefixURL + `https://api.github.com/repos/${repo}/commits?${query}`,
+    {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${process.env.GITHUB_PERSON_TOKEN}`,
+      },
+    }
+  )
 
   if (!response.ok) {
     return []
