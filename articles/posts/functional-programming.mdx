@@ -918,13 +918,13 @@ fetch('https://example.com')
 
 `ramda` 函数式编程的能力，使得它很适合用在 React 中：
 
-- `ramda` 可以避免修改对象的状态，从而避免引起不必要的渲染、更新，造成性能浪费，避免产生数据不一致的情况；
-- `ramda` 也提供了类似不可变对象的操作，它可以保证修改操作完成后，返回新对象，避免组件数据更新不及时；
+- `ramda` 可以避免修改对象的状态，避免引起不必要的更新，造成性能浪费，避免产生数据不一致的情况；
+- `ramda` 提供了类似不可变对象的操作，可以保证修改操作完成后返回新对象，避免无法触发更新；
 - `ramda` 以函数为主体，大部分操作返回新的函数，这正好能应用于例如 `setState()` 等场景，当做 “dispatcher” 来使用。
 
 代码示例：
 
-```tsx
+```tsx {24-30,37-38}
 import { useState } from 'react'
 import * as R from 'ramda'
 
@@ -1080,17 +1080,19 @@ format('2019-01-01', 'yyyy-MM-dd')
 
 下面是 `dayjs` 的常用示例：
 
-```ts
-import dayjs from 'dayjs'
+:::code-group
 
-// 下面是 i18n 配置方式
+```ts [配置 i18n]
+import dayjs from 'dayjs'
 
 import 'dayjs/locale/zh-cn'
 dayjs.locale('zh-cn')
 
 dayjs('2019-01-01').format('YYYY-MM-DD dddd') // 输出： 2019-01-01 星期二
+```
 
-// 下面是插件使用方式
+```ts [使用插件扩展功能]
+import dayjs from 'dayjs'
 
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -1101,22 +1103,28 @@ dayjs.extend(relativeTime)
 dayjs.duration({ months: 3 }).humanize() // 输出：3 个月
 ```
 
+:::
+
 使用 `date-fns` 的示例：
 
-```ts
-import { format, setDefaultOptions } from 'date-fns'
+:::code-group
 
-// 下面是 i18n 配置方式
+```ts [配置 i18n]
+import { format } from 'date-fns'
 
 import { zhCN } from 'date-fns/locale'
 setDefaultOptions({ locale: zhCN })
 
 format('2019-01-01', 'yyyy-MM-dd EEEE') // 输出： 2019-01-01 星期二
+```
 
-// date-fns 不需要插件
+```ts [date-fns 不需要插件]
+import { setDefaultOptions } from 'date-fns'
 
 formatDuration({ months: 3 }) // 输出：3 个月
 ```
+
+:::
 
 ## `date-fns/fp` 函数式 API
 
@@ -1124,29 +1132,31 @@ formatDuration({ months: 3 }) // 输出：3 个月
 自 `date-fns/fp` 导出的函数，同原始函数相比，有以下区别：
 
 - 这些函数均为已柯里化的，**且参数的顺序与原本是相反的**；
+- 这些函数默认是不接受配置参数的，如果需要传入配置参数（例如 `format()` 的第三个参数），请使用这些函数带有 `WithOptions` 名称后缀的版本（例如 `formatWithOptions()`），此时配置参数位于第一位。
 
-- 这些函数默认是不接受配置参数的，如果需要传入配置参数（例如 `format()` 的第三个参数），请使用这些函数带有 `WithOptions` 名称后缀的版本（例如 `formatWithOptions()`），此时配置参数位于最左侧第一个位置。
+:::code-group
 
-```ts
+```ts [常规使用]
 import { format } from 'date-fns/fp'
 
 // 以下用法返回结果相同
-
 format('yyyy-MM-dd', '2019-01-01')   // 参数是反过来的
-
 format('yyyy-MM-dd')('2019-01-01')   // 柯里化
 format()('yyyy-MM-dd')('2019-01-01')
 format()('yyyy-MM-dd', '2019-01-01')
+```
 
-// 如果想使用原版 format 的第三个配置参数
-// 需要使用 formatWithOptions，配置参数放在最左侧
-
+```ts [formatWithOption 用法]
 import { formatWithOptions } from 'date-fns/fp'
 import { zhCN, enUS } from 'date-fns/locale'
+
+// 需要使用 formatWithOptions，配置参数放在最左侧
 
 formatWithOptions({ locale: zhCN }, 'EEEE', '2019-01-01') // 输出：星期二
 formatWithOptions({ locale: enUS }, 'EEEE', '2019-01-01') // 输出：Tuesday
 ```
+
+:::
 
 # 进阶：尾调用优化和尾递归优化
 

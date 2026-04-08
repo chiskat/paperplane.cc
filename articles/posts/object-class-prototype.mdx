@@ -102,7 +102,7 @@ Student.prototype.constructor = Student
 2、然后把 `Person` 的 `.prototype` 对象复制一份拿过来当做自己的 `.prototype`，这样来继承 `Person` 的方法；
 
 3、因为上一步操作的把 `.prototype` 上的 `.constructor` 也一起改了，这个属性表示该原型的构造函数是哪个；`Student` 类的构造器肯定是 `Student` 构造函数本身，因此将它设置为 `Student`；
-如果省略这一步，别人对一个 `Student` 对象使用 `Object.create()` 构造出来的对象会是一个 `Person` 对象。
+如果省略这一步，别人对 `Student` 对象使用 `Object.create()` 构造出来的对象会是一个 `Person` 对象。
 
 这些面向对象的实现方式都非常复杂，并不好理解，而且大多涉及到了 `.prototype`、`.constructor` 等概念。如果对 JS 面向对象和 JS 原型不甚了解，很容易被搞糊涂。
 
@@ -304,7 +304,9 @@ Object.prototype.__proto__ === null
 
 上面这些话，用代码来描述就是这样：
 
-```js
+:::code-group
+
+```js [普通类]
 // 普通的类，不继承任何类
 // 它的构造方法来自于 Function.prototype，属性来自于 Object.prototype
 class Person {}
@@ -312,8 +314,9 @@ class Person {}
 // 以下表达式均为 true
 Person.__proto__ === Function.prototype
 Person.prototype.__proto__ === Object.prototype
+```
 
-
+```js [继承类]
 // 类有继承的情况
 // 子类构造方法和属性都来自于父类
 class Student extends Person {}
@@ -322,6 +325,8 @@ class Student extends Person {}
 Student.__proto__ === Person
 Student.prototype.__proto__ === Person.prototype
 ```
+
+:::
 
 ---
 
@@ -416,7 +421,6 @@ const newPerson = new person.__proto__.constructor()
 ## `Object.create()` 的用法
 
 `Objcet.create(obj)` 返回一个新对象，它的原型链 `.__proto__` 指向这里的 `obj` 参数。
-
 可以理解为：它创建了一个以 `obj` 作为原型链上一级的对象。
 
 `Object.create(null)` 会创造一个真正意义上的空对象，甚至没有 `.toString()` 等方法。

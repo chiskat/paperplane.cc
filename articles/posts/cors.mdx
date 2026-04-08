@@ -160,9 +160,9 @@ document.head.appendChild(styleTag)
 该响应具有以下特点：
 
 - 必须带有 `Access-Control-Allow-Origin` 响应头，值要么和原请求的 `Origin` 相同，要么是 `*`；
-- 必须带有 `Access-Control-Allow-Methods` 响应头，它的值表示支持的请求方法，例如 `PUT`，用逗号分隔；
+- 必须带有 `Access-Control-Allow-Methods` 响应头，它表示支持的请求方法，例如 `PUT`，用逗号分隔；
 - 可能带有 `Access-Control-Allow-Headers` 响应头，表示本次响应会额外携带的的响应头，用逗号分隔；
-- 可能带有 `Access-Control-Allow-Credentials` 响应头，值只能为 `true`，表示接受浏览器发出的 Cookie 信息；
+- 可能带有 `Access-Control-Allow-Credentials` 响应头，值只能为 `true`，表示接受浏览器设置 Cookie；
 - 可能带有 `Access-Control-Max-Age` 响应头，表示允许浏览器缓存该预检请求结果的时长。
 
 可以看到只要带有前两个响应头，并且请求类型包含在 `Access-Control-Allow-Methods` 内，那么该次预检请求就是成功的。

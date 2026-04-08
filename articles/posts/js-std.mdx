@@ -274,19 +274,6 @@ function fixedEncodeURIComponent (str) {
 - `string[index]`
   返回指定下标的字符；注意它是只读的，修改无效。
 
-如果需要将常用中文算两个字符，可以使用以下方法：
-
-```js
-function stringLength(str) {
-  // 仅对中文有效，如果想对日文韩文等生效，调整正则表达式中的范围即可
-  const cnCharRegex = /[\u4e00-\u9fff]/g;
-  const cnChars = str.match(chineseCharRegex);
-  const cnCharCount = chineseChars ? chineseChars.length : 0;
-
-  return str.length + chineseCharCount;
-}
-```
-
 ---
 
 **查找与替换：**
@@ -454,7 +441,7 @@ function stringLength(str) {
 **静态方法：**
 
 - `String.fromCharCode(...num)`
-  从 BMP 范围内的码点还原字符，支持 REST 参数，会拼接为字符串返回；
+  从 BMP 范围内的码点还原字符，支持 REST 参数，拼接为字符串返回；
 - `String.fromCodePoint(...num)`
   同上，但它支持 BMP 范围以外的码点；
 - `String.raw(objectWithRaw, ...vars)`
@@ -532,7 +519,7 @@ tag(array, you, me)
 **构造函数和工厂：**
 
 - `new Object(input)`
-  基本用不到，创建或包装一个对象并返回，传入 `undefined`、`null` 也会创建一个空对象；
+  创建或包装一个对象并返回，传入 `undefined`、`null` 也会创建一个空对象；
 - `Object(input)`
   同上，用法大致相同。
 
@@ -655,18 +642,21 @@ tag(array, you, me)
 
 代码示例：
 
-```js
-// 测试对注释的支持：
+:::code-group
+
+```js [支持注释]
 const f1 = new Function('a', 'b = 10 /* 我是注释 */', 'return a + b // 我也是注释')
 f1(4)
 // 结果：14
+```
 
-// 测试多个参数写成一个字符串
+```js [参数和函数分别作为参数]
 const f2 = Function('a, b', 'return a + b')
 f2(10, 20)
-// 结果：40
+// 结果：30
+```
 
-// 测试对局部变量的访问
+```js [无法方式局部变量]
 (function(){
   const a = 888
   const f3 = Function('return a')
@@ -674,6 +664,8 @@ f2(10, 20)
   // 会立即报错，因为 a 不存在
 })()
 ```
+
+:::
 
 ---
 
@@ -771,57 +763,79 @@ f2(10, 20)
 此方法非常强大（[文档](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)），第一个参数指定地区和语言，第二个参数可以精确配置格式化的各种行为；
 代码示例：
 
-```js
+:::code-group
+
+```js [自动插入千分符]
 (123456.789).toLocaleString()
 (123456.789).toLocaleString('zh-CN')
-// 简单直接使用，自动插入千分符，输出：'123,456.789'
+// 输出：'123,456.789'
+```
 
+```js [保留 2 位小数]
 (123456.789).toLocaleString('zh-CN', {
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 })
-// 保留 0~2 位小数，输出：'123,456.79'
+// 输出：'123,456.79'
+```
 
+```js [保留 3~5 位有效数字]
 (123456.789).toLocaleString('zh-CN', {
   minimumSignificantDigits: 3,
   maximumSignificantDigits: 5,
 })
-// 转为 3~5位有效数字，输出：'123,460'
+// 输出：'123,460'
 ```
+
+:::
 
 此外，它的四舍五入为准确值，甚至还可以指定为银行家算法，甚至还提供负数范围的处理模式；
 代码示例：
 
-```js
+:::code-group
+
+```js [四舍五入]
 (0.45).toLocaleString('zh-CN', {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
 })
 // 默认，输出：'0.5'
+```
 
+```js {4} [银行家算法(四舍六入)]
 (0.45).toLocaleString('zh-CN', {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
   roundingMode: 'halfEven',
 })
-// 开启银行家算法，输出：'0.4'
+// 输出：'0.4'
 ```
+
+:::
 
 还可以输出汉字、带货币单位、带百分号等格式：
 
-```js
-(123456.789).toLocaleString('zh-Hans-CN-u-nu-hanidec')
-// 汉字大写，输出：'一二三,四五六.七八九'
+:::code-group
 
+```js [输入汉字数字]
+(123456.789).toLocaleString('zh-Hans-CN-u-nu-hanidec')
+// 输出：'一二三,四五六.七八九'
+```
+
+```js [货币输出]
 (123456.789).toLocaleString('zh-CN', {
   style: 'currency',
   currency: 'USD',
 })
-// 货币显示，输出：'US$123,456.79'
-
-(0.35).toLocaleString('zh-CN', { style: 'percent' })
-// 百分比，输出：'35%'
+// 输出：'US$123,456.79'
 ```
+
+```js [百分比格式]
+(0.35).toLocaleString('zh-CN', { style: 'percent' })
+// 输出：'35%'
+```
+
+:::
 
 ---
 

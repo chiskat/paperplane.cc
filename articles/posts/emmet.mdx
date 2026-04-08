@@ -142,11 +142,8 @@ Emmet 是内置于 VSCode 等编辑器中的代码速录自动补全工具，它
 如果当前在某些标签里面，Emmet 会自动使用对应的默认标签。举例：
 
 - 在 `<ul>` 和 `<ol>` 里默认标签是 `<li>`；
-
 - 在 `<table>`、`<thead>`、`<tbody>` 和 `<tfoot>` 里默认标签是 `<tr>`；
-
 - 在 `<tr>` 里默认标签是 `<td>`；
-
 - 在 `<select>` 和 `<optgroup>` 里默认标签是 `<option>`。
 
 另外 Emmet 预设了一些元素的属性快速补全：
@@ -172,13 +169,13 @@ Lorem ipsum dolor sit amet consectetur, adipisicing elit. Earum eaque molestiae 
 
 以下是几个常用 CSS 属性的速写：
 
-`w`、`h` 表示 `width`、`height`；
-`m`、`p` 表示 `margin`、`padding`，相应的例如 `mt` 表示 `margin-top`；
-`c` 表示 `color`，`bg` 表示 `background`；
-`fz` 表示 `font-size`，这个注意不要打成 `fs`，它表示 `font-style`；
-`brs` 表示 `border-radius`，这个比较难想到；
-`poa`、`por` 表示 `position: relative`、`position: absolute;`；
-`dib`、`df` 表示 `display: inline-block`、`display: flex`。
+- `w`、`h` 表示 `width`、`height`；
+- `m`、`p` 表示 `margin`、`padding`，相应的例如 `mt` 表示 `margin-top`；
+- `c` 表示 `color`，`bg` 表示 `background`；
+- `fz` 表示 `font-size`，这个注意不要打成 `fs`，它表示 `font-style`；
+- `brs` 表示 `border-radius`，这个比较难想到；
+- `poa`、`por` 表示 `position: relative`、`position: absolute;`；
+- `dib`、`df` 表示 `display: inline-block`、`display: flex`。
 
 如果记不住 CSS 属性，可以输入简称，Emmet 会自动帮你匹配最接近的语法；
 例如输入 `ov:h`、`ov-h` 或 `ovh` 都会匹配 `overflow: hidden`。
@@ -188,20 +185,18 @@ Lorem ipsum dolor sit amet consectetur, adipisicing elit. Earum eaque molestiae 
 ## 常用单位
 
 单位默认是 `px`，不写单位就是 `px`；
-`p` 表示 `%`；
-`e`、`r` 表示 `em`、`rem`；
-`x` 表示 `ex`。
+
+- `p` 表示 `%`；
+- `e`、`r` 表示 `em`、`rem`；
+- `x` 表示 `ex`。
 
 ## 复杂属性写法
 
 复杂属性快速补全：
 
 - 因为 Emmet 不能使用空格，因此属性之间的空格用 `-` 来表示，例如：输入 `m30-40` 结果为 `margin: 30px 40px`；而输入 `m30--40` 结果为 `margin: 30px -40px`；
-
 - 可以使用 `+` 加号来同时写多条 CSS，例如输入 `m20-30+p10` 会生成 `margin: 20px; padding: 10px;`；
-
 - 颜色也可以快速补全，输入 `#` 井号开头后面接着输入颜色值，例如：`#1` 生成 `#11111`；`#e0` 生成 `#e0e0e0`；`#fc0` 生成 `#ffcc00`；
-
 - 复合型属性，可以一次性设置多个子项，例如输入 `bd5#0s` 结果 `border: 5px #000 soild`。
 
 ## 自动添加浏览器前缀
@@ -230,7 +225,7 @@ Lorem ipsum dolor sit amet consectetur, adipisicing elit. Earum eaque molestiae 
 
 ## 生成渐变
 
-CSS 中可以使用 `linear-gradient` 来产生渐变效果，但是它的值比较复杂，有时还需要添加浏览器前缀才能生效；
+CSS 中可以使用 `linear-gradient` 来产生渐变效果，但是它的值比较复杂，有时还需要添加浏览器前缀；
 使用 Emmet 时，可以使用 `lg()` 指令快速生成，例如输入 `lg(left, #fff 50%, #000)` 输出为：
 
 ```css
