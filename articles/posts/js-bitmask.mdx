@@ -6,6 +6,8 @@ tags: [JS, WebAPI, Node]
 categories: [JS]
 ---
 
+# 什么是 Bitmask
+
 Bitmask （中文可以叫掩码）是一种通过按位运算来使用一个数值来表示多个二进制位的方式，现在已经不提倡使用了，但是老的 API 以及早期的编程语言、操作系统等提供的 API 中还是有使用的。
 
 Bitmask 主要用于提供多个开关选项的 API 中，但是因为其语义不明确且传参方式需要用到**按位或**运算符（`|`），所以现在大都是直接使用一个对象来传参。
@@ -49,7 +51,7 @@ button.addEventListener(
 
 可以看到，这样传参很啰嗦，而且如果想通过代码判断逻辑来开关特定的选项也会很难写，因此 Bitmask 这种方式已经不再提倡了。
 
----
+# 哪里会用到 Bitmask
 
 目前 WebAPI 中还是存在一些使用 Bitmask 的 API 的，例如 [document.createNodeIterator(...)](https://developer.mozilla.org/en-US/docs/Web/API/Document/createNodeIterator)：
 
@@ -116,7 +118,7 @@ fs.access('package.json', fs.constants.R_OK | fs.constants.W_OK, err => { })
 
 ```
 
----
+# 设计一个 Bitmask 的 API
 
 如果想自行设计一个 Bitmask 参数的 API，可以使用以下方式来接收参数：
 
@@ -153,7 +155,7 @@ testBitmask(0b101)
 
 调试的时候，可以通过 `.toString(2)` 来得到数值的二进制表示。
 
----
+# 常见按位运算
 
 如果想熟练的使用 Bitmask，必须了解位运算。这里给出常用的位运算方法：
 
