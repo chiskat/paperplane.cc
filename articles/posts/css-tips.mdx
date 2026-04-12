@@ -57,7 +57,9 @@ categories: [CSS]
 
 封装成 Sass：
 
-```scss
+:::code-group
+
+```scss [封装函数]
 // 扩大元素的点击区域
 //   参数 $size：需要扩大半径（默认 15px）
 @mixin expandClickArea($size: 15px) {
@@ -84,9 +86,7 @@ categories: [CSS]
 }
 ```
 
-使用方式：
-
-```scss
+```scss [使用示例]
 .close {
   // 给这个元素扩大点击区域，默认是 15px 半径
   @include expandClickArea();
@@ -94,16 +94,20 @@ categories: [CSS]
   // 也可以指定半径
   @include expandClickArea(40px);
 
-  // 如果当前元素是 static 定位，那么需要用这个 Rel 后缀的
+  // 如果当前元素是默认的 static 定位，那么需要用这个 Rel 后缀的
   @include expandClickAreaRel();
 }
 ```
+
+:::
 
 ---
 
 封装成 Less：
 
-```less
+:::code-group
+
+```less [封装函数]
 // 扩大元素的点击区域
 //   参数 @size：需要扩大半径（默认 15px）
 .expandClickArea(@size: 15px) {
@@ -130,14 +134,14 @@ categories: [CSS]
 }
 ```
 
-使用方式：
-
-```less
+```less [使用示例]
 .close {
   // 给这个元素扩大点击区域，默认是 15px 半径
   .expandClickArea();
 }
 ```
+
+:::
 
 # 非常规文本方向
 
