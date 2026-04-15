@@ -153,9 +153,12 @@
 
   body {
     @apply bg-background text-foreground;
+    /* 避免 artalk 侧边栏影响布局 */
+    padding-right: 0 !important;
   }
 
   html {
     @apply font-sans;
+    scrollbar-gutter: stable;
   }
 }
