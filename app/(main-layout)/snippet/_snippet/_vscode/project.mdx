@@ -1,0 +1,28 @@
+---
+title: 项目设置
+---
+
+按下快捷键 `Ctrl/Command` + `Shift` + `P`，选择 “首选项: 打开工作区设置(JSON)”，即可编辑项目的设置 JSON 文件，只对当前项目生效。
+
+同时，这些修改会写入 `.vscode/settings.json` 中；
+根据团队需求，你可以将它一同提交到 Git，也可以让 Git 排除它。
+
+# 使用项目内部的 TypeScript 而不是全局的
+
+```json
+{
+  "typescript.tsdk": "./node_modules/typescript/lib"
+}
+```
+
+# 为 TailwindCSS 插件指定自动触发类名补全的前缀
+
+如果不配置，那只有默认的 `className` 等少数几个类名有补全。
+
+```json
+{
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "class:list", "classNames"]
+}
+```
+
+前面 4 个是插件自带的，推荐保留，从第 5 个开始增补即可，例如我这里就补了一个 `classNames`。

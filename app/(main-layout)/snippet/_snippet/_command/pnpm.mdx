@@ -1,0 +1,29 @@
+---
+title: pnpm
+---
+
+# 配置 pnpm
+
+```bash
+# 安装 pnpm
+npm i -g pnpm
+
+# 换淘宝源
+pnpm config set registry https://registry.npmmirror.com
+# 换回官方源（https://registry.npmjs.org）
+pnpm config delete registry
+# 查看当前源
+pnpm config get registry
+
+# 查看缓存目录
+pnpm store path
+```
+
+pnpm 的使用技巧：
+
+```bash
+# 处理幽灵依赖
+pnpm why package-name
+```
+
+更多配置，可以参考 [pnpm 备忘清单](https://code.paperplane.cc/docs/pnpm.html)（自部署）。

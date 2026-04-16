@@ -1,0 +1,11 @@
+---
+name: mp-websocket-polyfill
+repo: chiskat/mp-websocket-polyfill
+type: npm
+---
+
+`mp-websocket-polyfill` 是一款适用于微信小程序的 Polyfill 库，它使微信小程序的 `WebSocket` 和浏览器端相兼容。
+
+此工具也致力于对 [`Stomp.js`](https://github.com/stomp-js/stompjs) 的兼容；对于 iOS 端微信小程序上可能存在 `0x00` 字符等问题也内置了修复策略。
+
+此外，它还内置了一套 `TextEncoder`、`TextDecoder` 修复 Polyfill，可用于修复微信小程序真机调试时没有这些内置 API 的问题。

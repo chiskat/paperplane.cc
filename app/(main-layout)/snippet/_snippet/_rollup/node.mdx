@@ -1,0 +1,54 @@
+---
+title: Node.js 包
+---
+
+此 `rollup.config.js` 配置文件适用于 Node.js 以及包含 CommonJS 依赖项时的打包配置。
+
+依赖项：
+
+```bash
+npm add -D @rollup/plugin-commonjs @rollup/plugin-json @rollup/plugin-node-resolve @rollup/plugin-typescript rollup-plugin-delete rollup-plugin-dts
+```
+
+配置如下：
+
+```js
+const commonjs = require('@rollup/plugin-commonjs')
+const json = require('@rollup/plugin-json')
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const typescript = require('@rollup/plugin-typescript')
+const del = require('rollup-plugin-delete')
+const { dts } = require('rollup-plugin-dts')
+
+/** @type {import('rollup').RollupOptions} */
+module.exports = [
+  {
+    input: ['src/index.ts'],
+    output: { dir: 'dist', format: 'cjs' },
+    plugins: [
+      del({ targets: './dist/*' }),
+      typescript({ declaration: false }),
+
+      // 对于 Node.js 库而言需要把 fs、path 等库排除在外
+      // 所以需要 @rollup/plugin-node-resolve 插件
+      nodeResolve(),
+
+      // 因为部分包用到了 package.json 或者其他 json，所以配置了此插件
+      // 打包 Node.js 库大概率需要用到此插件，但不是一定，你可以尝试去除此插件
+      json(),
+
+      // 处理 CommonJS 的导入，因为 Rollup 现在面向 ESM 导入
+      // 打包 Node.js 库时这个插件和 @rollup/plugin-node-resolve 通常一同使用
+      commonjs(),
+    ],
+  },
+
+  {
+    input: 'src/index.ts',
+    output: { file: 'dist/index.d.ts', format: 'es' },
+    plugins: [dts()],
+  },
+]
+```
+
+每一项配置请参考其中的注释。

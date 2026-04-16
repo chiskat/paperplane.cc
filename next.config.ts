@@ -1,4 +1,5 @@
 import path from 'path'
+import { withContentCollections } from '@content-collections/next'
 import createMDX from '@next/mdx'
 import type { NextConfig } from 'next'
 
@@ -11,7 +12,10 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: process.env.NODE_ENV === 'development',
   images: {
     unoptimized: true,
-    remotePatterns: [{ protocol: 'https', hostname: process.env.NEXT_PUBLIC_SHIELDS_HOST! }],
+    remotePatterns: [
+      { protocol: 'https', hostname: `cdn.paperplane.cc` },
+      { protocol: 'https', hostname: `shields.paperplane.cc` },
+    ],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -46,4 +50,4 @@ const withMDX = createMDX({
   },
 })
 
-export default withMDX(nextConfig)
+export default withContentCollections(withMDX(nextConfig))

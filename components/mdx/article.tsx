@@ -6,8 +6,9 @@ import { ArticlePreviewImage } from '@/components/ui/article-preview-image'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
 import { MdxTab, MdxTabs } from '@/components/ui/mdx-tabs'
 import { cn } from '@/utils/style'
+import { Highlighter } from '../ui/highlighter'
 
-export function articleMDX(): MDXComponents {
+export default function articleMDX(): MDXComponents {
   return {
     wrapper({ children }) {
       return <article className="font-content-serif text-[20px] leading-[1.7]">{children}</article>
@@ -24,7 +25,7 @@ export function articleMDX(): MDXComponents {
       return (
         <a
           {...props}
-          className="text-[#356daa] underline decoration-[#356daa]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
+          className="text-[#2f629d] underline decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
         />
       )
     },
@@ -32,7 +33,7 @@ export function articleMDX(): MDXComponents {
       return (
         <h1
           {...props}
-          className="group mt-16 mb-10 scroll-mt-32 text-center text-[36px] [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
+          className="group relative mt-16 mb-10 scroll-mt-32 text-center text-[36px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
           {children}
         </h1>
@@ -40,21 +41,25 @@ export function articleMDX(): MDXComponents {
     },
     h2({ children, ...props }: ComponentPropsWithoutRef<'h2'>) {
       return (
-        <h3
+        <h2
           {...props}
-          className="group mt-14 mb-8 scroll-mt-32 text-[32px] [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
+          className="group relative mt-14 mb-8 scroll-mt-32 text-[32px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
-          {children}
-        </h3>
+          <Highlighter action="underline" iterations={2} color="#c0332f" padding={0}>
+            {children}
+          </Highlighter>
+        </h2>
       )
     },
     h3({ children, ...props }: ComponentPropsWithoutRef<'h3'>) {
       return (
         <h3
           {...props}
-          className="group mt-14 mb-8 scroll-mt-32 text-[26px] [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
+          className="group relative mt-14 mb-8 scroll-mt-32 text-[26px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
-          {children}
+          <Highlighter action="underline" iterations={2} color="#c0332f" padding={0}>
+            {children}
+          </Highlighter>
         </h3>
       )
     },
@@ -63,7 +68,7 @@ export function articleMDX(): MDXComponents {
         <ul
           {...props}
           className={cn(
-            '-mt-1 mb-5 list-disc pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:pl-0 [&>li]:marker:text-[1.08em] [&>li]:marker:text-[#356daa]',
+            '-mt-1 mb-5 list-disc pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:pl-0 [&>li]:marker:text-[1.08em] [&>li]:marker:text-[#2f629d]',
             className
           )}
         />
@@ -74,7 +79,7 @@ export function articleMDX(): MDXComponents {
         <ol
           {...props}
           className={cn(
-            '-mt-1 mb-5 list-decimal pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-[lower-alpha] [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:marker:text-[#356daa]',
+            '-mt-1 mb-5 list-decimal pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-[lower-alpha] [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:marker:text-[#2f629d]',
             className
           )}
         />
@@ -99,7 +104,7 @@ export function articleMDX(): MDXComponents {
         <pre
           {...props}
           className={cn(
-            'mt-2 mb-6 overflow-x-auto rounded-md bg-[#f5f2f0] px-4 py-3 text-[16px] text-[#333] shadow-xs **:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(53,109,170,0.15)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(53,109,170,0.1)] **:data-highlighted-line:px-4 [&_code]:not-italic! [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
+            'mt-2 mb-6 overflow-x-auto rounded-md bg-[#f5f2f0] px-4 py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-xs **:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4 [&_code]:not-italic! [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
             className
           )}
         >
@@ -129,7 +134,7 @@ export function articleMDX(): MDXComponents {
         <blockquote
           {...props}
           className={cn(
-            'my-6 rounded-[3px] border-l-[5px] border-[#356daa] bg-[#eee] px-4 py-2 text-[19px] text-[#4a5665] italic [&>p]:my-0 [&>p+p]:mt-2',
+            'my-6 rounded-[3px] border-l-[5px] border-[#2f629d] bg-[#eee] px-4 py-2 text-[#4a5665] italic [&>p]:my-0 [&>p+p]:mt-2',
             className
           )}
         >
@@ -138,7 +143,7 @@ export function articleMDX(): MDXComponents {
       )
     },
     img(props) {
-      return <ArticlePreviewImage {...props} />
+      return <ArticlePreviewImage className="my-8" {...props} />
     },
     table({ className, ...props }: ComponentPropsWithoutRef<'table'>) {
       return (

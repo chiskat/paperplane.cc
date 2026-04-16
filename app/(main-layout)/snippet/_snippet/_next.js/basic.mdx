@@ -1,0 +1,21 @@
+---
+title: 基础配置
+---
+
+以下 `next.config.ts` 配置为新项目可用的空模板。
+建议通过官方 CLI 工具生成，而不是从零搭建。
+
+配置如下：
+
+```typescript
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  // 推荐，生产环境下避免输出 SourceMap 导致泄露源代码
+  // 也可以不在这里配置，而是通过 CI/CD 控制避免发布 .map 文件
+  productionBrowserSourceMaps: process.env.NODE_ENV === 'development',
+  // ...
+}
+
+export default nextConfig
+```

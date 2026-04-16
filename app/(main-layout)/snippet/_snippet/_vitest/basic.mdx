@@ -1,0 +1,73 @@
+---
+title: 基础配置
+---
+
+此 `vitest.config.mts` 配置文件适合 TypeScript 库。
+
+依赖项：
+
+```bash
+npm add -D vitest
+```
+
+空模板如下：
+
+```typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    // 配置在这里
+  },
+})
+```
+
+---
+
+如果你的包需要一些浏览器的 API，可以使用 `jsdom`：
+
+依赖项：
+
+```bash
+npm add -D jsdom
+```
+
+配置如下：
+
+```typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+  },
+})
+```
+
+它可以模拟例如 `window`、`localStorage` 等 API。
+
+---
+
+如果你在 `tsconfig.json` 中定义了 `compilerOptions.paths`，例如 Monorepo 仓库，此时 Vitest 无法加载这些路径的文件，需要使用插件来解决。
+
+依赖项：
+
+```bash
+npm add -D vite-tsconfig-paths
+```
+
+配置如下：
+
+```typescript
+import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  plugins: [tsconfigPaths()],
+  test: {
+    // ...
+  },
+})
+```
+
+注意这个 `plugins` 层级在上层，不在 `test` 里。

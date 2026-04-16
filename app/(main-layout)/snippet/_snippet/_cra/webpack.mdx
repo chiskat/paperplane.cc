@@ -1,0 +1,75 @@
+---
+title: Webpack
+---
+
+# 添加 Webpack 路径别名
+
+配置如下：
+
+```js
+const path = require('path')
+
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  webpack: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+}
+```
+
+# 添加 Webpack 外部依赖
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  webpack: {
+    externals: {
+      jQuery: '$',
+    },
+  },
+}
+```
+
+# 配置 Webpack 开发服务器
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:1234',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+  },
+}
+```
+
+# 添加 Webpack 插件
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  webpack: {
+    plugins: [
+      // 在 CRA 的插件之前加载，默认的行为
+      new Plugin(),
+
+      // 在 CRA 的插件之后加载
+      [new HtmlPlugin(), 'append'],
+    ],
+  },
+}
+```

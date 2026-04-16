@@ -1,0 +1,46 @@
+---
+title: TypeScript
+---
+
+以下 `eslint.config.mjs` 配置适用于 TypeScript 项目。
+
+依赖项：
+
+```bash
+npm add -D @eslint/js globals typescript-eslint
+npm add -D eslint-plugin-prettier eslint-config-prettier
+```
+
+配置如下：
+
+```js
+import pluginJs from '@eslint/js'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import globals from 'globals'
+import tsEslint from 'typescript-eslint'
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  // ↓ 需要忽略的目录和文件
+  { ignores: ['**/dist'] },
+
+  pluginJs.configs.recommended,
+  ...tsEslint.configs.recommended,
+
+  // ↓ 项目配置
+  {
+    files: ['./{src,tests}/**/*.ts'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    rules: {
+      // 自己的忽略规则 ...
+    },
+  },
+
+  eslintPluginPrettierRecommended,
+]
+```
+
+使用需知：
+
+- 这个规则带有 Prettier 的格式化检测；
+- 注意除了代码中用到的依赖之外，还需要安装 `eslint-config-prettier`。

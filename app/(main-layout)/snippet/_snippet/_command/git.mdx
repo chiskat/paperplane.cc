@@ -1,0 +1,61 @@
+---
+title: Git
+---
+
+# Git 相关
+
+```bash
+# 生成 SSH RSA 密钥（存储在用户目录下）
+ssh-keygen -t rsa -b 4096 -C "git"
+
+# 本地 SSH 密钥设置了密码，需要设置或去除密码
+ssh-keygen -p
+
+# 代码有多个远程仓库
+git remote add <名称> <地址>
+
+# 为一个仓库添加多个远程 url，自动向多个 url 推代码
+git remote set-url --add <名称> <远程地址>
+```
+
+## 设置用户名和邮箱
+
+```bash
+# 配置用户名和邮箱
+# 本项目：
+git config user.name "username"
+git config user.email "mail@domain.com"
+# 全局：
+git config --global user.name "username"
+git config --global user.email "mail@domain.com"
+
+# 查看用户名和邮箱
+git config user.name
+git config user.email
+```
+
+## 设置代理
+
+```bash
+# 给 Git 设置代理
+git config --global http.proxy http://127.0.0.1:7890
+git config --global https.proxy http://127.0.0.1:7890
+
+# 取消 Git 的代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
+## Windows 换行符问题
+
+```bash
+# Windows 克隆仓库行尾换行符一直是 CRLF
+#（安装 Git 的时候有这个选项，可以直接设置好）
+git config --global core.autocrlf false
+
+# Windows 提交代码时自动转为 LF，但检出时不转换
+#（安装 Git 的时候有这个选项，可以直接设置好）
+git config --global core.autocrlf input
+```
+
+更多配置，可以参考 [Git 备忘清单](https://code.paperplane.cc/docs/git.html)（自部署）。

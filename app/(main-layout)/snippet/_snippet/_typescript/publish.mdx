@@ -1,0 +1,49 @@
+---
+title: 发布 npm 包
+---
+
+以下 `tsconfig.json` 片段适用于通过 `tsc` 编译并发布到 npm 包的项目：
+
+```json
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true
+  }
+}
+```
+
+使用须知：
+
+- 即使配置了 `removeComments` 也不会删除 JSDoc / TSDoc 注释；
+- 此配置开启输出 `index.d.ts` 类型定义文件，记得把它填写到 `package.json` 中的 `typings` 字段中；
+- 这份配置同样也会输出源码和 .d.ts 的 SourceMap，便于用户进行 debug；
+- 如果想使用 `paths` 配置，`tsc` 原生不支持，需要额外的插件，更推荐使用 `rollup` 等工具。
+
+如果是准备发布的 npm 包，配置中不推荐填写 `module` 字段，而是编译输出时通过 `--module`：
+
+```bash
+# 输出 UMD 类型到 /dist 目录下
+tsc --module umd --outDir dist
+
+# 输出 CommonJS 类型到 /lib 目录下
+tsc --module commonjs --outDir lib
+
+# 输出 ES Module 类型到 /es 目录下
+tsc --module esnext --outDir es
+```
+
+这样可以输出三种不同模块化，然后在 `package.json` 中填写：
+
+```json
+{
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "unpkg": "dist/index.js",
+  "typings": "lib/index.d.ts"
+}
+```
+
+这样你的包便可以同时提供三类型的模块，而且还会提供 .d.ts 文件来提供 TypeScript 支持。

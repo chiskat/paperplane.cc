@@ -398,6 +398,7 @@ function HighlightItem<T extends React.ElementType>({
   const isActive = activeValue === childValue
   const isDisabled = disabled === undefined ? contextDisabled : disabled
   const itemTransition = transition ?? contextTransition
+  const shouldFadeOutOnExit = activeValue == null
 
   const localRef = React.useRef<HTMLDivElement>(null)
   React.useImperativeHandle(ref, () => localRef.current as HTMLDivElement)
@@ -515,14 +516,19 @@ function HighlightItem<T extends React.ElementType>({
                 transition={itemTransition}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{
-                  opacity: 0,
-                  transition: {
-                    ...itemTransition,
-                    delay:
-                      (itemTransition?.delay ?? 0) + (exitDelay ?? contextExitDelay ?? 0) / 1000,
-                  },
-                }}
+                exit={
+                  shouldFadeOutOnExit
+                    ? {
+                        opacity: 0,
+                        transition: {
+                          ...itemTransition,
+                          delay:
+                            (itemTransition?.delay ?? 0) +
+                            (exitDelay ?? contextExitDelay ?? 0) / 1000,
+                        },
+                      }
+                    : { opacity: 1 }
+                }
                 {...dataAttributes}
               />
             )}
@@ -576,13 +582,19 @@ function HighlightItem<T extends React.ElementType>({
               transition={itemTransition}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  ...itemTransition,
-                  delay: (itemTransition?.delay ?? 0) + (exitDelay ?? contextExitDelay ?? 0) / 1000,
-                },
-              }}
+              exit={
+                shouldFadeOutOnExit
+                  ? {
+                      opacity: 0,
+                      transition: {
+                        ...itemTransition,
+                        delay:
+                          (itemTransition?.delay ?? 0) +
+                          (exitDelay ?? contextExitDelay ?? 0) / 1000,
+                      },
+                    }
+                  : { opacity: 1 }
+              }
               {...dataAttributes}
             />
           )}

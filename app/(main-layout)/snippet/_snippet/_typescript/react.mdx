@@ -1,0 +1,41 @@
+---
+title: React 前端
+---
+
+TypeScript 项目的 `tsconfig.json` 建议通过脚手架生成，而不是从零开始。
+本文仅提供其中特定的片段，实际使用可能需要补足字段。
+
+以下 `tsconfig.json` 片段适用于前端 React 项目：
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+```
+
+使用需知：
+
+- 其中 `paths` 字段要和 Webpack 或 Vite 的 `alias` 配置保持一致；
+- 如果使用 `emotion`，则需要在 `compilerOptions` 中添加一行 `"jsxImportSource": "@emotion/react"`；
+- 编译目标 `target` 决定了代码的兼容性，建议至少为 `ES2017`（也就是 ES8），较早的版本虽然兼容性更佳，但代码过于累赘。

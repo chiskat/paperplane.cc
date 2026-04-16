@@ -1,0 +1,129 @@
+---
+title: 旧版 ESLint@8
+---
+
+以下 `.eslintrc` 配置适用于 ESLint v8 及之前的版本。
+
+# React
+
+对于 React 项目或组件库，这里有一套推荐配置，它会使你的代码符合 hooks 规范以及 Prettier 的输出。
+
+依赖项：
+
+```bash
+npm add -D eslint-config-prettier eslint-plugin-prettier eslint-config-react-app
+```
+
+配置如下：
+
+```json
+{
+  "extends": ["react-app", "react-app/jest", "plugin:prettier/recommended"],
+  "plugins": [],
+  "rules": {}
+}
+```
+
+使用需知：
+
+- 注意这里 `extends` 字段中，`"plugin:prettier/recommended"` 必须始终放在最后，也就是说它的配置需要覆盖其他预设的配置；
+- 如果你的 `prettier` 版本大于 `^3.0.0`，那么请使用 `eslint-plugin-prettier` 的大于 `^5.0.0` 的版本，否则可能无法正常工作。
+
+# TypeScript
+
+单纯的 TypeScript 项目，配置可以简化。
+
+依赖项：
+
+```bash
+npm add -D eslint-config-prettier eslint-plugin-prettier
+npm add -D @typescript-eslint/parser @typescript-eslint/eslint-plugin
+```
+
+配置如下：
+
+```json
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [],
+  "ignorePatterns": ["dist/**", "es/**", "lib/**"],
+  "rules": {}
+}
+```
+
+此外，还可以参考下面的配置，添加 `env` 配置项来获取特定的全局变量支持，添加 `parserOptions` 配置项来获取特定的语法支持。
+
+# JS 项目
+
+如果不使用 TypeScript，配置可以进一步简化。
+
+依赖项：
+
+```bash
+npm add -D eslint-config-prettier eslint-plugin-prettier
+```
+
+配置如下：
+
+```json
+{
+  "env": {
+    "es2021": true,
+    "commonjs": true,
+
+    // 按需选用（3选1），这会开启对应的全局变量支持
+    "browser": true,
+    "node": true,
+    "shared-node-browser": true,
+
+    // 测试工具，按需选用
+    "mocha": true,
+    "jest": true,
+    "jasmine": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": [],
+  "rules": {}
+}
+```
+
+注意这里的 `env.es2021` 以及 `parserOptions.ecmaVersion` 默认是 2021，这两个数字请设置相同，具体使用请根据 Node.js 版本来调整，前者用于识别新加入的全局变量，后者用于识别新语法。
+具体配置可以参考 [官网文档](https://eslint.org/docs/latest/use/configure/language-options)。
+
+---
+
+还有几种配置场合，这里给出示例：
+
+```json
+{
+  "extends": [
+    // 开发 react hooks 库，需要相关的代码规范
+    // 安装 `eslint-plugin-react-hooks`
+    "react-hooks",
+
+    // 解决不导入 react 则 JSX 代码有红波浪线的问题
+    // 安装 `eslint-plugin-react`
+    "plugin:react/jsx-runtime",
+
+    // 开发 JS 的 react 组件库，需要兼容 JSX
+    // 安装 `eslint-plugin-react`
+    "plugin:react/recommended",
+
+    // 以上所有问题，只需要这一个即可全部解决
+    // （推荐）安装 `eslint-config-react-app`
+    "react-app"
+  ]
+}
+```

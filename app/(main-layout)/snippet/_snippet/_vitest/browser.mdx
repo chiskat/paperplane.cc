@@ -1,0 +1,97 @@
+---
+title: 浏览器
+---
+
+Vitest 支持浏览器测试。不过需要配置，默认情况测试是跑在 Node.js 的。
+
+依赖项：
+
+```bash
+npm add -D @vitest/browser-playwright
+```
+
+配置如下：
+
+```typescript
+import { playwright } from '@vitest/browser-playwright'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    name: '浏览器测试',
+    browser: {
+      provider: playwright(),
+      instances: [{ browser: 'chromium' }],
+    },
+  },
+})
+```
+
+这里使用 `playwright` 运行 Chromium 浏览器。
+
+如果要将测试运行在 CI/CD 环境，需要开启浏览器的无头模式：
+
+```typescript
+import { playwright } from '@vitest/browser-playwright'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    name: '浏览器测试',
+    browser: {
+      provider: playwright(),
+      instances: [{ browser: 'chromium' }],
+      // ↓ 新增
+      headless: true,
+      ui: false,
+      // ↓ 失败时是否截图，默认开启，可以关掉
+      screenshotFailures: false,
+    },
+  },
+})
+```
+
+---
+
+如果是 npm 包的测试，可能要同时在 Node.js 和浏览器中运行测试，此时需要作出区分。
+
+配置如下：
+
+```typescript
+import { playwright } from '@vitest/browser-playwright'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        extends: true,
+        test: {
+          include: ['tests/**/*.test.ts'],
+          exclude: ['tests/**/*.browser.test.ts'],
+          name: 'Node.js 测试',
+          environment: 'node',
+        },
+      },
+      {
+        extends: true,
+        test: {
+          include: ['tests/**/*.test.ts'],
+          exclude: ['tests/**/*.node.test.ts'],
+          name: '浏览器测试',
+          browser: {
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }],
+            headless: true,
+            ui: false,
+            screenshotFailures: false,
+          },
+        },
+      },
+    ],
+  },
+})
+```
+
+这是一段根据文件名区分的测试配置，对于默认的测试文件，会在浏览器和 Node.js 上都运行测试；
+而 `*.node.test.ts` 结尾的文件则只会在 Node.js 上运行测试，`*.browser.test.ts` 结尾的文件只会在浏览器上运行测试。

@@ -1,0 +1,28 @@
+---
+title: .npmrc
+---
+
+本文介绍 `.npmrc` 配置。
+这个文件用于定义一些 npm 配置，具体配置可以参考 [.npmrc 文档](https://docs.npmjs.com/cli/v9/configuring-npm/npmrc) 和 [npm 配置文档](https://docs.npmjs.com/cli/v9/commands/npm-config)；本文的配置用于国内的网络环境加速包的下载速度。
+
+使用说明：
+
+- 除了 npm 之外，yarn、pnpm 等包管理工具也会读取这个配置；
+  而且它们分别也有各自的独立的配置文件 [`.yarnrc.yml`](https://yarnpkg.com/configuration/yarnrc/) 和 [`pnpm-workspace.yaml`](https://pnpm.io/settings)，这些配置文件往往有额外的专有配置项。
+- 请注意：第一行的 `registry=https://registry.npmmirror.com` 会修改默认的 `registry`，这会导致无法发布 npm 包；
+  你可以在发布包时添加 `--registry=https://registry.npmjs.org/` 命令行参数，这样便可以正确发布到 npm 上了。
+
+配置如下：
+
+```ini
+registry=https://registry.npmmirror.com
+
+sass_binary_site=https://npmmirror.com/mirrors/node-sass/
+phantomjs_cdnurl=https://npmmirror.com/mirrors/phantomjs/
+electron_mirror=https://npmmirror.com/mirrors/electron/
+sqlite3_binary_host_mirror=http://npmmirror.com/mirrors/
+profiler_binary_host_mirror=http://npmmirror.com/mirrors/node-inspector/
+chromedriver_cdnurl=https://npmmirror.com/mirrors/chromedriver
+sentrycli_cdnurl=https://npmmirror.com/mirrors/sentry-cli/
+canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas
+```

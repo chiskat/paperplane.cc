@@ -1,0 +1,20 @@
+---
+title: 静态资源 CDN
+---
+
+此 `vite.config.ts` 适用于静态资源存放于 CDN 的场景。
+注意上传文件的流程需开发者自行处理，此配置仅修改项目中的资源 URL 前缀。
+
+配置如下：
+
+```typescript
+import { defineConfig } from 'vite'
+
+export default defineConfig(({ mode }) => {
+  return {
+    base: mode === 'development' ? '/' : 'https://cdn.example.com/',
+  }
+})
+```
+
+其中依据 `mode` 进行判断，仅在生产环境下生效。

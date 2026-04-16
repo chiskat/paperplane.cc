@@ -1,0 +1,51 @@
+---
+title: Less
+---
+
+依赖项：
+
+```bash
+npm add -D less less-loader
+```
+
+配置如下：
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.less$/i,
+        // 直接使用
+        use: ['style-loader', 'css-loader', 'less-loader'],
+
+        // 或者，提供配置项：
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              // 如果需要主题、全局变量文件，请取消下面一行注释
+              // additionalData: '@import "~@/styles/global.less";',
+
+              lessOptions: {
+                globalVars: {}, // 全局变量，追加到每个文件开头位置
+                modifyVars: {}, // 覆盖变量，追加到每个文件末尾位置
+
+                // 更多配置见：https://lesscss.org/usage/#less-options
+              },
+
+              // 更多配置见：https://webpack.docschina.org/loaders/less-loader/#options
+            },
+          },
+        ],
+      },
+    ],
+  },
+}
+```
+
+每一项的具体作用已经参考文档，请看配置中的注释。
+
+注意：less-loader 在以前有 `prependData`、`appendData` 这两个配置项，后续在 [v7](https://github.com/webpack-contrib/less-loader/blob/master/CHANGELOG.md#700-2020-08-25) 版本移除了，改为使用 `additionalData`。

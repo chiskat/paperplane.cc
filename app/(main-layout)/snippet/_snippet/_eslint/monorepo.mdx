@@ -1,0 +1,63 @@
+---
+title: Monorepo 示例
+---
+
+以下 `eslint.config.mjs` 配置适用于 Monorepo 项目，可根据子项目类型组合不同配置：
+
+```js
+import pluginJs from '@eslint/js'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import reactHooks from 'eslint-plugin-react-hooks'
+import globals from 'globals'
+import tsEslint from 'typescript-eslint'
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  // ↓ 需要忽略的目录和文件
+  { ignores: ['**/dist'] },
+
+  pluginJs.configs.recommended,
+  ...tsEslint.configs.recommended,
+
+  // ↓ 各包通用配置
+  {
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
+
+  // ↓ 以下规则适用于：packages/server
+  {
+    files: ['packages/server/{src,test}/**/*.ts'],
+    plugins: {},
+    rules: {
+      // 自己的忽略规则 ...
+    },
+  },
+
+  // ↓ 以下规则适用于：packages/web
+  {
+    files: ['packages/web/src/**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      // 自己的忽略规则 ...
+    },
+  },
+
+  // ↓ 全局忽略规则，如果每个包都要用，可以写在这里
+  {
+    rules: {
+      // ...
+    },
+  },
+
+  eslintPluginPrettierRecommended,
+]
+```
+
+ESLint v9 不支持从子包中自动向上层递归合并配置，因此对 Monorepo 项目而言，配置需统一放置在根目录。
+官方表示 v10 会支持这一功能，但目前 v10 处在 beta 版，等待后续 v10 更新。

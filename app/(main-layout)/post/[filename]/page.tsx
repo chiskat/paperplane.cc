@@ -1,52 +1,37 @@
-import { readdir, readFile } from 'fs/promises'
-import path from 'path'
+import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
 import { notFound } from 'next/navigation'
 
 import absurdityBg from '@/assets/article-page/absurdity.png'
-import { articleMDX } from './article-mdx'
+import postmarkImg from '@/assets/article-page/postmark.png'
+import articleMDX from '@/components/mdx/article'
 import Commet from './Commet'
 import History from './History'
 import { extractTocFromMdx, Toc } from './Toc'
 
 export const dynamicParams = false
 
-export async function generateStaticParams() {
-  const files = await readdir(path.join(process.cwd(), './articles/posts'), { recursive: true })
-  return (files as string[])
-    .filter(f => /\.mdx$/.test(f))
-    .map(f => ({
-      filename: f
-        .replace(/\.mdx$/, '')
-        .split(path.sep)
-        .join('/'),
-    }))
+export function generateStaticParams() {
+  return allArticles.map(item => ({
+    filename: item._meta.path,
+  }))
 }
 
-export interface PostFrontmatter {
-  title: string
-  date: string
-  tags?: string[]
-  categories?: string[]
-  old_filename?: string
-}
-
-const articleComponents = articleMDX()
+const mdxComponent = articleMDX()
 
 export default async function ArticlePage({ params }: PageProps<'/post/[filename]'>) {
   const { filename } = await params
-  const articleRelativePath = `${filename}.mdx`
-  const articleAbsolutePath = path.join(process.cwd(), 'articles', 'posts', `${filename}.mdx`)
-  const { Article, frontmatter } = await import(`@/articles/posts/${articleRelativePath}`)
-    .then(m => ({ Article: m.default, frontmatter: m.frontmatter as PostFrontmatter }))
-    .catch(() => notFound())
+  const article = allArticles.find(item => item._meta.path === filename)
+  if (!article) {
+    notFound()
+  }
 
-  const articleSource = await readFile(articleAbsolutePath, 'utf8').catch(() => '')
-  const tocItems = extractTocFromMdx(articleSource)
+  const { default: ArticleContent } = await import(`@/articles/posts/${filename}.mdx`)
 
-  const publishDate = dayjs(frontmatter.date).format('YYYY年 M月 D日')
-  const publishDateISO = dayjs(frontmatter.date).format('YYYY-MM-DD')
-  const category = frontmatter.categories?.[0] ?? ''
+  const tocItems = extractTocFromMdx(article.content)
+  const publishDate = dayjs(article.date).format('YYYY年 M月 D日')
+  const publishDateISO = dayjs(article.date).format('YYYY-MM-DD')
+  const category = article.categories[0] ?? ''
   const articleGithubUrl = `https://github.com/chiskat/paperplane.cc/blob/main/articles/posts/${filename
     .split('/')
     .map(part => encodeURIComponent(part))
@@ -54,13 +39,13 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
 
   return (
     <div id="article-top" className="relative my-8 scroll-mt-40">
-      <Toc title={frontmatter.title} tocItems={tocItems} />
+      <Toc title={article.title} tocItems={tocItems} />
 
       <div className="lg:mr-75">
         <div
           style={{
             background:
-              'repeating-linear-gradient(-45deg, #c0332f 0, #c0332f 12.5%, #eee 0, #eee 25%, #356daa 0, #356daa 37.5%, #eee 0, #eee 50%) 0/6em 6em',
+              'repeating-linear-gradient(-45deg, #c0332f 0, #c0332f 12.5%, #eee 0, #eee 25%, #2f629d 0, #2f629d 37.5%, #eee 0, #eee 50%) 0/6em 6em',
             boxShadow: '0px 0px 5px 1px #ccc',
           }}
           className="border-border overflow-hidden rounded-lg"
@@ -74,12 +59,11 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
           >
             <img
               className="pointer-events-none absolute top-1.25 right-0 z-2 h-43.75 rotate-25"
-              src={require('@/assets/article-page/postmark.png').default.src}
+              src={postmarkImg.src}
               alt=""
+              aria-hidden
             />
-            <h1 className="font-title-serif mt-2.5 mb-7.5 pr-[200px] text-4xl">
-              {frontmatter.title}
-            </h1>
+            <h1 className="font-title-serif mt-2.5 mb-7.5 pr-[200px] text-4xl">{article.title}</h1>
 
             <div className="font-title-serif mb-7.5 flex items-center gap-7 border-y border-[#ddd] py-1.5 text-[18px] text-[#999] *:cursor-pointer [&>*+*]:relative [&>*+*]:before:absolute [&>*+*]:before:top-1/2 [&>*+*]:before:-left-3.5 [&>*+*]:before:h-5 [&>*+*]:before:w-[1.5px] [&>*+*]:before:-translate-y-1/2 [&>*+*]:before:bg-[#ddd] [&>*+*]:before:content-['']">
               <time dateTime={publishDateISO}>{publishDate}</time>
@@ -92,9 +76,9 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
               </a>
             </div>
 
-            <Article components={articleComponents} />
+            <ArticleContent components={mdxComponent} />
 
-            <History filename={filename} oldFilename={frontmatter.old_filename} />
+            <History filename={filename} oldFilename={article.old_filename} />
           </div>
         </div>
 

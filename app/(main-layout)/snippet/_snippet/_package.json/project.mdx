@@ -1,0 +1,27 @@
+---
+title: 通常项目
+---
+
+建议阅读我的一篇博文 [《读懂 package.json》](https://paperplane.cc/p/e340866d6dca/)。
+
+如果不是为了发布 npm 包，而是作为前端项目或 Node.js 而言，`package.json` 便不需要特别配置，因为它最重要的目的就是记录 `dependencies` 和 `devDependencies` 的依赖项；
+曾经 Prettier、Browserslist 等工具会从 `package.json` 中读取配置，但按照现在的习惯，更应该使用单独的配置文件；
+曾经 pnpm 通过 `pnpm` 字段来定制一些特殊行为，但现在也更推荐通过单独的 `pnpm-workspace.yaml` 来进行配置。
+
+这里给出一个项目的空模板，也是我一直在用的：
+
+```js
+{
+  "private": true,
+  "packageManager": "pnpm@<版本号>",
+  "scripts": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+}
+```
+
+这里通过 `packageManager` 配置了 pnpm 以及版本号，如果使用 pnpm，这是推荐的做法；
+其他的例如 `name`、`version`、`main` 等均不需要（除非是 monorepo 项目，必须提供 `name`、`main`）。

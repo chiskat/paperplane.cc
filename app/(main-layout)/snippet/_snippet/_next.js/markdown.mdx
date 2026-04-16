@@ -1,0 +1,111 @@
+---
+title: Markdown 渲染
+---
+
+Next.js 支持渲染 Markdown，甚至还支持动态渲染。本文目前仅介绍静态渲染。
+可以在 [官方文档](https://nextjs.org/docs/app/guides/mdx) 了解更多。
+
+首先，这里的 Markdown 的后缀是 .mdx 而不是 .md，这是一种更高级的格式，除了可以使用 Markdown 的语法外，还支持 React 代码，实现嵌入组件的效果。
+
+依赖项：
+
+```bash
+npm add @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
+```
+
+修改 `next.config.ts` 配置文件：
+
+```typescript
+import createMDX from '@next/mdx'
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  // ... 其它配置
+}
+
+const withMDX = createMDX({
+  // 默认只渲染 .mdx 文件，这里也允许 .md 文件
+  extension: /\.mdx?$/,
+})
+
+export default withMDX(nextConfig)
+```
+
+然后，在页面目录根位置放置一个 `mdx-components.tsx` 文件：
+
+```tsx
+import type { MDXComponents } from 'mdx/types'
+
+const components: MDXComponents = {}
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    // 定义每个 Markdown 渲染时的包裹块
+    wrapper: ({ children, className, style }) => <div>...</div>,
+
+    // 定制其它渲染，例如这里是 # 一级标题
+    h1: ({ children, className, style }) => <h1 className={className}>...</h1>,
+    // 定制其它渲染，例如这里是 `代码块`
+    code: ({ children, className, style }) => <code className={className}>...</code>,
+
+    // ...
+
+    ...components,
+  }
+}
+```
+
+在这个文件中，你可以定制每个 Markdown 文档渲染时，每种格式使用哪种组件包裹，还可以定制样式。
+
+此后，可以直接把 .mdx 文件当做组件导入：
+
+```tsx
+import Markdown from './markdown.mdx'
+
+export default function Page() {
+  return <Markdown />
+}
+```
+
+使用这种组件时，还可以传入 `components` 参数来覆盖其中的某些格式的渲染规则。
+
+# 代码高亮
+
+如果想把 Markdown 文档中的代码进行着色实现高亮，可以通过这种方式。
+注：这里我使用 Prism.js，因为 Highlight.js 对 JSX 的支持存在 bug。
+
+依赖项：
+
+```bash
+npm add remark-prism
+```
+
+如果你使用 v16 版本的 Next.js，以下是配置方式：
+
+```typescript
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [
+      'remark-prism' as any,
+      {
+        /* 配置参数放在这里 */
+      },
+    ],
+  },
+})
+```
+
+如果使用 v15 以下版本的 Next.js，则使用以下配置：
+
+```typescript
+import remarkPrism from 'remark-prism'
+
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [remarkPrism as any],
+  },
+})
+```

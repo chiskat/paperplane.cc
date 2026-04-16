@@ -1,0 +1,38 @@
+---
+title: 配置
+---
+
+本 monorepo 配置模板基于 `pnpm` 和 `lerna` 这两个工具。
+
+首先，对 `package.json` 进行配置，只允许使用 `pnpm` ，并且开启 `workspace` 工作区支持：
+
+```json
+{
+  "packageManager": "pnpm@<版本号>",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  },
+  "workspaces": ["./packages/*"]
+}
+```
+
+然后，项目根目录新建一个 `pnpm-workspace.yaml` 文件，配置 `pnpm` 的工作区：
+
+```yaml
+packages:
+  - 'packages/*'
+```
+
+最后，项目根目录新建一个 `lerna.json` 文件，提供 `lerna` 的配置：
+
+```json
+{
+  "lerna": "2.2.0",
+  "version": "independent",
+  "packages": ["packages/*"],
+  "npmClient": "pnpm"
+}
+```
+
+这里的 `version` 可以设置成 `"independent"`，也可以设置成一个固定的版本号。
+如果设定成固定的版本号，使用 `lerna publish` 发布包时会交互式询问新版本号是多少，然后 `lerna` 会自动更新这里的 `version`，并进行提交代码、打 git 标签、发布 npm 等一系列操作。

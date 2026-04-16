@@ -1,0 +1,34 @@
+---
+title: .prettierignore
+---
+
+可能会用到 `.prettierignore` 配置文件，它使用 glob 通配符的格式，规定那些无需 Prettier 参与格式化的文件。
+
+---
+
+这里给出一份 Next.js 项目适用的配置：
+
+```
+dist/
+.next/
+pnpm-lock.yaml
+next-env.d.ts
+```
+
+---
+
+如果你使用 Vitepress 等工具，还可以添加：
+
+```
+**/.vitepress/cache/
+```
+
+---
+
+如果你使用 Markdown 的原生行尾双空格换行，而不是 `` 这种换行，那么你需要避免 Prettier 格式化 Markdown，因为它会移除行尾空格，导致换行失效。
+
+建议的配置：
+
+```
+**/*.md
+```

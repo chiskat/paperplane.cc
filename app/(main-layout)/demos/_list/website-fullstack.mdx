@@ -1,0 +1,35 @@
+---
+title: PaperPlane Monorepo 全栈
+href: https://console.paperplane.cc
+hrefHighlight: console.
+type: fullstack
+status: 2023-2025 已迁移
+repo: chiskat/paperplane-web-console
+techs: ["react", "tdesign", "nestjs", "prisma", "postgresql", "redis"]
+---
+
+开源 Node.js 全栈项目，旨在提供一个功能完整规范的的 Node.js Monorepo 全栈项目模板。
+
+它包含：
+
+- 基于 Prisma 的 ORM，作为一个单独的子包，因此所有类型可在前端和后端代码中共用；
+- 基于 TDesign、Vite 的 React 前端网站，网站使用 SWR、Motion 等技术来优化用户体验；
+- 基于 Nest.js 的后台，其中实现了基于注解的权限系统，统一响应和错误包装器等；
+- 对于 Prettier、ESLint、Typescript 等，提供了基于 Monorepo 场景的最佳实践；
+- 自带配套的运行容器、构建命令、容器开发配置；
+- 完善的 Drone CI/CD，尽可能复用 npm 包缓存和 Docker Layer 来加速构建，失败时有 rollback 步骤。
+
+我也在持续开发这个网站，为它增加一些自己用到的功能；
+目前已提供的功能：
+
+- GPT 问答；
+- 短网址，[我的博客](https://paperplane.cc) 也接入了此功能；
+- 公司-人员的组织结构；
+- 兼容钉钉、企微、飞书三个平台的 OA 机器人消息管理；
+- 每日采集公司股价、天气、交通状况，通过 Puppeteer 生成报告图；
+- OAuth2，已接入 GitHub 和我自部署的 [Gitea](https://git.paperplane.cc)；
+- S3 上传、下载、预签名；
+- 验证码生成和校验；
+- 企业微信 API，目前已接入邮件发送。
+
+项目中还用到了很多上文中未提及的技术；例如为了数据缓存，用到了 Redis 和相关连接套件；还用到了 RabbitMQ；还有基于 `simple-git` 和 `sshpk` 的基于 Git 提交记录生成周报的智能助手正在开发中。

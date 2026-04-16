@@ -16,7 +16,7 @@ export function ArticleHR() {
             display: 'block',
             width: 5,
             height: 5,
-            background: '#356daa',
+            background: '#2f629d',
             transform: 'rotate(45deg)',
             opacity: 0.45,
           }}
@@ -35,7 +35,7 @@ export function ArticleHR() {
             display: 'block',
             width: 5,
             height: 5,
-            background: '#356daa',
+            background: '#2f629d',
             transform: 'rotate(45deg)',
             opacity: 0.45,
           }}

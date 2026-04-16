@@ -1,0 +1,32 @@
+---
+title: Yarn
+---
+
+# 配置 Yarn (Classic)
+
+```bash
+# 安装 yarn
+npm i -g yarn
+
+# 换淘宝源
+yarn config set registry https://registry.npmmirror.com
+# 换回官方源（https://registry.yarnpkg.com）
+yarn config delete registry
+# 查看当前源
+yarn config get registry
+
+# 查看缓存目录
+yarn cache dir
+```
+
+Yarn 原本使用一个有缓存的代理源，域名是 `https://registry.yarnpkg.com`，因为曾经的 npm 源性能不佳；
+但现在这个域名已 CNAME 解析到了 `https://registry.npmjs.org`，所以和 npm 源没区别。
+
+Yarn 的使用技巧：
+
+```bash
+# 处理幽灵依赖
+pnpm why package-name
+```
+
+更多配置，可以参考 [Yarn 备忘清单](https://code.paperplane.cc/docs/yarn.html)（自部署）。

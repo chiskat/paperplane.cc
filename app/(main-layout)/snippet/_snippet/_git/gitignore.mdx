@@ -1,0 +1,54 @@
+---
+title: .gitignore
+---
+
+不同的项目可能会使用不同的 `.gitignore`，可以在 [这个网站](https://www.toptal.com/developers/gitignore/) 查询某种开发语言所对应的 `.gitignore` 配置。
+
+**注意，使用之前请先阅读补充说明：**
+
+- 下面的模板认为代码编译构建后输出到目录 `./dist`（第二行），如果和你的打包输出目录不同，记得修改；
+- 下面的模板中，没有包含 `package-lock.json`、`yarn.lock` 和 `pnpm-lock.yaml` 等版本锁定文件，因此它们会一并上传；
+  这是推荐做法，这样做可以提高多人开发以及 CI/CD 场景下依赖包的一致性。
+
+```
+# compiled output
+/dist
+/node_modules
+/.pnpm-store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+.env.local
+.env.development.local
+.env.production.local
+```

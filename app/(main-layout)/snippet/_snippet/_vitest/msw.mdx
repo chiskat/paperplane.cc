@@ -1,0 +1,102 @@
+---
+title: 模拟 HTTP 服务器
+---
+
+此配置适合于 “模拟一个 HTTP 服务器” 的需求，注意它并不是开启一个真实的 Node.js 服务器。
+
+这用到了 [`msw`](https://mswjs.io/)，它的全称是 “Mock Service Worker”，顾名思义是一个用 Service Worker 来模拟服务端的工具，常常用于单元测试。
+
+依赖项：
+
+```bash
+npm add -D msw
+```
+
+`msw` 的理念是，把后端 API 接口（称为 Handler）和服务器（称为 Server）解耦，这便给了我们很大的灵活性。
+
+基础用法是：定义好 Handler 并以此来开启一个 Server，这种方式很常见，就类似于 Express 和 Koa 等后端服务器一样；
+但是，`msw` 允许我们先启动一个 Server，然后针对每个测试用例，为这个 Server 挂载相应的 Handler，每个用例执行完后，就可以把 Handler 摘除掉；这种方式显然更适合用作测试工具，这也是 `msw` 的最大特色。
+
+这里给出上述更优方案的示例。
+首先，我们需要创建 Server，这需要新建一个文件 `/tests/server.ts`：
+
+```typescript
+import { setupServer } from 'msw/node'
+
+export const server = setupServer([
+  // 各种预设的 Handler
+])
+```
+
+这里，在定义 Server 的时候就可以预先提供一些 Handler 了；我们希望执行某个用例时再挂在对应的 Handler，所以此处留空即可；
+这个文件是测试环境的配置代码，它不是用例，所以不需要以 `.test.ts` 结尾。
+
+然后，我们要在特定的时机启动或停止 Server。
+Vitest 提供了很多个 Hook，可以在每个测试的启动前、启动后运行；我们利用这些 API 来调度 Server 的启停。
+
+创建一个文件 `/tests/setup-msw.ts`：
+
+```typescript
+import { afterAll, afterEach, beforeAll } from 'vitest'
+
+import { server } from './tests/server.ts'
+
+beforeAll(() => void server.listen())
+afterEach(() => void server.resetHandlers())
+afterAll(() => void server.close())
+```
+
+这里 `.resetHandlers()` 这个 API 的功能是摘除所有已挂载在 Server 的 Handler，每个用例结束后，都执行一次，满足我们的需求。
+
+这样就完成了测试 Server 启停的调度，接下来把它提供给 Vitest。
+Vitest 允许我们使用 [`setupFiles`](https://cn.vitest.dev/config/setupfiles.html) 来指定一些文件，这些文件会在每个测试文件之前执行，把上述文件的路径写在这里即可。
+
+编辑 `vitest.config.mts`：
+
+```typescript
+export default defineConfig({
+  test: {
+    setupFiles: ['tests/server.ts'],
+  },
+})
+```
+
+Vitest 默认针对每个测试文件而言，变量之间是隔离的，因此重复执行此文件不会导致问题。
+后续使用 `/tests/setup-msw.ts` 文件中导出的 `server` 即可，使用它来挂载我们想要的 Handler：
+
+```typescript
+import { http, HttpResponse } from 'msw'
+import { describe, expect, test } from 'vitest'
+
+import { server } from './tests/setup-msw.ts'
+
+describe('标题', async () => {
+  test('标题', async () => {
+    server.use(
+      // 使用 .use 来挂在一个 Handler
+      // 使用 http.get/post/... 来定义一个 Handler
+      http.get('/', async ({ request }) => {
+        // request 是请求体，可以进行一些断言
+        const data = await request.formData()
+
+        // 对请求的参数断言
+        expect(data.get('userId')).toBe(111)
+
+        // 返回响应
+        return HttpResponse.html('...')
+      })
+    )
+
+    // 模拟一个请求
+    const result = await fetch('/').then(res => res.json())
+
+    // 对响应进行断言
+    expect(result).toBe('...')
+  })
+})
+```
+
+因为我们的 `/tests/setup-msw.ts` 中规定了每个文件开始前开启 Server、每个用例完成后重置 Handler、每隔文件结束时关闭 Server，所以用例文件中就不再需要做这些动作了。
+
+如果不提供路径，默认是在 `http://localhost` 的 `80` 端口对请求进行处理；
+当然也可以指定域名，只要请求的域名和 Handler 定义时的域名完全一致即可。

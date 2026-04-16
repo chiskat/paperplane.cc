@@ -1,0 +1,37 @@
+---
+title: postcss.config.js
+---
+
+根据安装的工具插件不同，添加键进行配置即可。
+
+基础配置：
+
+```js
+/** @type {import('postcss-load-config').Config} */
+module.exports = {
+  plugins: {
+    autoprefixer: {},
+    // 其它插件 ...
+  },
+}
+```
+
+---
+
+集成 TailwindCSS 配置：
+
+```js
+/** @type {import('postcss-load-config').Config} */
+module.exports = {
+  plugins: {
+    // tailwindcss v4
+    '@tailwindcss/postcss': {},
+    // tailwindcss v3
+    tailwindcss: {},
+
+    // 其它插件 ...
+  },
+}
+```
+
+代码中给出了 v4 和 v3 两种配置，根据你使用的版本来选择一个。

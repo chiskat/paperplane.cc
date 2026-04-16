@@ -9,7 +9,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   ...queryPlugin.configs['flat/recommended'],
   prettierRecommended,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+  globalIgnores(['.next/**', '.content-collections/**', 'out/**', 'build/**', 'next-env.d.ts']),
   {
     rules: {
       '@typescript-eslint/no-require-imports': 'off',

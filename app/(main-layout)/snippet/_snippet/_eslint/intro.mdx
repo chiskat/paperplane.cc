@@ -1,0 +1,76 @@
+---
+title: 配置说明
+---
+
+ESLint 已由过去 v8 版本的 “按包名加载” 转为 v9 版本开始的 “从代码加载”，因此开始逐步废弃旧版 JSON 配置方式。
+新的配置文件，被官方称为 “flat 配置”，可以翻译为 “平坦化配置”。
+
+# 关于新的 .mjs 配置文件
+
+本文中 v9 的配置均使用 `eslint.config.mjs` 配置文件，这也是 ESLint 最推荐的配置方式。
+
+在 .mjs 文件中，导入导出使用 `import` 和 `export` 语句；
+如果你需要使用 .js 后缀的配置，把这些语句改成 `require` 和 `module.exports` 函数即可。
+
+此外，在 .mjs 中不存在 `__dirname` 等变量，想获取当前目录可以通过以下方式：
+
+```js
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+```
+
+# 关于插件对 v8/v9 的兼容
+
+目前很多插件均已更新，提供对两个版本的兼容，但导入时需注意写法。具体请参考各插件文档。
+
+举例，`@tanstack/eslint-plugin-query` 的新版配置导入方式：
+
+```js
+import pluginQuery from '@tanstack/eslint-plugin-query'
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  ...pluginQuery.configs['flat/recommended'],
+  // ...
+]
+```
+
+这里便是通过 `flat/recommended` 键名使用 v9 配置，如果使用 `recommended` 得到的是 ESLint v8 的配置。
+
+# 使用旧版配置
+
+如果你想使用 v8 版的插件，可以通过 [@eslint/eslintrc](https://www.npmjs.com/package/@eslint/eslintrc) 的 `FlatCompat` 进行兼容。
+
+此处给出示例片段：
+
+```js
+import { FlatCompat } from '@eslint/eslintrc'
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+})
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  ...compat.extends(/* ... 各种扩展 */),
+  ...compat.plugins(/* ... 各种插件 */),
+  ...compat.config({
+    // ... 各种配置
+  }),
+]
+```
+
+# 关于配置文件生效的范围
+
+需要注意的是，ESLint 配置中的 `files` 字段仅仅是针对某部分文件覆盖规则，即使某个文件不被任何 `files` 所包含，它仍会被 ESLint 检查到；
+如果想彻底跳过对某些文件的检查，需要配置 `ignores` 来忽略这部分文件。
+
+通过命令行调用 ESLint 时，也可以指定生效范围，例如：
+
+```bash
+eslint src
+eslint "./{src,test}"
+```

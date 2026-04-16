@@ -1,0 +1,37 @@
+---
+title: PaperPlane.cc Docker Hub 官方源镜像
+type: docker
+repo: mirror
+---
+
+源镜像域名：`https://docker-mirror.p01.cc`
+
+可以通过以下命令测试源镜像的连通性：
+
+```bash
+docker pull docker-mirror.p01.cc/alpine:latest
+```
+
+配置方式：
+
+- 如果是 Docker Desktop (桌面版)，前往 “设置” → “Docker Engine” 编辑配置文件；
+- 如果是 Linux，编辑 `/etc/docker/daemon.json` 配置文件。
+
+在配置文件中添加以下内容：
+
+```json
+{
+  "registry-mirrors": ["https://docker-mirror.p01.cc"]
+}
+```
+
+Linux 系统在编辑完成后，需要重启 Docker 引擎，执行命令：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+```
+
+---
+
+如果想换回官方默认的源，删去 `registry-mirrors` 配置项并重启 Docker 引擎即可。

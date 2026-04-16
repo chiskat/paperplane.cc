@@ -1,0 +1,11 @@
+---
+name: chiskat/docker-api
+repo: chiskat/docker-api
+type: docker
+techs: ["docker"]
+---
+
+`chiskat/docker-api` 用于在任意平台上对 Docker 零配置提供 TCP 协议的 Docker Engine API。
+
+使用时需要挂载宿主机的 `/var/run/docker.sock` 到容器中的相同路径，此后可通过此容器的 `2375` 端口访问 TCP 协议的 Docker Engine API；
+例如可使用 Node.js 直接通过 HTTP 控制 Docker，用于开发网页端 GUI。

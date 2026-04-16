@@ -1,0 +1,22 @@
+---
+title: antd@4
+---
+
+以下 `.babelrc` 配置文件适用于 antd v4 版本。从 v5 开始不需要任何配置。
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import
+```
+
+配置如下：
+
+```json
+{
+  "plugins": [["import", { "libraryName": "antd", "style": true }]]
+}
+```
+
+这会开启 antd 的样式按需引入，此时你便可以删掉 `import 'antd/dist/antd.css'` 这一句全局样式导入的代码了。
+再次提醒，antd v5 版本开始组件自带样式，不再分离，因此不再需要这个配置。

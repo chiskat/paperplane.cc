@@ -1,0 +1,68 @@
+---
+title: React
+---
+
+此 `vite.config.ts` 适用于 React 项目，带有其它常用配置。
+
+依赖项：
+
+```bash
+npm add -D @vitejs/plugin-react
+```
+
+配置如下：
+
+```typescript
+import path from 'path'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [react()],
+
+  resolve: {
+    // 添加路径别名，记得去 tsconfig.json 一并配置
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+
+  server: {
+    port: 3000,
+
+    // 添加本地代理
+    // 这段配置会把网站的 `http://localhost:3000/api` 转发到 `http://localhost:4000`
+    // 并且 “吞掉” 开头的 `/api` 路径
+    // 如果你需要保留 `/api` 路径，删去 `rewrite` 即可
+    // 如果需要在 `0.0.0.0` 开放，在 `server` 下添加 `host: true` 即可。
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000',
+        rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
+  },
+})
+```
+
+---
+
+如果需要分析打包编译后各个依赖包的大小占比，可使用 `rollup-plugin-visualizer`。
+
+依赖项：
+
+```bash
+npm add -D rollup-plugin-visualizer
+```
+
+配置如下：
+
+```typescript
+import { visualizer } from 'rollup-plugin-visualizer'
+
+export default defineConfig({
+  plugins: [react(), visualizer()],
+
+  // ...
+})
+```

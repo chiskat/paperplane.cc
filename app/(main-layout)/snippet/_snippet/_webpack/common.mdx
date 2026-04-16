@@ -1,0 +1,76 @@
+---
+title: 常用
+---
+
+Webpack 的配置较为复杂，我们不会从零开始，往往都是往已有的配置中合并/插入配置项。
+具体是通过 Create-React-App 并 Eject 弹出配置，还是通过 CRARO 等工具定制，可以自行选用。
+
+此处仅给出部分常见需求的配置片段。
+
+# 路径别名
+
+```js
+module.exports = {
+  resolve: {
+    alias: {
+      '@': 'src/', // 如果 webpack 配置文件在其他目录，可能要用 path.resolve() 来处理路径
+    },
+  },
+}
+```
+
+# 开发服务器
+
+```js
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'https://localhost:8888',
+        changeOrigin: true,
+        logLevel: 'debug',
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+  },
+}
+```
+
+# 目录拷贝
+
+有时候需要从项目目录中复制文件到输出的目录，此时需要使用 `copy-webpack-plugin`。
+
+依赖项：
+
+```bash
+npm add -D copy-webpack-plugin
+```
+
+配置如下：
+
+```js
+const CopyPlugin = require('copy-webpack-plugin')
+
+module.exports = {
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'other', to: 'public' }],
+    }),
+  ],
+}
+```
+
+# 外部依赖
+
+如果有些包不需要在项目中引入，而是使用外部的（例如百度地图 SDK，或者用了 CDN），可以配置外部依赖：
+
+```js
+module.exports = {
+  externals: {
+    // 举例：将自外部引入的变量 jQuery 当做新全局变量 $ 来使用
+    jQuery: '$',
+  },
+}
+```

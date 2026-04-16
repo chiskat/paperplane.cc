@@ -42,3 +42,6 @@ next-env.d.ts
 
 # docker-deps
 .docker-deps
+
+# content-collections
+.content-collections

@@ -1,0 +1,72 @@
+---
+title: 其它库
+---
+
+这里列举几个常用插件的 Babel 配置。
+
+# 使用 `emotion`
+
+依赖项：
+
+```bash
+npm add -D @emotion/babel-plugin
+```
+
+配置如下：
+
+```json
+{
+  "plugins": [["@emotion"]]
+}
+```
+
+# 使用 `lodash` 开启按需引入
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-lodash
+```
+
+配置如下：
+
+```json
+{
+  "plugins": [["lodash"]]
+}
+```
+
+如果你不想安装这个插件，也可以直接使用 `babel-plugin-import` 来进行配置：
+
+```json
+{
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "lodash",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      }
+    ]
+  ]
+}
+```
+
+# 移除 `console.log()` 日志打印
+
+Babel 也可以对源码进行预处理，这里例如通过插件移除所有的日志打印。
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-transform-remove-console
+```
+
+配置如下：
+
+```json
+{
+  "plugins": [["transform-remove-console"]]
+}
+```

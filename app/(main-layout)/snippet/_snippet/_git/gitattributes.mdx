@@ -1,0 +1,22 @@
+---
+title: .gitattributes
+---
+
+推荐使用这段 `.gitattributes` 配置，它起到的效果：
+
+- 使换行符默认使用 `LF`，统一 Windows 和其他操作系统的差别；
+- 将 `.svg` 文件视同二进制文件，因为 `.svg` 的内容是 XML 格式，Git 把它们当做文本来进行版本管理并不合适。
+
+更多详细的配置可以参考 [官方文档](https://www.git-scm.com/docs/gitattributes)。
+
+```
+# Set the default behavior for all files
+* text=auto eol=lf
+
+# Set specific behavior for files with certain extensions
+*.svg binary
+
+# Ignore files and directories
+logs/ export-ignore
+*.bak export-ignore
+```

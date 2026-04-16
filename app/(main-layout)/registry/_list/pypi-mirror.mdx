@@ -1,0 +1,31 @@
+---
+title: PaperPlane.cc PyPI 官方源镜像
+type: pypi
+repo: mirror
+---
+
+源镜像域名：`https://pypi-mirror.p01.cc`
+
+可以通过以下命令测试源镜像的连通性：
+
+```bash
+python -m pip install --dry-run -i https://pypi-mirror.p01.cc/simple requests
+```
+
+---
+
+如果你在中国大陆，更推荐使用清华大学开源软件镜像站（`https://pypi.tuna.tsinghua.edu.cn/simple`），它的速度和稳定性都很出色。
+
+配置方式：
+
+```bash
+pip config set global.index-url https://pypi-mirror.p01.cc/simple
+```
+
+---
+
+换回默认的官方源（`https://pypi.org/simple`）：
+
+```bash
+pip config unset global.index-url
+```

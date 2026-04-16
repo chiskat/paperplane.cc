@@ -1,0 +1,36 @@
+---
+name: use-upgrade
+repo: chiskat/use-upgrade
+type: npm
+homepage: https://use-upgrade.paperplane.cc
+techs: ["react", "vue", "vite", "webpack", "nextjs"]
+---
+
+适用于多种前端框架的库，用于检测网站是否存在新版本，让开发者可以告知用户。
+
+现在，你可以解放双手，安装同 `use-upgrade` 配套发布的 Agent Skills，让 AI 编程助手来帮你集成它！
+了解 [`use-upgrade` 的 Agent Skills](https://use-upgrade.paperplane.cc/guide/bootstrap/agent-skills)。
+
+---
+
+`use-upgrade` 可在零配置的情况下开箱即用，兼容 Vite、Webpack、Next.js 等构建系统的各类项目（包括但不限于 React、Vue、Angular、Svelte 等）。
+
+更多亮点：
+
+- 虽然起步简单，但也提供了丰富的配置项，几乎所有行为都可定制；
+- 不会给网络带来额外负担，在多个标签页或浏览器处于后台等场景时，会自动暂停网络活动；
+- 配备 React 和 Vue 的 Hooks，使开发相关 UI 交互变得更为容易；
+- 代码包体积极小，零依赖项；
+- 完全支持 TypeScript，完善的 JSDoc 注释和文档。
+
+---
+
+网站每次更新，`use-upgrade` 都会触发。想要灵活控制？
+`use-upgrade` 配套的插件：
+
+- `@use-upgrade/vite-plugin` 适用于 Vite
+- `@use-upgrade/webpack-plugin` 适用于 Webpack@5
+
+在构建工具中安装集成这些插件后，开发者便可以通过多种方式自由控制网站更新是否触发 `use-upgrade`。
+
+这些插件会从 Git 提交信息、环境变量、构建命令行参数等多种来源进行检查，开发者可以以任一种方式留下标记，告诉工具 “这次发布不要触发 `use-upgrade`”，避免打扰用户。

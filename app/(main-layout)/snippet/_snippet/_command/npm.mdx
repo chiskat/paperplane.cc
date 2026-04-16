@@ -1,0 +1,22 @@
+---
+title: npm
+---
+
+# 配置 npm
+
+```bash
+# 换淘宝源
+npm config set registry https://registry.npmmirror.com
+# 换回官方源（https://registry.npmjs.org）
+npm config delete registry
+# 查看当前源
+npm config get registry
+
+# 查看缓存目录
+npm config get cache
+
+# 更新 npm
+npm install -g npm@latest
+```
+
+更多配置，可以参考 [npm 备忘清单](https://code.paperplane.cc/docs/npm.html)（自部署）。

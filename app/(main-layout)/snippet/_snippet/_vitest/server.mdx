@@ -1,0 +1,61 @@
+---
+title: Node.js 服务端
+---
+
+上文中，`msw` 是一个模拟的 “HTTP 服务器”。
+有些时候我们需要真实 Node.js 服务器，这种配置稍有不同。
+
+之前使用 `setupFiles` 来配置开发服务器，因为每个测试文件之间是隔离的，因此 `setupFiles` 里的初始化代码会在每个测试文件运行前都执行一次；
+这里介绍另一个方式，通过 `globalSetup` 指定所有测试运行前的全局初始化代码。
+
+修改 `vitest.config.mts`：
+
+```typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    globalSetup: ['tests/setup.ts'],
+  },
+})
+```
+
+然后，创建文件 `/tests/steup.ts`：
+
+```typescript
+import type { AddressInfo } from 'net'
+import express, { json } from 'express'
+import type { TestProject } from 'vitest/node'
+
+export default async function setup(project: TestProject) {
+  const expressApp = express()
+  expressApp.use(json())
+
+  expressApp.get('/test', (req, res) => {
+    res.json({ data: 111 })
+  })
+
+  // 这里 listen(0) 表示监听随机的端口
+  const server = expressApp.listen(0)
+  const port = (server.address() as AddressInfo).port
+
+  // 把这个端口号提供给 Vitest
+  project.provide('port', port)
+
+  return () => {
+    server.close()
+  }
+}
+```
+
+代码中需要注意的是，`globalSetup` 的代码和测试程序不处于同一个作用域，无法互相访问全局变量，因此初始化代码通过 `project.provide()` 向测试程序传递参数；
+测试程序中，需要这样接收参数：
+
+```typescript
+import { inject } from 'vitest'
+
+const port = inject('port')
+const url = `http://localhost:${port}`
+```
+
+这样就可以在每次测试启动前全局初始化好一个 `express` 服务器了。

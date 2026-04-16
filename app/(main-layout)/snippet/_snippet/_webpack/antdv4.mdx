@@ -1,0 +1,42 @@
+---
+title: antd@4
+---
+
+antd v4 内部使用 `moment`，它的体积太大，不利于网站优化，我们可以通过插件进行优化。
+
+**注意，这段配置仅适用于 antd v4 版本，如果你使用后续的 v5，则不需要。**
+
+依赖项：
+
+```bash
+npm add -D antd-dayjs-webpack-plugin
+```
+
+配置如下：
+
+```js
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin')
+
+module.exports = {
+  plugins: [new AntdDayjsWebpackPlugin()],
+}
+```
+
+---
+
+如果不想换 dayjs，也可以安装 `moment-locales-webpack-plugin` 插件，它可以删去 `moment` 中我们不需要的国际化语言配置。
+
+配置如下：
+
+```js
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+
+module.exports = {
+  plugins: [
+    new MomentLocalesPlugin({
+      // 这里只额外保留中文
+      localesToKeep: ['zh-cn'],
+    }),
+  ],
+}
+```

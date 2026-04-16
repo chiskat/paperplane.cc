@@ -1,0 +1,125 @@
+---
+title: MUI
+---
+
+以下 `.babelrc` 配置文件适用于 MUI。
+
+# v7 版本
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import @emotion/babel-plugin @emotion/babel-preset-css-prop
+```
+
+配置如下：
+
+```json
+{
+  "plugins": [
+    [
+      "@emotion",
+      {
+        "importMap": {
+          "@mui/system": {
+            "styled": {
+              "canonicalImport": ["@emotion/styled", "default"],
+              "styledBaseImport": ["@mui/system", "styled"]
+            }
+          },
+          "@mui/material": {
+            "styled": {
+              "canonicalImport": ["@emotion/styled", "default"],
+              "styledBaseImport": ["@mui/material", "styled"]
+            }
+          },
+          "@mui/material/styles": {
+            "styled": {
+              "canonicalImport": ["@emotion/styled", "default"],
+              "styledBaseImport": ["@mui/material/styles", "styled"]
+            }
+          }
+        }
+      }
+    ],
+
+    [
+      "import",
+      {
+        "libraryName": "@mui/material",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      }
+    ],
+
+    [
+      "import",
+      {
+        "libraryName": "@mui/icons-material",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      }
+    ]
+  ]
+}
+```
+
+# 旧版本
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import
+```
+
+MUI v5 版本配置如下：
+
+```json
+{
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "@mui/material",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      }
+    ],
+
+    [
+      "import",
+      {
+        "libraryName": "@mui/icons-material",
+        "libraryDirectory": "",
+        "camel2DashComponentName": false
+      }
+    ]
+  ]
+}
+```
+
+如果你用的是 v4 版本的 `@material-ui`，请使用以下配置：
+
+```json
+{
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "@material-ui/core",
+        "libraryDirectory": "esm",
+        "camel2DashComponentName": false
+      }
+    ],
+
+    [
+      "import",
+      {
+        "libraryName": "@material-ui/icons",
+        "libraryDirectory": "esm",
+        "camel2DashComponentName": false
+      }
+    ]
+  ]
+}
+```

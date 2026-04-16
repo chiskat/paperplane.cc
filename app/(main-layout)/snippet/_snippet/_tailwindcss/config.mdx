@@ -1,0 +1,95 @@
+---
+title: tailwind.config.js
+---
+
+**注意：TailwindCSS 从 v4 版本开始已经默认不再自动读取配置文件，即使提供此文件，也不会生效；**
+**如果你仍想使用配置文件，请参考 [官方文档](https://tailwindcss.com/docs/functions-and-directives#config-directive)，使用 `@config` 字段开启配置文件。**
+
+v4 版本开启配置文件的语法：
+
+```css
+@config "../../tailwind.config.js";
+```
+
+---
+
+v4 版本请安装 `tailwindcss`、`@tailwindcss/postcss` 和 `postcss`；
+v3 版本则安装 `tailwindcss`、`postcss` 和 `autoprefixer`。
+（建议先配置好 `postcss`，然后再来配置 `tailwindcss`）
+
+创建文件 `tailwind.config.js`，写入以下内容：
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+然后，在 CSS 目录中创建一个 `tailwind.css` 文件（不推荐用 `.less` 或 `.scss` 后缀）；
+**v3 版本** 写入以下内容：
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+**v4 版本** 写入以下内容：
+
+```css
+@import 'tailwindcss';
+```
+
+或者，可以更精细地 “分层” 引入，这样可以使用自定义主题并调整优先级：
+
+```css
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+```
+
+然后，在项目中导入这个 CSS 文件即可。
+
+---
+
+此外，推荐安装 `prettier-plugin-tailwindcss` 插件，它可以在格式化代码时，自动对类名进行排序。
+安装后，请修改 `prettier` 的配置文件，添加：
+
+```json
+{
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+```
+
+---
+
+注意，Tailwindcss 自带了一套 CSS 重置规则。如果你使用类似 `mui` 等自带全局 CSS 的工具，则可以关闭这一套默认规则：
+
+**v3 版本** 在 `tailwindcss.config.js` 中配置：
+
+```js
+module.exports = {
+  // ...
+  corePlugins: {
+    preflight: false,
+  },
+}
+```
+
+**v4 版本** 则需要修改 `tailwind.css` 文件：
+
+```css
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+```
+
+这里删掉了 `@import "tailwindcss/preflight.css" layer(base);` 这一行。

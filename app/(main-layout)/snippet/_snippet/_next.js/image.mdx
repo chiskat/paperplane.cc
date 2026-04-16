@@ -1,0 +1,50 @@
+---
+title: 图片资源 CDN
+---
+
+Next.js 自身具备图片服务器，请求图片时，会根据 `<Image>` 组件的 `width` 和 `height` 属性调整返回的图片尺寸，还会调整图片质量以应对缩略图、懒加载等情况。
+可参考 [官方文档](https://nextjs.org/docs/app/api-reference/components/image)。
+
+但是，图片如果放置于 CDN 上，我们便需要按照 CDN 厂商的规则来定制 URL。
+Next.js 提供了 “自定义图片 Loader” 的功能，允许我们提供一个 JS 函数，每当加载图片时，Next.js 会把路径、尺寸、质量作为参数传给函数，函数需返回一个 URL，Next.js 会使用这个 URL 来取代原来的 URL。
+
+`next.config.ts` 配置：
+
+```typescript
+const nextConfig: NextConfig = {
+  images: {
+    // 只有在生产环境才生效
+    loader: process.env.NODE_ENV === 'production' ? 'custom' : undefined,
+    loaderFile: process.env.NODE_ENV === 'production' ? './image-loader.js' : undefined,
+  },
+}
+```
+
+然后是这个 `image-loader.js` 文件，Next.js 官方在 [说明文档](https://nextjs.org/docs/app/api-reference/config/next-config-js/images) 中给出了如 AWS S3、Cloudflare R2 等多种对象存储的配置样例代码，如果你用的是这些云服务提供商，直接复制即可。
+
+此处给出腾讯云 COS 的配置代码：
+
+```typescript
+export default function imageLoader({ src, width, quality }) {
+  return `${src}?thumbnail/${width}x/quality/${quality || 100}/ignore-error/1`
+}
+```
+
+此处给出阿里云 OSS 的配置代码：
+
+```typescript
+export default function imageLoader({ src, width, quality }) {
+  return `${src}?x-oss-process=image/resize,w_${width}/quality,Q_${quality || 100}`
+}
+```
+
+官方给出了 Cloudflare R2 的配置代码，但如果你使用之前的自定义 CDN 前缀，建议使用以下配置：
+
+```typescript
+export default function imageLoader({ src, width, quality }) {
+  const { origin, pathname } = new URL(src)
+  const params = [`width=${width}`, `quality=${quality || 75}`, 'format=auto']
+
+  return `${origin}/cdn-cgi/image/${params.join(',')}${pathname}`
+}
+```

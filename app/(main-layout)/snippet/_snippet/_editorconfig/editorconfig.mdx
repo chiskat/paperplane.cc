@@ -1,0 +1,27 @@
+---
+title: .editorconfig
+---
+
+[EditorConfig](https://editorconfig.org/) 被编辑器广泛支持、面向多种编程语言，所以它提供的配置项（[查看所有](https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties)）不是特别多。
+它使用 `.editorconfig` 文件作为配置文件。注意 VSCode 需要先 [安装插件](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) 才能支持。
+
+值得一提的是，有时候你保存文件时，文件被自动格式化了，即使关掉 Prettier、ESLint 以及语言服务器，仍然会自动格式化，这可能就是 EditorConfig 在捣鬼。
+
+这里给出一份我用的模板：
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+```
+
+注意这里给 `.md` 文件的配置项 `trim_trailing_whitespace = false`，它可避免自动移除 Markdown 文档的行尾空格，这会导致解析显示 Markdown 时换行显示失效（不过，行尾没有空格不会影响 hexo 博文的换行）。

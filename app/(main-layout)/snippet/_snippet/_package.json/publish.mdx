@@ -1,0 +1,49 @@
+---
+title: 发布 npm 包
+---
+
+如果你的项目是要作为 npm 包发布，此时 `package.json` 就需要仔细配置。
+
+具体而言：
+
+- 包名 `name`、版本号 `version`、入口 `main`、`module` 的重要性无需多言；
+- 作为 npm 包发布时，`package.json` 不应包含任何开发依赖，例如 `prettier`、`eslint` 等都不应该包含在其中；
+  因为用户是不需要安装这些东西的，这些工具的配置更不应出现在 `package.json` 中；
+- 如果你的包发布前需要打包编译，此时依赖项的代码都被嵌入你的包了，此时也不需要 `dependencies` 了；
+  例如你的包用到了 `lodash`，打包编译把 `lodash` 代码已经嵌入进你的包了，所以发布时 `dependencies` 就不需要写 `lodash` 了；
+- 如果是组件库，或者是基于某一个包的二次开发，那么原始的依赖请放入 `peerDependencies` 字段，并给一个比较宽泛的版本号；
+  例如你的包是 React 的组件库，那么应该把 `react` 放到 `peerDependencies` 里；
+- 上传 npm 时，很可能只需要传一部分文件，其他的文件例如各种开发工具配置、构建配置、测试套件等都是不需要上传的，所以需要用到 `files` 字段来指定上传哪些文件。
+
+下面给出一个 npm 包的空模板：
+
+```js
+{
+  "name": "",
+  "version": "0.0.1",
+  "description": "",
+  "main": "",
+  "module": "",
+  "unpkg": "",
+  "typings": "",
+  "exports": {
+  },
+  "scripts": {
+  },
+  "keywords": [
+  ],
+  "bugs": {
+    "url": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+  },
+  "files": [
+  ]
+}
+```

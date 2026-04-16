@@ -1,0 +1,48 @@
+---
+name: omn
+repo: chiskat/omn
+type: npm
+homepage: https://omn.paperplane.cc
+---
+
+`omn` 是一个提供独特和实用工具函数的 npm 库——就像 `lodash`、`ramda` 等库一样，但它更贴近实际应用场景、更 “接地气”，也更现代化。
+
+不知道何时使用、不想学习用法？现在你可以安装 `omn` 配套的 Agent Skills，让 AI 编程助手来帮你应用它！
+了解 [`omn` 的 Agent Skills](https://omn.paperplane.cc/guide/bootstrap/agent-skills)。
+
+---
+
+`omn` 具备以下亮点：
+
+- 提供更独特更实用的工具函数；
+- 无副作用，支持 TreeShaking；
+- 更好的兼容性，提供 CommonJS、ES Module、UMD 等多种模块入口；
+- 完全 TypeScript 类型支持和完善的 JSDoc 注释；
+- 代码体积小，零依赖。
+
+作为开源项目，`omn` 在开发流程中尽可能保证质量：
+
+- 每个工具函数都有丰富的测试用例，测试用例需要在 Node.js 和浏览器双端运行通过；
+- CI/CD 流程会对源码进行格式、语法、类型等多轮检查。
+
+---
+
+可以通过以下示例，体会 `omn` 的独特功能：
+
+格式化电话号码：
+
+```typescript
+import { formatPhoneNumber } from 'omn'
+
+formatPhoneNumber('13788889999', 'xxx **** xxxx')
+// → "137 **** 9999"
+```
+
+汉字视作 2 字符长度：
+
+```typescript
+import { lengthOfEn } from 'omn'
+
+lengthOfEn('你好')
+// → 4
+```

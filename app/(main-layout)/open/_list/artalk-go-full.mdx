@@ -1,0 +1,18 @@
+---
+name: chiskat/artalk-go-full
+repo: chiskat/artalk-go-full
+type: docker
+---
+
+[Artalk](https://artalk.js.org/) 是一个自托管的 “Web 评论/留言” 系统，用于集成在博客、个人网站中。
+
+此镜像基于 Artalk 的官方镜像 [`artalk/artalk-go`](https://hub.docker.com/r/artalk/artalk-go/)，补全了 “UpGit 图片上传” 和 “IP 属地数据库” 两项外部依赖，做到了 All-In-One 开箱即用。
+
+> 本站的 “博客” 板块也用到了它。
+
+---
+
+定时任务会自动触发构建，定期同步最新版本的 Artalk、UpGit 和 IP 属地数据库，并以这种形式的 TAG 发布 Docker 镜像：
+
+- 构建日期，例如 `2026.4.1`
+- 版本号拼接，例如 `artalk_2.9.1-upgit_0.2.25-ip2region_83d6faf`，这样可以精确确定预装的各个依赖项的版本。

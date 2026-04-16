@@ -1,0 +1,84 @@
+---
+title: Sass
+---
+
+依赖项：
+
+```bash
+npm add -D sass sass-loader
+```
+
+注意不建议使用 `node-sass`，它很难安装。
+如果你一定要使用它，记得取消下面配置中的 `implementation` 的注释。
+
+配置如下：
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        // 直接使用
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+
+        // 或者，提供配置项
+        use: ['style-loader', 'css-loader', {
+          loader: 'sass-loader',
+          options: {
+            // 如果需要主题、全局变量文件，请取消下面一行注释
+            // additionalData: '@import "~@/styles/global.scss";',
+
+            sassOptions: {
+              charset: false, // 推荐
+
+              // sass 的配置见：https://sass-lang.com/documentation/js-api/interfaces/options/
+              // node-sass 的配置见：https://github.com/sass/node-sass/#options
+            }，
+
+            // 默认是用 sass（dart-sass），如果你还是想用 node-sass，请安装它并取消下面一行注释：
+            // implementation: require('node-sass'),
+          },
+
+          // 更多配置见：https://webpack.docschina.org/loaders/sass-loader/#options
+        }],
+      },
+    ],
+  },
+}
+```
+
+请注意：sass-loader 在以前有 `prependData` 配置项，后续在 [v9](https://github.com/webpack-contrib/sass-loader/blob/master/CHANGELOG.md#900-2020-07-02) 版本移除了，改为使用 `additionalData`。
+
+---
+
+不同于 less 的是，sass 会存在一个问题：它不会重写样式文件中的 `url()` 地址，所以除非你所有的 `url()` 都写死成绝对路径，如果使用相对路径，那么样式文件互相 `import` 或者用 `@mixin` 时便可能会找不到 `url()` 中的资源。
+
+解决上述问题，请安装 `resolve-url-loader`（[文档](https://github.com/bholloway/resolve-url-loader/blob/v5/packages/resolve-url-loader/README.md)），然后修改 webpack 配置：
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          // 新增这个 loader
+          {
+            loader: 'resolve-url-loader',
+            options: {},
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true, // 注意，这一行必须有
+            },
+          },
+        ],
+      },
+    ],
+  },
+}
+```

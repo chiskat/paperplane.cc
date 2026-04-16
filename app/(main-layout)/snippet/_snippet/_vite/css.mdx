@@ -1,0 +1,55 @@
+---
+title: CSS 预处理器
+---
+
+此 `vite.config.ts` 适用于 CSS 预处理器。
+
+# Less
+
+依赖项：
+
+```bash
+npm add -D less
+```
+
+配置如下：
+
+```typescript
+export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      less: {
+        math: 'always',
+        relativeUrls: true,
+        javascriptEnabled: true,
+      },
+    },
+  },
+})
+```
+
+# Sass
+
+依赖项：
+
+```bash
+npm add -D sass
+# 或者
+npm add -D sass-embedded
+```
+
+配置如下：
+
+```typescript
+export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern',
+        // 如果需要给每个文件都加上 Sass 全局变量 ↓
+        // additionalData: `@use "@/styles/variables.scss" as *;`,
+      },
+    },
+  },
+})
+```

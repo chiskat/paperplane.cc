@@ -1,0 +1,55 @@
+---
+title: 全局设置
+---
+
+按下快捷键 `Ctrl/Command` + `Shift` + `P`，选择 “首选项: 打开用户设置(JSON)”，即可编辑用户设置 JSON 文件。
+这些配置对应设置中的一些项目，但纯 JSON 格式更易于编辑修改。此外建议登录账号使用 VSCode，用户设置会自动同步。
+
+本文不会给出所有配置，只会给出一些较为重要的片段。
+
+# 打开连字符
+
+很多开发专用字体，支持连字符，但默认是关闭的，配置使它开启：
+
+```json
+{
+  "editor.fontLigatures": true
+}
+```
+
+# 支持各种后缀的 `.env` 文件
+
+配置后，`.env.development`、`.env.local` 等也都被当做环境变量文件看待。
+
+```json
+{
+  "files.associations": {
+    ".env*": "dotenv"
+  }
+}
+```
+
+# 避免 Markdown 文件被 Prettier 移除行尾空格
+
+这段配置可以避免 Markdown 文档在保存时，被 Prettier 删去每行结尾的空格，导致双空格换行失效。
+
+```json
+{
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "files.trimTrailingWhitespace": false
+  }
+}
+```
+
+# TailwindCSS 推荐配置
+
+如果不把 CSS 文件当做 TailwindCSS 文件，使用一些特殊的 `@` 规则会被警告。
+
+```json
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
+```

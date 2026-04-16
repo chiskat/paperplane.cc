@@ -1,0 +1,43 @@
+---
+title: 配置说明
+---
+
+Create-React-App 已经退出历史舞台，它本身设计的不易于配置，且较久未更新，相关依赖已经过时。
+新项目推荐使用 Vite 进行配置。本文仅做备份。
+
+---
+
+CRA 项目自带了一套 Webpack 和 Babel 配置，启动指令会使用 `react-scripts`，自带的配置就集成在这个包里面，所以必须使用例如 `react-app-rewired` 或 `craco` 这类工具来替换掉启动指令里面的 `react-scripts`，并提供一份它们约定的配置文件，这样能对 Webpack 和 Babel 进行定制。
+
+本文使用 `@craco/craco` 进行配置。
+
+# 使用 `@craco/craco` 重写 CRA 的配置
+
+首先，安装 `@craco/craco`：
+
+```bash
+npm add -D @craco/craco @craco/types
+```
+
+然后，把 package.json 中 `scripts` 字段里面的 `react-scripts` 替换成 `craco`；
+然后在项目根目录新建一个 `craco.config.js`，这个文件的导出对象会用于对 Webpack 和 Babel 的定制。
+
+空模板如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = () => {
+  return {
+    plugins: [],
+    webpack: {},
+    babel: {},
+    style: {},
+    devServer: {},
+    // ...
+  }
+}
+```
+
+这里导出一个对象或返回对象的函数，这个对象里的各种配置将作为项目的 Webpack 或 Babel 等配置。
+
+具体用法，建议参考 [craco 官方文档](https://craco.js.org/)。

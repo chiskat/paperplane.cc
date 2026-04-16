@@ -1,0 +1,37 @@
+---
+title: 静态资源 CDN
+---
+
+以下 `next.config.ts` 配置可在生产环境将所有静态资源的 URL 替换为 CDN。
+注意这不包括上传流程，你需要自行通过其他工具进行上传。
+
+配置如下：
+
+```typescript
+const nextConfig: NextConfig = {
+  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://cdn.example.com' : undefined,
+}
+```
+
+注意：Next.js 会针对图片来源进行限制，如果网站中存在使用 `Image` 组件且通过属性 `src="https://..."` 直接使用外部图片的情况，需要配置允许的图片来源：
+
+```typescript
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'https://cdn.example.com' },
+      // ...
+    ],
+  },
+}
+```
+
+如果用到了外部 `.svg` 图片，还需要进一步配置：
+
+```typescript
+const nextConfig: NextConfig = {
+  images: {
+    dangerouslyAllowSVG: true,
+  },
+}
+```

@@ -1,0 +1,204 @@
+---
+title: Babel
+---
+
+CRA 默认不读取用户的 `.babelrc`，我们可以通过 `craco` 来定制 Babel 的配置。
+
+官网给出的配置模板如下：
+
+```js
+module.exports = {
+  // ...
+  babel: {
+    presets: [],
+    plugins: [],
+
+    // 下面两个二选一
+    loaderOptions: {},
+    loaderOptions: (babelLoaderOptions, { env, paths }) => {
+      // ...
+      return babelLoaderOptions
+    },
+  },
+}
+```
+
+这样以来，定制 Babel 的 Preset 和 Plugin 就会非常方便。
+
+# 示例：`antd`@4 的完整配置
+
+因为 `antd`@4 版本还需要 `babel-plugin-import` 插件，因此使用 `craco-antd`；如果用 v5 或者更新版本，则只需要用 `craco-less` 配置一下 Less 兼容即可。
+如果你只需要 `babel-plugin-import` 配置，而不需要一起捆绑的 Less 兼容，请跳过本段，下一段有仅 Babel 的配置。
+
+依赖项：
+
+```bash
+npm add -D craco-antd
+```
+
+配置如下：
+
+```js
+const CracoAntDPlugin = require('craco-antd')
+
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  plugins: [
+    {
+      plugin: CracoAntDPlugin,
+      options: {
+        lessLoaderOptions: {
+          // 如果需要全局 less 样式文件，取消下面一行的注释
+          // additionalData: '@import "~@/styles/global.less";',
+          lessOptions: {
+            modifyVars: {},
+            javascriptEnabled: true,
+            noIeCompat: true,
+          },
+        },
+      },
+    },
+  ],
+}
+```
+
+# 示例：`antd`@4 的 Babel 配置
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import
+```
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  babel: {
+    plugins: [
+      [
+        'import',
+        {
+          libraryName: 'antd',
+          libraryDirectory: 'es',
+          style: true,
+        },
+      ],
+    ],
+  },
+}
+```
+
+# 示例：`@emotion` 相关的 Babel 配置
+
+依赖项：
+
+```bash
+npm add -D @emotion/babel-preset-css-prop @emotion/babel-plugin
+```
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  babel: {
+    presets: ['@emotion/babel-preset-css-prop'],
+    plugins: ['@emotion/babel-plugin'],
+  },
+}
+```
+
+# 示例：`mui` 相关的 Babel 配置
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import @emotion/babel-plugin @emotion/babel-preset-css-prop
+```
+
+配置如下（包含了 `@emotion` 的配置）：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  babel: {
+    presets: ['@emotion/babel-preset-css-prop'],
+
+    plugins: [
+      [
+        '@emotion/babel-plugin',
+        {
+          importMap: {
+            '@mui/system': {
+              styled: {
+                canonicalImport: ['@emotion/styled', 'default'],
+                styledBaseImport: ['@mui/system', 'styled'],
+              },
+            },
+            '@mui/material': {
+              styled: {
+                canonicalImport: ['@emotion/styled', 'default'],
+                styledBaseImport: ['@mui/material', 'styled'],
+              },
+            },
+            '@mui/material/styles': {
+              styled: {
+                canonicalImport: ['@emotion/styled', 'default'],
+                styledBaseImport: ['@mui/material/styles', 'styled'],
+              },
+            },
+          },
+        },
+      ],
+
+      [
+        'babel-plugin-import',
+        {
+          libraryName: '@mui/material',
+          libraryDirectory: '',
+          camel2DashComponentName: false,
+        },
+      ],
+
+      [
+        'babel-plugin-import',
+        {
+          libraryName: '@mui/icons-material',
+          libraryDirectory: '',
+          camel2DashComponentName: false,
+        },
+      ],
+    ],
+  },
+}
+```
+
+# 示例：`lodash` 相关的 Babel 配置
+
+依赖项：
+
+```bash
+npm add -D babel-plugin-import
+```
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  babel: {
+    plugins: [
+      [
+        'babel-plugin-import',
+        {
+          libraryName: 'lodash',
+          libraryDirectory: '',
+          camel2DashComponentName: false,
+        },
+      ],
+    ],
+  },
+}
+```

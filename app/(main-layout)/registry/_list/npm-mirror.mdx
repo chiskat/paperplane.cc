@@ -1,0 +1,35 @@
+---
+title: PaperPlane.cc npm 官方源镜像
+type: docker
+repo: mirror
+---
+
+源镜像域名：`https://npm-mirror.p01.cc`
+
+可以通过以下命令测试源镜像的连通性：
+
+```bash
+npm i -g serve --dry-run --registry=https://npm-mirror.p01.cc
+```
+
+---
+
+如果你在中国大陆，更推荐使用淘宝的源镜像（`https://registry.npmmirror.com`），它的速度和稳定性都很出色。
+
+配置方式：
+
+```bash
+npm  config set registry https://npm-mirror.p01.cc
+yarn config set registry https://npm-mirror.p01.cc
+pnpm config set registry https://npm-mirror.p01.cc
+```
+
+---
+
+换回默认的官方源（`https://registry.npmjs.org`）：
+
+```bash
+npm  config delete registry
+yarn config delete registry
+pnpm config delete registry
+```

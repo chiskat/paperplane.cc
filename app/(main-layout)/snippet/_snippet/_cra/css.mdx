@@ -1,0 +1,74 @@
+---
+title: CSS 预处理器
+---
+
+# 开启 Sass 支持
+
+因为 CRA 原生支持 Sass，因此 `craco` 配置它也非常简单。
+
+依赖项：
+
+```bash
+npm add -D sass sass-loader
+```
+
+配置如下：
+
+```js
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  style: {
+    sass: {
+      // 以下是 sass-loader 配置项 https://webpack.js.org/loaders/sass-loader/
+      loaderOptions: {
+        // 如果需要全局 sass 变量文件，取消下面一行的注释
+        // additionalData: '@use "@/styles/global.scss" as *;',
+        sourceMap: true,
+      },
+    },
+  },
+}
+```
+
+如果遇到 Sass 的警告，以下两个解决方式二选一：
+
+- 通过 `package.json` 中的 `resolutions` 和 `overrides` 把 `sass-loader` 锁定到高版本；
+- 添加字段 `sass.loaderOptions.sassOptions.silenceDeprecations`，值为 `['legacy-js-api']`，以此来关闭警告。
+
+# 开启 Less 支持
+
+这里需要用到 [`craco-less`](https://github.com/DocSpring/craco-less) 插件。
+
+依赖项：
+
+```bash
+npm add -D less less-loader craco-less
+```
+
+配置如下：
+
+```js
+const CracoLessPlugin = require('craco-less')
+
+/** @type {import('@craco/types').CracoConfig} */
+module.exports = {
+  plugins: [
+    {
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          // 以下是 less-loader 配置项 https://webpack.js.org/loaders/less-loader/
+          lessOptions: {
+            modifyVars: {},
+            javascriptEnabled: true,
+            noIeCompat: true,
+          },
+          // 如果需要全局 less 变量文件，取消下面一行的注释
+          // additionalData: '@use "@/styles/global.scss" as *;',
+          additionalData: '@import "~@/styles/global.less";',
+        },
+      },
+    },
+  ],
+}
+```

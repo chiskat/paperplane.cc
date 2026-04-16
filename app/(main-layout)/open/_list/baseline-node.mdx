@@ -1,0 +1,35 @@
+---
+name: chiskat/baseline-node
+repo: chiskat/baseline-node
+type: docker
+override: { shields: "chiskat/baseline-node20" }
+techs: ["nodejs", "docker"]
+---
+
+`chiskat/baseline-node` 仓库包含了一系列适用于 Node.js 和 Web 开发者的 Docker 镜像。
+它用于 PaperPlane.cc 的多个项目，因此这样命名。
+
+---
+
+CI/CD 定时任务每周都会检查 Node.js 和 pnpm 的版本，如果有更新的版本，则会触发构建，同时使用日期作为 Tag，例如 `2025.10.26`。
+
+目前提供 `20` 版本的 Node.js，所有镜像名前缀均为 `baseline-node20`；
+后续根据需求，可能会添加更多和更新的 Node.js 大版本，例如 `22` 或 `24`。
+
+---
+
+目前包含了以下镜像：
+
+- `chiskat/baseline-node20-alpine`
+- `chiskat/baseline-node20`
+- `chiskat/baseline-node20-puppeteer`
+- `chiskat/baseline-node20-full`
+- `chiskat/baseline-node20-full-puppeteer`
+
+所有版本均已配置好并通过 `corepack` 开启 `pnpm`。
+
+无后缀版本基于 Node.js 官方的 `-slim` 镜像；
+`-alpine` 后缀版本基于官方 `-alpine` 版本，但已预装 `libc6-compat` 相关系统组件，从而兼容 Next.js 等工具；
+`-full` 后缀版本基于官方的无后缀镜像，兼容性最佳，但体积较大。
+
+此外，所有 `-puppeteer` 后缀版本则在原版基础上，预装 Chromium 以及相关依赖和一些开源字体（其中也包括一套开源 Emoji 字体，但不包含 “微软雅黑” 等版权字体），同时为 `puppeteer` 配置好了浏览器的启动路径和免下载标志位，可以开箱即用。

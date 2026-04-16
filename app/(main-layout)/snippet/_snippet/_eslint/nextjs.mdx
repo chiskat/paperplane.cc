@@ -1,0 +1,30 @@
+---
+title: Next.js
+---
+
+以下 `eslint.config.mjs` 适用于 Next.js 项目。
+
+依赖项：
+
+```bash
+npm add -D eslint-config-next
+```
+
+配置如下：
+
+```js
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  {
+    rules: {
+      // 自己的忽略规则 ...
+    },
+  },
+  globalIgnores(['.next/**', 'next-env.d.ts']),
+])
+```

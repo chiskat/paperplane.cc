@@ -1,0 +1,61 @@
+---
+title: import 排序插件
+---
+
+需要配合 `@ianvs/prettier-plugin-sort-imports` 插件（[文档](https://github.com/ianvs/prettier-plugin-sort-imports#readme)），它可以为 prettier 提供 `import` 语句分组排序功能。
+
+依赖项：
+
+```bash
+npm add -D @ianvs/prettier-plugin-sort-imports
+```
+
+安装这个包之后，请在 `.prettierrc` 文件中添加以下内容：
+
+```json
+{
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": []
+}
+```
+
+然后，根据 `import` 语句排序的需求，定制 `importOrder`；
+下文中会给出几种常用的例子，可以直接复制粘贴使用。
+
+---
+
+Web 开发常用：
+
+```json
+{
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^(server|client)-only$",
+    "<BUILTIN_MODULES>",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/(.*)$",
+    "^\\./(?!.*\\.(css|scss|less)$).*$",
+    "^\\.\\./(?!.*\\.(css|scss|less)$).*$",
+    "\\.(css|scss|less)$"
+  ]
+}
+```
+
+这会将内置包和 npm 上的包排序在最顶部，然后是一行空行，接下来是本地文件导入，从上往下一次是以 `@/` 开头的、`./` 开头的、`../` 开头的，样式类的导入会被放在最末尾。
+
+这个插件会避免调整带有副作用的语句的顺序，保持原有的顺序位置；副作用类的导入类似于 `import "...";` 这种写法，这也包括**样式文件**的导入、polyfill 的导入等。
+而配置中最后一条规则，用于匹配 CSS Module 这种非副作用的导入方式，把它们排在末尾。
+
+---
+
+npm 包开发常用：
+
+```json
+{
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "", "^\\./", "^\\.\\./"]
+}
+```
+
+这个配置适用于 npm 包的纯 JS/TS 开发，不含样式、`@/` 路径别名等内容。
