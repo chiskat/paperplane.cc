@@ -1,5 +1,4 @@
 export const sort = [
-  'website-current',
   'website-nextjs',
   'website-fullstack',
   'blog-hexo',

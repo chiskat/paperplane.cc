@@ -7,17 +7,17 @@ repo: chiskat/paperplane-blog
 techs: ["hexo", "nodejs"]
 ---
 
-不忘初心，方得始终。 ——“纸飞机的信笺” 是我的个人网站主站，也是一个历时多年陪伴、坚持原创和开源的技术博客。
+原 《纸飞机的信笺》技术博客。
+此项目于 2026 年合并至 [PaperPlane.cc](https://paperplane.cc/demos/website-current)，作为其 “博客” 板块。
+
+---
 
 网站基于 [Hexo](https://hexo.io/zh-cn/) 搭建，网站主题 PaperPlane 是我基于默认的 [Landscape](https://github.com/hexojs/hexo-theme-landscape) 主题进行深度定制而来。
 
 为了让文章更易于阅读，我对页面布局与背景、字体字号配色等都进行了多次调整，全资源 CDN 化，还添加了页边目录、优化了链接逻辑等，力求提高用户体验。
 
-虽然每篇博客页面都是基于 Markdown 文档生成的静态页面，但技术上却 “暗藏玄机”：
+技术建设：
 
-- 集成了基于 LeanCloud 的评论系统，后续可能会替换为 [Artalk](https://artalk.js.org/)；
-- 我自行开发的 Hexo 插件，配合我自行开发的 PaperPlane Web Console 后台，为每篇文章生成短链接；
+- 我自行开发的 Hexo 插件，配合另一套我自行开发的短链接系统，为每篇文章生成短链接；
 - 我自行开发的 Hexo 插件，通过 API 读取 Gitea 提交记录，为每篇文章生成 “修订记录”；
 - 即使全站禁用 JS，除了评论区外的任何模块的外观和功能均不受影响。
-
-后续依旧会坚持更新，感谢陪伴。

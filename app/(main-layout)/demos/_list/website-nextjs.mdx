@@ -2,22 +2,20 @@
 title: PaperPlane Next.js 全栈
 href: https://paperplane.cc
 type: fullstack
-status: 2025-2026 已迁移
+status: 2024-现在
 repo: chiskat/paperplane-next
-techs: ["nextjs", "mantine", "trpc", "prisma", "postgresql", "redis"]
+techs: ["nextjs", "shadcn", "mantine", "trpc", "prisma", "postgresql", "redis"]
 ---
 
-当前网站。基于 Next.js、tRPC、`@tanstack/react-query` 和 Prisma 的先进轻量 Node.js 全栈项目。
+基于 Next.js、tRPC、`@tanstack/react-query` 和 Prisma 的先进轻量 Node.js 全栈项目。
 
-> 当前为第二版。第一版使用 `Radix UI`，此 UI 库对 SSR 支持较好，但功能完善程度一般；第一版项目代码中仅包含少量后端代码，未集成数据库和登录注册等功能，设计不完善，暂未开源。
-
-此站点持续开发中，功能和开源进度敬请期待。
 以下是简介：
 
-- 基于 Next.js、Mantine UI、Tailwindcss 构建前端界面；
-- 使用 `@mdx-js` 相关工具解析 Markdown 并渲染，其中用到了 `remark-prism` 处理代码高亮；
-- 使用 Prisma 和 tRPC 来实现数据存储查询；
+- 基于 Next.js、Shadcn UI、Tailwindcss 构建前端界面；
+- 使用 `motion` 设计了组件过渡动画；
+- 使用 `@tanstack/react-form` 和 `zod` 实现数据校验和表单处理，后端有自行开发的 trpc 数据处理管线；
+- 使用 `@next/mdx` 相关工具解析 Markdown 并渲染，自行开发了 remark 和 rehype 插件解析显示 Markdown 特殊格式内容；
+- 使用 Prisma 和 tRPC 来实现后端数据增删改查；
 - 使用 `@tanstack/react-query` 集成 tRPC，SSR 中所有数据尽可能以 Hydrate 形式供给前端，仅在变更时再发送请求，减少不必要的网络开销；
 - 使用 `better-auth` 的 OAuth2 结合自部署的 Gitea 来实现登录，结合 tRPC 中间件实现权限控制；
-- 自带配套的运行容器、构建命令、容器开发配置；
-- 完善的 Drone CI/CD，尽可能复用 npm 包缓存和 Docker Layer 来加速构建，失败时有 rollback 步骤。
+- 自带配套的运行容器、构建命令、容器开发配置。
