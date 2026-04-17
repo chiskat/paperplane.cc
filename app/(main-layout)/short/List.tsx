@@ -41,7 +41,7 @@ type ShortListItem = {
   createdAt: Date
 }
 
-export function ShortList({ actions, banner }: { actions?: ReactNode; banner?: ReactNode }) {
+export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactNode }) {
   const trpc = useTRPC()
   const [keyword, setKeyword] = useState('')
   const [page, setPage] = useState(1)

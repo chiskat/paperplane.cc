@@ -17,9 +17,9 @@ import {
 } from '@/components/ui/dialog'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { addShortItemZod, type ShortItemReturn } from '@/zods/short'
-import { ShortApiDoc } from './ShortApiDoc'
-import { ShortForm, type ShortFormValue } from './ShortForm'
-import { ShortList } from './ShortList'
+import { APIDoc } from './APIDoc'
+import { Form, type FormValue } from './Form'
+import { List } from './List'
 
 const linkColorClassName =
   'text-[#2f629d] decoration-[#2f629d]/40 transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60'
@@ -32,7 +32,7 @@ export default function ShortPage() {
   const [lastResult, setLastResult] = useState<ShortItemReturn | null>(null)
 
   const createMutation = useMutation({
-    mutationFn: async (value: ShortFormValue) => {
+    mutationFn: async (value: FormValue) => {
       const payload = addShortItemZod.parse(value)
       return await trpcClient.short.items.add.mutate(payload)
     },
@@ -45,7 +45,7 @@ export default function ShortPage() {
 
   return (
     <section className="space-y-6 pb-10">
-      <ShortList
+      <List
         actions={
           <>
             <Dialog>
@@ -63,7 +63,7 @@ export default function ShortPage() {
                       在外部系统通过 API 快速创建短链接。
                     </DialogDescription>
                   </DialogHeader>
-                  <ShortApiDoc />
+                  <APIDoc />
                 </div>
               </DialogContent>
             </Dialog>
@@ -84,7 +84,7 @@ export default function ShortPage() {
                       通过表单填写信息并创建短链接。
                     </DialogDescription>
                   </DialogHeader>
-                  <ShortForm
+                  <Form
                     pending={createMutation.isPending}
                     submitError={createMutation.error?.message ?? null}
                     onSubmit={async value => {

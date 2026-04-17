@@ -46,13 +46,13 @@ const redirectTypeCollection = createListCollection({
   itemToValue: item => item.value,
 })
 
-export type ShortFormValue = input<typeof addShortItemZod> & {
+export type FormValue = input<typeof addShortItemZod> & {
   expiredAt?: unknown
 }
 
-export type ShortFormMode = 'create' | 'edit'
+export type FormMode = 'create' | 'edit'
 
-const DEFAULT_SHORT_FORM_VALUES: Readonly<ShortFormValue> = Object.freeze({
+const DEFAULT_SHORT_FORM_VALUES: Readonly<FormValue> = Object.freeze({
   url: '',
   key: undefined,
   tag: undefined,
@@ -62,7 +62,7 @@ const DEFAULT_SHORT_FORM_VALUES: Readonly<ShortFormValue> = Object.freeze({
   reuse: false,
 })
 
-export function ShortForm({
+export function Form({
   mode = 'create',
   initialValues,
   disableKey = mode === 'edit',
@@ -71,15 +71,15 @@ export function ShortForm({
   submitError,
   onSubmit,
 }: {
-  mode?: ShortFormMode
-  initialValues?: Partial<ShortFormValue>
+  mode?: FormMode
+  initialValues?: Partial<FormValue>
   disableKey?: boolean
   showReuseField?: boolean
   pending: boolean
   submitError: string | null
-  onSubmit: (value: ShortFormValue) => Promise<void>
+  onSubmit: (value: FormValue) => Promise<void>
 }) {
-  const defaultValues = useMemo<ShortFormValue>(() => {
+  const defaultValues = useMemo<FormValue>(() => {
     return createDefaultValues(initialValues, showReuseField)
   }, [
     initialValues?.expiredAt,
@@ -341,7 +341,7 @@ export function ShortForm({
 }
 
 function createDefaultValues(
-  initialValues: Partial<ShortFormValue> | undefined,
+  initialValues: Partial<FormValue> | undefined,
   showReuseField: boolean
 ) {
   return {
