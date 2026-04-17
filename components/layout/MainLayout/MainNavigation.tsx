@@ -153,6 +153,7 @@ export function MainNavigation({ pathname }: MainNavigationProps) {
 
       {renderedExtraLink ? (
         <NavItem
+          key={renderedExtraLink.href}
           label={renderedExtraLink.label}
           href={renderedExtraLink.href}
           active={isLinkActive(pathname, renderedExtraLink.href)}
