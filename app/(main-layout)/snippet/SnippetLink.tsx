@@ -25,29 +25,31 @@ export function SnippetLink({ title, href, active, iconKey }: SnippetLinkOptionP
   )
 
   return (
-    <Link
-      href={href}
-      aria-current={active ? 'page' : undefined}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className={cn(
-        'group focus-visible:ring-ring/50 flex min-w-0 items-start gap-2 rounded-xl px-1 py-1 transition-[color] duration-200 focus-visible:ring-2 focus-visible:outline-none',
-        active ? 'text-slate-950' : 'text-slate-800'
-      )}
-    >
-      <span className="min-w-0 truncate text-[15px] leading-5">
-        {active ? (
-          <Highlighter action="highlight" color="#97d7ff">
-            {displayTitle}
-          </Highlighter>
-        ) : hovered ? (
-          <Highlighter action="underline" color="#97d7ff" iterations={1} padding={0}>
-            {displayTitle}
-          </Highlighter>
-        ) : (
-          displayTitle
+    <div className="self-start">
+      <Link
+        href={href}
+        aria-current={active ? 'page' : undefined}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className={cn(
+          'group focus-visible:ring-ring/50 inline-flex min-w-0 items-start gap-2 rounded-xl px-1 py-1 transition-[color] duration-200 focus-visible:ring-2 focus-visible:outline-none',
+          active ? 'text-slate-950' : 'text-slate-800'
         )}
-      </span>
-    </Link>
+      >
+        <span className="min-w-0 truncate text-[15px] leading-5">
+          {active ? (
+            <Highlighter action="highlight" color="#97d7ff">
+              {displayTitle}
+            </Highlighter>
+          ) : hovered ? (
+            <Highlighter action="underline" color="#97d7ff" iterations={1} padding={0}>
+              {displayTitle}
+            </Highlighter>
+          ) : (
+            displayTitle
+          )}
+        </span>
+      </Link>
+    </div>
   )
 }
