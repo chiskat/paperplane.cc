@@ -4,9 +4,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/animate-ui/components/animate/tooltip'
-import { Separator } from './AwesomeItem'
+import { Separator } from './ListItem'
 
-export interface AwesomeItemTagsProps {
+export interface ListItemTagsProps {
   awesome: AwesomeItemResult
 }
 
@@ -36,7 +36,7 @@ function tagSortValue(index?: number | null) {
   return index ?? Number.MAX_SAFE_INTEGER
 }
 
-export function AwesomeItemTags({ awesome }: AwesomeItemTagsProps) {
+export function ListItemTags({ awesome }: ListItemTagsProps) {
   const tags = [...(awesome.tags ?? [])].sort(
     (a, b) => tagSortValue(a.index) - tagSortValue(b.index)
   )

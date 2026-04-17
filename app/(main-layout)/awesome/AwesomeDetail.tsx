@@ -16,7 +16,7 @@ import {
 } from '@/components/animate-ui/components/animate/tooltip'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/utils/style'
-import { awesomeStarLevel } from './AwesomeItem'
+import { awesomeStarLevel } from './ListItem'
 
 export type AwesomeDetailMode = 'auto' | 'page' | 'modal'
 

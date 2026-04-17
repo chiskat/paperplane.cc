@@ -1,14 +1,14 @@
 'use client'
 
 import { AwesomeTreeResult } from '@/apis/awesome/items'
-import { AwesomeItem } from './AwesomeItem'
+import { ListItem } from './ListItem'
 
-export interface AwesomeCategorySectionProps {
+export interface ListCategoryProps {
   catelog: AwesomeTreeResult
   sectionRef: (element: HTMLElement | null) => void
 }
 
-export function AwesomeCategorySection({ catelog, sectionRef }: AwesomeCategorySectionProps) {
+export function ListCategory({ catelog, sectionRef }: ListCategoryProps) {
   const parentName = catelog.parent?.name
   const isSecondaryCategory = Boolean(parentName)
 
@@ -28,7 +28,7 @@ export function AwesomeCategorySection({ catelog, sectionRef }: AwesomeCategoryS
 
       <ul className="flex flex-col gap-1.5">
         {catelog.underAwesomes.map(item => (
-          <AwesomeItem key={item.id} item={item} />
+          <ListItem key={item.id} item={item} />
         ))}
       </ul>
     </section>

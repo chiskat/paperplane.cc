@@ -9,9 +9,9 @@ import {
   TooltipTrigger,
 } from '@/components/animate-ui/components/animate/tooltip'
 import { fromURL, PackageIcon } from '@/components/icon/package-icon'
-import { Separator } from './AwesomeItem'
+import { Separator } from './ListItem'
 
-export interface AwesomeItemLinksProps {
+export interface ListItemLinksProps {
   awesome: AwesomeItemResult
 }
 
@@ -24,7 +24,7 @@ function isGithubSource(url: string) {
   return url.toLowerCase().startsWith('https://github.com')
 }
 
-export function AwesomeItemLinks({ awesome }: AwesomeItemLinksProps) {
+export function ListItemLinks({ awesome }: ListItemLinksProps) {
   const registryUrl = normalizeUrl(awesome.registry)
   const sourceUrl = normalizeUrl(awesome.source)
 

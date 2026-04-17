@@ -8,19 +8,19 @@ import { cn } from '@/utils/style'
 
 const CHILDREN_TRANSITION = { duration: 0.2, ease: 'easeOut' } as const
 
-export interface CategorySidebarItemProps {
+export interface SidebarItemProps {
   category: AwesomeCatelogNode
   showChildren: boolean
   onScrollToSection: (id: string) => void
   depth?: number
 }
 
-export function CategorySidebarItem({
+export function SidebarItem({
   category,
   showChildren,
   onScrollToSection,
   depth = 0,
-}: CategorySidebarItemProps) {
+}: SidebarItemProps) {
   const children = category.children || []
   const isPrimaryCategory = category.parentId == null
   const isChildCategory = depth > 0
@@ -55,7 +55,7 @@ export function CategorySidebarItem({
           >
             <ul className="mt-1 flex flex-col gap-0.5 pl-2">
               {children.map(child => (
-                <CategorySidebarItem
+                <SidebarItem
                   key={child.id}
                   category={child}
                   showChildren={showChildren}

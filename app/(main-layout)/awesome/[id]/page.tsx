@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { use } from 'react'
 
 import { useTRPC } from '@/lib/trpc-client'
-import { AwesomeDetail, AwesomeDetailSkeleton } from '../Detail'
+import { AwesomeDetail, AwesomeDetailSkeleton } from '../AwesomeDetail'
 
 export default function AwesomeDetailPage(props: PageProps<'/awesome/[id]'>) {
   const { id } = use(props.params)

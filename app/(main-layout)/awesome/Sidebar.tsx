@@ -7,13 +7,13 @@ import { Switch } from '@/components/animate-ui/components/radix/switch'
 import { ScrollAreaFade } from '@/components/ui/scroll-area-fade'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { CategorySidebarItem } from './CategorySidebarItem'
+import { SidebarItem } from './SidebarItem'
 
-export interface CategorySidebarProps {
+export interface SidebarProps {
   onScrollToSection: (id: string) => void
 }
 
-export function CategorySidebar({ onScrollToSection }: CategorySidebarProps) {
+export function Sidebar({ onScrollToSection }: SidebarProps) {
   const trpc = useTRPC()
   const [showChildren, setShowChildren] = useState(false)
 
@@ -52,7 +52,7 @@ export function CategorySidebar({ onScrollToSection }: CategorySidebarProps) {
           >
             <ul className="flex flex-col gap-1 pr-3">
               {catelogs.map(category => (
-                <CategorySidebarItem
+                <SidebarItem
                   key={category.id}
                   category={category}
                   showChildren={showChildren}

@@ -8,8 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/animate-ui/components/animate/tooltip'
-import { AwesomeItemLinks } from './AwesomeItemLinks'
-import { AwesomeItemTags } from './AwesomeItemTags'
+import { ListItemLinks } from './ListItemLinks'
+import { ListItemTags } from './ListItemTags'
 
 export function awesomeStarLevel(stars: number) {
   return stars >= 5
@@ -32,11 +32,11 @@ export function Separator() {
   )
 }
 
-export interface AwesomeItemCardProps {
+export interface ListItemProps {
   item: AwesomeItemResult
 }
 
-export function AwesomeItem({ item }: AwesomeItemCardProps) {
+export function ListItem({ item }: ListItemProps) {
   const stars = item.stars || 0
   const starMarkTooltip = awesomeStarLevel(stars)
 
@@ -77,8 +77,8 @@ export function AwesomeItem({ item }: AwesomeItemCardProps) {
       </Link>
 
       <TooltipProvider>
-        <AwesomeItemLinks awesome={item} />
-        <AwesomeItemTags awesome={item} />
+        <ListItemLinks awesome={item} />
+        <ListItemTags awesome={item} />
       </TooltipProvider>
     </li>
   )

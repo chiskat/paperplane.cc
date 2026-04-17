@@ -5,8 +5,8 @@ import { useMemo, useRef, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { useTRPC } from '@/lib/trpc-client'
-import { AwesomeCategorySection } from './AwesomeCategorySection'
-import { CategorySidebar } from './CategorySidebar'
+import { ListCategory } from './ListCategory'
+import { Sidebar } from './Sidebar'
 
 const TOP_OFFSET = 184
 
@@ -58,7 +58,7 @@ export default function AwesomePage() {
   return (
     <div>
       <div className="grid gap-6 md:grid-cols-[15rem_minmax(0,1fr)]">
-        <CategorySidebar onScrollToSection={scrollToSection} />
+        <Sidebar onScrollToSection={scrollToSection} />
 
         <div className="min-w-0">
           <div className="sticky top-28 z-40">
@@ -93,7 +93,7 @@ export default function AwesomePage() {
               <p className="text-sm text-slate-500">没有匹配的 Awesome 项</p>
             ) : (
               filteredData.map(catelog => (
-                <AwesomeCategorySection
+                <ListCategory
                   key={catelog.id}
                   catelog={catelog}
                   sectionRef={element => {
