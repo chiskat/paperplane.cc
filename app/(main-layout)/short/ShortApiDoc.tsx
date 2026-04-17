@@ -6,7 +6,7 @@ export function ShortApiDoc() {
   return (
     <ApiDoc
       metadata={{
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/short`,
+        url: '/api/short',
         method: 'POST',
         contentType: 'application/json',
         requireAuth: true,

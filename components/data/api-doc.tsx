@@ -19,6 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/utils/style'
+import { Highlight } from '../text/Highlight'
 
 export type ApiMethod =
   | 'GET'
@@ -120,7 +121,9 @@ export function ApiDoc({
 
           <KVPairs colon="：" noReserveIconSpace labelWidth="11rem">
             <KVPairsItem label="接口 URL" contentClassName="font-mono text-[13px]">
-              {metadata.url}
+              <Highlight keywords={metadata.url}>
+                {process.env.NEXT_PUBLIC_BASE_URL + metadata.url}
+              </Highlight>
             </KVPairsItem>
 
             <KVPairsItem label="请求方法" contentClassName="font-mono text-[13px]">
