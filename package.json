@@ -23,6 +23,7 @@
     "db:studio": "dotenv -c development -- prisma studio"
   },
   "dependencies": {
+    "@ark-ui/react": "^5.36.1",
     "@aws-sdk/client-s3": "^3.1020.0",
     "@aws-sdk/s3-request-presigner": "^3.1020.0",
     "@better-auth/api-key": "^1.5.6",
