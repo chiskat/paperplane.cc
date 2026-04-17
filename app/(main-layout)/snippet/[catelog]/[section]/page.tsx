@@ -31,10 +31,8 @@ export default async function SnippetSectionPage({
   params,
 }: PageProps<'/snippet/[catelog]/[section]'>) {
   const { catelog, section } = await params
-  const currentCatelog = decodeSegment(catelog)
-  const currentSection = decodeSegment(section)
 
-  const snippet = snippetRouteMap.get(getSnippetKey(currentCatelog, currentSection))
+  const snippet = snippetRouteMap.get(getSnippetKey(catelog, section))
   if (!snippet) {
     notFound()
   }
@@ -69,12 +67,4 @@ function getSnippetRouteMeta(item: (typeof allSnippets)[number]): SnippetRouteMe
 
 function getSnippetKey(catelog: string, section: string) {
   return `${catelog}/${section}`
-}
-
-function decodeSegment(segment: string) {
-  try {
-    return decodeURIComponent(segment)
-  } catch {
-    return segment
-  }
 }
