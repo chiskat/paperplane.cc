@@ -51,6 +51,7 @@ export function Highlighter({
   useLayoutEffect(() => {
     const element = elementRef.current
     let annotation: RoughAnnotation | null = null
+    let frameId: number | null = null
 
     if (shouldShow && element) {
       const annotationConfig = {
@@ -66,10 +67,33 @@ export function Highlighter({
       const currentAnnotation = annotate(element, annotationConfig)
       annotation = currentAnnotation
       currentAnnotation.show()
+
+      const syncPosition = () => {
+        if (frameId !== null) {
+          return
+        }
+
+        frameId = window.requestAnimationFrame(() => {
+          frameId = null
+          currentAnnotation.show()
+        })
+      }
+
+      window.addEventListener('scroll', syncPosition, { passive: true, capture: true })
+
+      return () => {
+        window.removeEventListener('scroll', syncPosition, true)
+
+        if (frameId !== null) {
+          window.cancelAnimationFrame(frameId)
+        }
+
+        currentAnnotation.remove()
+      }
     }
 
     return () => {
-      annotation?.remove()
+      ;(annotation as any)?.remove()
     }
   }, [shouldShow, action, color, strokeWidth, animationDuration, iterations, padding, multiline])
 

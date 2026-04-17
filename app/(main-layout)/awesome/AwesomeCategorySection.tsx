@@ -14,7 +14,7 @@ export function AwesomeCategorySection({ catelog, sectionRef }: AwesomeCategoryS
 
   return (
     <section data-section-id={catelog.id} ref={sectionRef} className="scroll-mt-52 space-y-3">
-      <header className="sticky top-44.5 z-30 border-b border-slate-200 bg-white/95 py-2 backdrop-blur">
+      <header className="sticky top-44 z-30 border-b border-slate-200 bg-white/95 py-2 backdrop-blur">
         {isSecondaryCategory ? (
           <h2 className="text-slate-700">
             <span className="text-slate-300">{parentName}</span>

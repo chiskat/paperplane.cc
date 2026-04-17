@@ -19,11 +19,27 @@ export const shortItemZod = z.object({
   public: z.boolean().optional().default(false),
 })
 
-export const addShortItemZod = shortItemZod.extend({
-  reuse: z.boolean().optional().default(false),
-})
+function withRedirectRules<T extends z.ZodTypeAny>(schema: T) {
+  return schema.superRefine((value, ctx) => {
+    const input = value as { redirectType?: ShortRedirectType; expiredAt?: unknown }
 
-export const shortItemReturn = shortItemZod.extend({
-  $reuse: z.boolean(),
-  $full: z.string(),
-})
+    if (input.redirectType === ShortRedirectType.PERMANENTLY && input.expiredAt) {
+      ctx.addIssue({ code: 'custom', path: ['expiredAt'], message: '永久重定向不允许设置过期时间' })
+    }
+  })
+}
+
+export const addShortItemZod = withRedirectRules(
+  shortItemZod.extend({
+    reuse: z.boolean().optional().default(false),
+  })
+)
+
+export const shortItemReturn = withRedirectRules(
+  shortItemZod.extend({
+    $reuse: z.boolean(),
+    $full: z.string(),
+  })
+)
+
+export type ShortItemReturn = z.infer<typeof shortItemReturn>

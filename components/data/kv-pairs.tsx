@@ -1,13 +1,14 @@
 'use client'
 
 import { createContext, useContext } from 'react'
-import type { ComponentProps, ReactNode } from 'react'
+import type { ComponentProps, CSSProperties, ReactNode } from 'react'
 
 import { cn } from '@/utils/style'
 
 interface KVPairsContextValue {
   colon?: ReactNode
   reserveIconSpace: boolean
+  labelWidth?: CSSProperties['width']
 }
 
 const KVPairsContext = createContext<KVPairsContextValue>({
@@ -18,15 +19,24 @@ export interface KVPairsProps extends ComponentProps<'dl'> {
   colon?: ReactNode
   noReserveIconSpace?: boolean
   fitContentWidth?: boolean
+  labelWidth?: CSSProperties['width']
 }
 
 export interface KVPairsItemProps extends Omit<ComponentProps<'div'>, 'children'> {
   label: ReactNode
   children?: ReactNode
   icon?: ReactNode
+  labelWidth?: CSSProperties['width']
   labelClassName?: string
   contentClassName?: string
   iconClassName?: string
+}
+
+function resolveWidth(width?: CSSProperties['width']) {
+  if (typeof width === 'number') {
+    return `${width}px`
+  }
+  return width
 }
 
 export function KVPairs({
@@ -35,10 +45,11 @@ export function KVPairs({
   colon,
   noReserveIconSpace,
   fitContentWidth,
+  labelWidth,
   ...props
 }: KVPairsProps) {
   return (
-    <KVPairsContext.Provider value={{ colon, reserveIconSpace: !noReserveIconSpace }}>
+    <KVPairsContext.Provider value={{ colon, reserveIconSpace: !noReserveIconSpace, labelWidth }}>
       <dl
         data-slot="kv-pairs"
         className={cn(
@@ -59,23 +70,24 @@ export function KVPairsItem({
   label,
   children,
   icon,
+  labelWidth,
   labelClassName,
   contentClassName,
   iconClassName,
+  style,
   ...props
 }: KVPairsItemProps) {
-  const { colon, reserveIconSpace } = useContext(KVPairsContext)
+  const { colon, reserveIconSpace, labelWidth: parentLabelWidth } = useContext(KVPairsContext)
+  const resolvedLabelWidth = resolveWidth(labelWidth ?? parentLabelWidth ?? '6.5rem')
+  const gridTemplateColumns = reserveIconSpace
+    ? `2.75rem ${resolvedLabelWidth} minmax(0,1fr)`
+    : `${resolvedLabelWidth} minmax(0,1fr)`
 
   return (
     <div
       data-slot="kv-pairs-item"
-      className={cn(
-        'grid items-stretch text-[16px]',
-        reserveIconSpace
-          ? 'grid-cols-[2.75rem_6.5rem_minmax(0,1fr)]'
-          : 'grid-cols-[6.5rem_minmax(0,1fr)]',
-        className
-      )}
+      className={cn('grid items-stretch text-[16px]', className)}
+      style={{ ...style, gridTemplateColumns }}
       {...props}
     >
       {reserveIconSpace ? (
@@ -100,6 +112,7 @@ export function KVPairsItem({
       <dt
         className={cn(
           'm-0 flex items-start gap-1 self-stretch bg-[#f7f2ee] py-2 text-left leading-6 text-[#4a5665]',
+          !reserveIconSpace && 'px-4',
           'font-medium',
           labelClassName
         )}
@@ -115,7 +128,12 @@ export function KVPairsItem({
         </span>
       </dt>
 
-      <dd className={cn('m-0 min-w-0 px-4 py-2 leading-6 text-[#3f4a59]', contentClassName)}>
+      <dd
+        className={cn(
+          'm-0 grid min-w-0 content-center px-4 py-2 leading-6 text-[#3f4a59]',
+          contentClassName
+        )}
+      >
         {children}
       </dd>
     </div>

@@ -24,6 +24,8 @@
   "registries": {
     "@magicui": "https://magicui.design/r/{name}",
     "@animate-ui": "https://animate-ui.com/r/{name}.json",
-    "@shark": "https://shark.vini.one/r/{name}.json"
+    "@shark": "https://shark.vini.one/r/{name}.json",
+    "@spell": "https://spell.sh/r/{name}.json",
+    "@coss": "https://coss.com/ui/r/{name}.json"
   }
 }

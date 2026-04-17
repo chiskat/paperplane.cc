@@ -16,6 +16,7 @@ import { GiteaIcon, GithubIcon } from '@/components/icon/tech-icons'
 import openMDX from '@/components/mdx/open'
 import { getTechTagByName } from '@/components/tag/tech-tags'
 import { cn } from '@/utils/style'
+import { VersionBadgeImage } from './VersionBadgeImage'
 import { filterAndSortByOpenOrder } from '../sort'
 
 export const dynamicParams = false
@@ -141,7 +142,7 @@ export default async function OpenItemPage({ params }: PageProps<'/open/[name]'>
           icon={<IconVersions />}
           contentClassName="self-center flex items-center"
         >
-          <img className="block h-5" src={shieldsImg} alt={shieldsAlt} />
+          <VersionBadgeImage src={shieldsImg} alt={shieldsAlt} />
         </KVPairsItem>
 
         {techTags.length > 0 ? (

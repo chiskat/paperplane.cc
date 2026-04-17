@@ -1,9 +1,15 @@
 'use client'
 
-import { IconGridDots } from '@tabler/icons-react'
+import {
+  IconChevronRight,
+  IconExternalLink,
+  IconGridDots,
+  IconMapPinFilled,
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { HighlighterLink } from '@/components/animate-ui/primitives/effects/highlighter-link'
 import { Highlighter } from '@/components/ui/highlighter'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { RippleButton } from '@/components/ui/ripple-button'
@@ -34,6 +40,7 @@ export const moreLinkGroups = [
 export const moreLinks = moreLinkGroups.flatMap(group => group.links)
 
 const getFirstSegment = (path: string) => path.split('/').filter(Boolean)[0] ?? ''
+const isExternalHref = (href: string) => /^(?:[a-z][a-z\d+\-.]*:|\/\/)/i.test(href)
 
 export function isLinkActive(pathname: string, href: string) {
   if (href === '/') {
@@ -57,34 +64,20 @@ export function NavItem({
   block?: boolean
   onClick?: () => void
 }) {
-  const [hovered, setHovered] = useState(false)
-
   return (
-    <Link
+    <HighlighterLink
       href={href}
+      active={active}
+      enableActiveHighlighter={highlightWhenActive}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       className={cn(
         'font-title-serif rounded-md px-2 py-1 text-xl sm:px-3',
         block && 'block px-3 py-2',
         active ? 'font-medium text-gray-900' : 'text-gray-600'
       )}
     >
-      {active && highlightWhenActive ? (
-        <Highlighter action="highlight" color="#97d7ff">
-          {label}
-        </Highlighter>
-      ) : active ? (
-        label
-      ) : hovered ? (
-        <Highlighter action="underline" color="#97d7ff">
-          {label}
-        </Highlighter>
-      ) : (
-        label
-      )}
-    </Link>
+      {label}
+    </HighlighterLink>
   )
 }
 
@@ -100,6 +93,8 @@ function PopoverNavItem({
   onSelect?: () => void
 }) {
   const [hovered, setHovered] = useState(false)
+  const isExternal = isExternalHref(href)
+  const iconClassName = cn('shrink-0', active ? 'text-gray-900' : 'text-gray-500')
 
   return (
     <Link
@@ -108,20 +103,31 @@ function PopoverNavItem({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        'font-title-serif rounded-md bg-gray-100 px-3 py-2 text-base shadow-sm shadow-gray-200/60 transition-colors',
+        'font-title-serif flex items-center justify-between gap-2 rounded-md bg-gray-100 px-3 py-2 text-base shadow-sm shadow-gray-200/60 transition-colors',
         active
           ? 'bg-sky-200 font-medium text-gray-900 shadow-sky-200/60'
           : 'bg-gray-200/65 text-gray-600 hover:bg-gray-200'
       )}
     >
+      <span>
+        {active ? (
+          label
+        ) : hovered ? (
+          <Highlighter action="underline" color="#97d7ff" iterations={2} padding={0}>
+            {label}
+          </Highlighter>
+        ) : (
+          label
+        )}
+      </span>
       {active ? (
-        label
+        <IconMapPinFilled size={16} className={iconClassName} />
+      ) : isExternal ? (
+        <IconExternalLink size={16} className={iconClassName} />
       ) : hovered ? (
-        <Highlighter action="underline" color="#97d7ff" iterations={2} padding={0}>
-          {label}
-        </Highlighter>
+        <IconChevronRight size={16} className="shrink-0 text-gray-700" />
       ) : (
-        label
+        <IconChevronRight size={16} className={iconClassName} />
       )}
     </Link>
   )
@@ -172,7 +178,8 @@ export function MainNavigation({ pathname }: MainNavigationProps) {
             <IconGridDots size={18} />
           </RippleButton>
         </PopoverTrigger>
-        <PopoverContent className="w-md px-4 py-4" align="center" sideOffset={8}>
+
+        <PopoverContent className="w-sm px-4 py-4" align="center" sideOffset={8}>
           <div className="space-y-6">
             {moreLinkGroups.map(({ title, links }) => (
               <section key={title}>

@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 
+import { Input } from '@/components/ui/input'
 import { useTRPC } from '@/lib/trpc-client'
 import { AwesomeCategorySection } from './AwesomeCategorySection'
 import { CategorySidebar } from './CategorySidebar'
@@ -77,11 +78,11 @@ export default function AwesomePage() {
                 <span className="font-en-sans mb-2 block text-xs tracking-wide text-slate-500 uppercase">
                   搜索 Awesome
                 </span>
-                <input
+                <Input
                   value={keyword}
                   onChange={event => void setKeyword(event.target.value)}
                   placeholder="搜索名称、描述或标签"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 transition outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                  className="h-10 rounded-xl bg-white px-4 text-sm text-slate-800 focus-visible:border-slate-500 focus-visible:ring-slate-200"
                 />
               </label>
             </div>

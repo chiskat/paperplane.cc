@@ -1,11 +1,11 @@
 'use client'
 
-import { useRouter, useSelectedLayoutSegment } from 'next/navigation'
+import { useSelectedLayoutSegment } from 'next/navigation'
 import { createElement } from 'react'
 import type { ReactNode } from 'react'
 
 import { allSnippets } from '@/.content-collections/generated'
-import { Tabs, TabsList, TabsTrigger } from '@/components/animate-ui/components/radix/tabs'
+import { HighlighterLink } from '@/components/animate-ui/primitives/effects/highlighter-link'
 import { getSnippetIconByKey } from '@/components/icon/snippet-icons'
 
 export interface SnippetCatalogOption {
@@ -40,14 +40,13 @@ export function SnippetCatalogLayoutClient({
   currentCatalog,
   children,
 }: SnippetCatalogLayoutClientProps) {
-  const router = useRouter()
   const segment = useSelectedLayoutSegment()
   const article = decodeSegment(segment)
   const activeArticle = getActiveArticle(currentCatalog.children, article)
 
   return (
-    <section className="space-y-6">
-      <div className="sticky top-28 border-b border-slate-200/70">
+    <>
+      <div className="sticky top-28 z-50 border-b border-slate-200/70">
         <div
           className="pointer-events-none absolute -top-6 -right-3 bottom-0 -left-3 z-20 bg-white"
           style={{
@@ -59,7 +58,7 @@ export function SnippetCatalogLayoutClient({
           aria-hidden
         />
 
-        <div className="relative isolate z-30 flex flex-wrap items-end gap-4 rounded-lg bg-white/50 pb-4">
+        <div className="relative isolate z-30 flex flex-wrap items-end gap-4 rounded-lg bg-white/50 pb-2">
           <div
             className="pointer-events-none absolute inset-0 -z-1 rounded-lg"
             style={{
@@ -73,43 +72,37 @@ export function SnippetCatalogLayoutClient({
             aria-hidden
           />
 
-          <h1 className="font-title-serif flex min-w-0 items-center gap-2 text-[24px] whitespace-nowrap text-[#2d394a]">
-            {createElement(getSnippetIconByKey(currentCatalog.iconKey), {
-              className: 'shrink-0',
-              size: 24,
-            })}
-            {currentCatalog.title}
-          </h1>
+          <div className="flex min-w-0 flex-col gap-3">
+            <h1 className="font-title-serif flex min-w-0 items-center gap-2 text-[24px] whitespace-nowrap text-[#2d394a]">
+              {createElement(getSnippetIconByKey(currentCatalog.iconKey), {
+                className: 'shrink-0',
+                size: 24,
+              })}
+              {currentCatalog.title}
+            </h1>
 
-          <Tabs
-            value={activeArticle}
-            onValueChange={value => {
-              if (value === article || !currentCatalog.children.includes(value)) {
-                return
-              }
-
-              router.replace(`/snippet/${currentCatalog.slug}/${value}`)
-            }}
-            className="ml-3 gap-0"
-          >
-            <TabsList>
+            <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
               {currentCatalog.children.map(section => (
-                <TabsTrigger
+                <HighlighterLink
                   key={section}
-                  value={section}
-                  fill={false}
-                  className="h-7.5 cursor-pointer px-3"
+                  href={`/snippet/${currentCatalog.slug}/${encodeURIComponent(section)}`}
+                  active={section === activeArticle}
+                  className={`px-3 py-1.5 text-base transition-colors ${
+                    section === activeArticle
+                      ? 'text-slate-900'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
                 >
                   {getSnippetTitle(currentCatalog.slug, section)}
-                </TabsTrigger>
+                </HighlighterLink>
               ))}
-            </TabsList>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="min-w-0">{children}</div>
-    </section>
+      <div className="relative z-0 min-w-0">{children}</div>
+    </>
   )
 }
 

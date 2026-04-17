@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 
-import { SnippetCatalogLayoutClient, type SnippetCatalogOption } from './SnippetCatalogLayoutClient'
+import { SnippetCatalogLayoutClient, type SnippetCatalogOption } from './LayoutClient'
 import { list } from '../list'
 
 function getSnippetDirSlug(dir: string) {

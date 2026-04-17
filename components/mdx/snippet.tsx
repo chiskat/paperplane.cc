@@ -14,28 +14,28 @@ export default function snippetMDX(): MDXComponents {
   return {
     ...base,
     wrapper({ children }) {
-      return <article className="font-sans text-[16px] leading-normal">{children}</article>
+      return <article className="font-sans text-[16px] leading-[1.6]">{children}</article>
     },
     hr: () => (
       <Separator className="border-foreground/50 my-8 border-t border-dashed bg-transparent data-horizontal:h-0" />
     ),
     h1({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h1 {...props} className="font-title-serif mt-8 mb-4 text-[24px] [&_a]:hidden!">
+        <h1 {...props} className="font-title-serif mt-4 mb-4 text-[24px] [&_a]:hidden!">
           {children}
         </h1>
       )
     },
     h2({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h2 {...props} className="font-title-serif mt-6 mb-4 text-[20px] [&_a]:hidden!">
+        <h2 {...props} className="font-title-serif mt-4 mb-4 text-[20px] [&_a]:hidden!">
           {children}
         </h2>
       )
     },
     h3({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h3 {...props} className="font-title-serif mt-6 mb-4 text-[18px] [&_a]:hidden!">
+        <h3 {...props} className="font-title-serif mt-4 mb-4 text-[18px] [&_a]:hidden!">
           {children}
         </h3>
       )
