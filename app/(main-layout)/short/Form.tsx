@@ -2,7 +2,7 @@
 
 import { createListCollection } from '@ark-ui/react/select'
 import { useForm } from '@tanstack/react-form'
-import { useEffect, useMemo, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import type { input } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -50,9 +50,7 @@ export type FormValue = input<typeof addShortItemZod> & {
   expiredAt?: unknown
 }
 
-export type FormMode = 'create' | 'edit'
-
-const DEFAULT_SHORT_FORM_VALUES: Readonly<FormValue> = Object.freeze({
+const DEFAULT_VALUES: FormValue = {
   url: '',
   key: undefined,
   tag: undefined,
@@ -60,40 +58,19 @@ const DEFAULT_SHORT_FORM_VALUES: Readonly<FormValue> = Object.freeze({
   expiredAt: undefined,
   public: false,
   reuse: false,
-})
+}
 
 export function Form({
-  mode = 'create',
-  initialValues,
-  disableKey = mode === 'edit',
-  showReuseField = mode === 'create',
   pending,
   submitError,
   onSubmit,
 }: {
-  mode?: FormMode
-  initialValues?: Partial<FormValue>
-  disableKey?: boolean
-  showReuseField?: boolean
   pending: boolean
   submitError: string | null
   onSubmit: (value: FormValue) => Promise<void>
 }) {
-  const defaultValues = useMemo<FormValue>(() => {
-    return createDefaultValues(initialValues, showReuseField)
-  }, [
-    initialValues?.expiredAt,
-    initialValues?.key,
-    initialValues?.public,
-    initialValues?.redirectType,
-    initialValues?.reuse,
-    initialValues?.tag,
-    initialValues?.url,
-    showReuseField,
-  ])
-
   const form = useForm({
-    defaultValues,
+    defaultValues: DEFAULT_VALUES,
     validators: {
       onSubmit: addShortItemZod,
     },
@@ -101,12 +78,6 @@ export function Form({
       await onSubmit(value)
     },
   })
-  const submitButtonText = mode === 'edit' ? '保存修改' : '创建短链接'
-  const pendingButtonText = mode === 'edit' ? '保存中...' : '创建中...'
-
-  useEffect(() => {
-    form.reset(defaultValues)
-  }, [defaultValues, form])
 
   return (
     <form
@@ -145,7 +116,7 @@ export function Form({
                 onChange={event => field.handleChange(event.target.value || undefined)}
                 onBlur={field.handleBlur}
                 placeholder="留空则由系统随机生成"
-                disabled={disableKey}
+                disabled={false}
               />
               <FieldError error={field.state.meta.errors[0]} />
             </label>
@@ -310,19 +281,17 @@ export function Form({
           )}
         </form.Field>
 
-        {showReuseField ? (
-          <form.Field name="reuse">
-            {field => (
-              <BooleanOptionField
-                checked={Boolean(field.state.value)}
-                onCheckedChange={checked => field.handleChange(checked)}
-                onBlur={field.handleBlur}
-                label="可被复用"
-                description="如果有匹配所有参数的短链接，则直接复用"
-              />
-            )}
-          </form.Field>
-        ) : null}
+        <form.Field name="reuse">
+          {field => (
+            <BooleanOptionField
+              checked={Boolean(field.state.value)}
+              onCheckedChange={checked => field.handleChange(checked)}
+              onBlur={field.handleBlur}
+              label="可被复用"
+              description="如果有匹配所有参数的短链接，则直接复用"
+            />
+          )}
+        </form.Field>
       </div>
 
       {submitError ? (
@@ -333,22 +302,11 @@ export function Form({
 
       <div className="flex items-center justify-end gap-2">
         <Button type="submit" size="lg" disabled={pending}>
-          {pending ? pendingButtonText : submitButtonText}
+          {pending ? '创建中...' : '创建短链接'}
         </Button>
       </div>
     </form>
   )
-}
-
-function createDefaultValues(
-  initialValues: Partial<FormValue> | undefined,
-  showReuseField: boolean
-) {
-  return {
-    ...DEFAULT_SHORT_FORM_VALUES,
-    ...initialValues,
-    reuse: showReuseField ? (initialValues?.reuse ?? DEFAULT_SHORT_FORM_VALUES.reuse) : false,
-  }
 }
 
 function FieldError({ error }: { error: unknown }) {

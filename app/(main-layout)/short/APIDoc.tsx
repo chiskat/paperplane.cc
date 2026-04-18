@@ -1,8 +1,8 @@
 'use client'
 
-import { ApiDoc } from '@/components/data/api-doc'
+import { ApiDoc, ApiDocProps } from '@/components/data/api-doc'
 
-const apiDoc = {
+const apiDoc: ApiDocProps = {
   metadata: {
     url: '/api/short',
     method: 'POST',
@@ -12,6 +12,7 @@ const apiDoc = {
     authHeaderValue: '******',
   },
   request: {
+    description: '短链接创建完成后无法修改，只能删除重建，请确保参数无误。',
     fields: [
       {
         name: 'url',
@@ -59,7 +60,6 @@ const apiDoc = {
     ],
   },
   response: {
-    description: '创建成功后返回短链信息：',
     fields: [
       { name: 'id', type: 'string', description: 'ID' },
       { name: 'url', type: 'string', description: '原始目标地址' },
