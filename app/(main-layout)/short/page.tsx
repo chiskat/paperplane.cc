@@ -1,6 +1,6 @@
 'use client'
 
-import { IconPlus } from '@tabler/icons-react'
+import { IconApi, IconPlus } from '@tabler/icons-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -50,7 +50,8 @@ export default function ShortPage() {
           <>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="lg">
+                <Button variant="outline" size="lg" className="h-10 gap-1.5 px-4 text-sm">
+                  <IconApi />
                   通过 API 创建
                 </Button>
               </DialogTrigger>
@@ -70,7 +71,7 @@ export default function ShortPage() {
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="lg" className="gap-1.5">
+                <Button size="lg" className="h-10 gap-1.5 px-4 text-sm">
                   <IconPlus />
                   新建短链接
                 </Button>

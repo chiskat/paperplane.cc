@@ -22,7 +22,7 @@ export function ArticleTitleLink({ href, title, className }: ArticleTitleLinkPro
       className={className}
     >
       {hovered ? (
-        <Highlighter action="underline" iterations={1} color="#c0332f">
+        <Highlighter action="underline" iterations={1} color="var(--primary)">
           {title}
         </Highlighter>
       ) : (

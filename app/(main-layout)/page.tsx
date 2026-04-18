@@ -86,7 +86,7 @@ export default async function HomePage() {
                 <ArticleTitleLink
                   href={`/post/${item.slug}`}
                   title={item.title}
-                  className="font-title-serif text-[24px] text-[#2f3a49] transition-colors hover:text-[#c0332f]"
+                  className="font-title-serif hover:text-primary text-[24px] text-[#2f3a49] transition-colors"
                 />
               </li>
             ))}

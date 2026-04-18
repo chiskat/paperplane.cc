@@ -8,8 +8,6 @@ const apiDoc: ApiDocProps = {
     method: 'POST',
     contentType: 'application/json',
     requireAuth: true,
-    authHeaderKey: 'X-API-KEY',
-    authHeaderValue: '******',
   },
   request: {
     description: '短链接创建完成后无法修改，只能删除重建，请确保参数无误。',

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import LoginButton from '@/components/helper/LoginButton'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { authClient, useSession } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth-client'
 import { cn } from '@/utils/style'
 
 type UserInfoBarProps = {
@@ -21,18 +21,17 @@ export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: Us
   const [isUserPopoverOpen, setIsUserPopoverOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const { refetch } = useSession()
   const isLoggedIn = Boolean(userEmail)
 
   const logoutHandler = async () => {
     if (isLoggingOut) {
       return
     }
+
     setIsLoggingOut(true)
     try {
       await authClient.signOut()
-      await refetch()
-      setIsUserPopoverOpen(false)
+      window.location.reload()
     } finally {
       setIsLoggingOut(false)
     }

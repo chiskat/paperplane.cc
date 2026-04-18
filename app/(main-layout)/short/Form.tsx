@@ -2,6 +2,7 @@
 
 import { createListCollection } from '@ark-ui/react/select'
 import { useForm } from '@tanstack/react-form'
+import dayjs from 'dayjs'
 import type { ReactNode } from 'react'
 import type { input } from 'zod'
 
@@ -181,10 +182,13 @@ export function Form({
             return (
               <form.Field name="expiredAt">
                 {field => {
-                  const expiredAtDate = toDate(field.state.value)
-                  const dateValue = toDateValue(expiredAtDate)
-                  const timeValue = toTimeValue(expiredAtDate)
-                  const canClearExpiredAt = !isPermanentlyRedirect && Boolean(expiredAtDate)
+                  const expiredAt = field.state.value
+                    ? dayjs(field.state.value as string | number | Date)
+                    : null
+                  const expiredAtValid = expiredAt?.isValid() ? expiredAt : null
+                  const dateValue = expiredAtValid?.format('YYYY-MM-DD') ?? ''
+                  const timeValue = expiredAtValid?.format('HH:mm') ?? ''
+                  const canClearExpiredAt = !isPermanentlyRedirect && Boolean(expiredAtValid)
 
                   return (
                     <label className="grid gap-2">
@@ -211,7 +215,14 @@ export function Form({
                               return
                             }
 
-                            const nextDateValue = toPickerDateValue(details.value[0])
+                            const pickerVal = details.value[0] as
+                              | { year: number; month: number; day: number }
+                              | undefined
+                            const nextDateValue = pickerVal
+                              ? dayjs(
+                                  new Date(pickerVal.year, pickerVal.month - 1, pickerVal.day)
+                                ).format('YYYY-MM-DD')
+                              : undefined
                             field.handleChange(
                               mergeDateAndTime(nextDateValue, timeValue || '23:59')
                             )
@@ -346,75 +357,8 @@ function BooleanOptionField({
   )
 }
 
-function toDate(input: unknown) {
-  if (!input) {
-    return undefined
-  }
-
-  const date = input instanceof Date ? input : new Date(input as string | number)
-  if (Number.isNaN(date.getTime())) {
-    return undefined
-  }
-
-  return date
-}
-
-function toDateValue(date: Date | undefined) {
-  if (!date) {
-    return ''
-  }
-
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
-function toTimeValue(date: Date | undefined) {
-  if (!date) {
-    return ''
-  }
-
-  const hour = String(date.getHours()).padStart(2, '0')
-  const minute = String(date.getMinutes()).padStart(2, '0')
-
-  return `${hour}:${minute}`
-}
-
 function mergeDateAndTime(dateValue: string | undefined, timeValue: string | undefined) {
-  if (!dateValue) {
-    return undefined
-  }
-
-  const nextDate = new Date(`${dateValue}T${timeValue || '00:00'}`)
-  if (Number.isNaN(nextDate.getTime())) {
-    return undefined
-  }
-
-  return nextDate
-}
-
-function toPickerDateValue(input: unknown) {
-  if (!input || typeof input !== 'object') {
-    return undefined
-  }
-
-  const value = input as { year?: unknown; month?: unknown; day?: unknown }
-  const year = value.year
-  const month = value.month
-  const day = value.day
-
-  if (
-    typeof year !== 'number' ||
-    typeof month !== 'number' ||
-    typeof day !== 'number' ||
-    !Number.isFinite(year) ||
-    !Number.isFinite(month) ||
-    !Number.isFinite(day)
-  ) {
-    return undefined
-  }
-
-  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+  if (!dateValue) return undefined
+  const d = dayjs(`${dateValue} ${timeValue || '00:00'}`)
+  return d.isValid() ? d.toDate() : undefined
 }

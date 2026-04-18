@@ -45,7 +45,7 @@ export default function articleMDX(): MDXComponents {
           {...props}
           className="group relative mt-14 mb-8 scroll-mt-32 text-[32px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
-          <Highlighter action="underline" iterations={2} color="#c0332f" padding={0}>
+          <Highlighter action="underline" iterations={2} color="var(--primary)" padding={0}>
             {children}
           </Highlighter>
         </h2>
@@ -57,7 +57,7 @@ export default function articleMDX(): MDXComponents {
           {...props}
           className="group relative mt-14 mb-8 scroll-mt-32 text-[26px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
-          <Highlighter action="underline" iterations={2} color="#c0332f" padding={0}>
+          <Highlighter action="underline" iterations={2} color="var(--primary)" padding={0}>
             {children}
           </Highlighter>
         </h3>

@@ -1,10 +1,9 @@
 import 'server-only'
 
-import { apiKey } from '@better-auth/api-key'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
-import { genericOAuth } from 'better-auth/plugins'
+import { apiKey, genericOAuth } from 'better-auth/plugins'
 
 import { prisma } from '@/lib/prisma'
 import { redis } from '@/lib/redis'

@@ -10,7 +10,7 @@ export default async function AwesomeLayout({ children }: LayoutProps<'/awesome'
   const queryClient = getQueryClient()
 
   await Promise.all([
-    prefetchSession(auth as any, queryClient, { headers: await headers() }),
+    prefetchSession(auth, queryClient, { headers: await headers() }),
 
     queryClient.prefetchQuery(trpcServer.awesome.items.tree.queryOptions()),
     queryClient.prefetchQuery(trpcServer.awesome.catelogs.tree.queryOptions()),

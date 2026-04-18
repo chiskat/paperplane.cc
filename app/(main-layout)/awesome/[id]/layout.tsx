@@ -15,7 +15,7 @@ export default async function AwesomeDetailLayout({
   const queryClient = getQueryClient()
 
   await Promise.all([
-    prefetchSession(auth as any, queryClient, { headers: await headers() }),
+    prefetchSession(auth, queryClient, { headers: await headers() }),
 
     queryClient.prefetchQuery(trpcServer.awesome.items.get.queryOptions({ id })),
   ])

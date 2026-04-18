@@ -1,6 +1,8 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { ReactNode, useState } from 'react'
 
 import {
   Tabs,
@@ -10,6 +12,7 @@ import {
   TabsTrigger,
 } from '@/components/animate-ui/components/radix/tabs'
 import { KVPairs, KVPairsItem } from '@/components/data/kv-pairs'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -18,7 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useSession } from '@/lib/auth-client'
+import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
+import { CopyButton } from '../copy-button'
 import { Highlight } from '../text/Highlight'
 
 export type ApiMethod =
@@ -36,8 +42,6 @@ export interface ApiDocMetadata {
   method: ApiMethod
   contentType: string
   requireAuth: boolean
-  authHeaderKey?: string
-  authHeaderValue?: ReactNode
   description?: string
 }
 
@@ -84,6 +88,31 @@ function formatCellValue(value: ReactNode) {
   return typeof value === 'string' ? formatDescription(value) : value
 }
 
+function ApiKeyDisplay({ user, apiKey }: { user: unknown; apiKey: { key: string } | undefined }) {
+  const [tokenVisible, setTokenVisible] = useState(false)
+
+  if (!user) {
+    return <span className="text-muted-foreground text-sm">登录后可用</span>
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1">
+      <span className="select-all">{tokenVisible ? apiKey?.key : '•••••••••'}</span>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTokenVisible(v => !v)}
+        aria-label={tokenVisible ? '隐藏' : '显示'}
+      >
+        {tokenVisible ? <EyeOffIcon /> : <EyeIcon />}
+      </Button>
+      {tokenVisible && apiKey?.key ? (
+        <CopyButton value={apiKey.key} size="sm" className="h-7 w-7" />
+      ) : null}
+    </span>
+  )
+}
+
 export function ApiDoc({
   metadata,
   request,
@@ -91,9 +120,14 @@ export function ApiDoc({
   className,
   emptyText = DEFAULT_EMPTY_TEXT,
 }: ApiDocProps) {
+  const trpc = useTRPC()
+  const { user } = useSession()
+  const { data: apiKey } = useQuery({
+    ...trpc.user.apiKey.ensure.queryOptions(),
+    enabled: !!user,
+  })
   const requestFields = request?.fields ?? []
   const responseFields = response?.fields ?? []
-  const hasAuthHeader = !!(metadata.authHeaderKey || metadata.authHeaderValue)
 
   return (
     <Tabs defaultValue="metadata" className={cn('w-full gap-4', className)}>
@@ -133,24 +167,23 @@ export function ApiDoc({
             <KVPairsItem label="Content-Type" contentClassName="font-mono text-[13px]">
               {metadata.contentType}
             </KVPairsItem>
+
             <KVPairsItem label="是否需鉴权" contentClassName="font-mono text-[13px]">
               {metadata.requireAuth ? '是' : '否'}
             </KVPairsItem>
 
-            <KVPairsItem label="鉴权 Header 键" contentClassName="font-mono text-[13px]">
-              {metadata.requireAuth ? metadata.authHeaderKey || '-' : '-'}
-            </KVPairsItem>
+            {metadata.requireAuth ? (
+              <>
+                <KVPairsItem label="鉴权 Header 键" contentClassName="font-mono text-[13px]">
+                  X-API-KEY
+                </KVPairsItem>
 
-            <KVPairsItem label="鉴权 Header 值" contentClassName="font-mono text-[13px]">
-              {metadata.requireAuth ? metadata.authHeaderValue || '-' : '-'}
-            </KVPairsItem>
+                <KVPairsItem label="鉴权 Header 值" contentClassName="font-mono text-[13px]">
+                  <ApiKeyDisplay user={user} apiKey={apiKey} />
+                </KVPairsItem>
+              </>
+            ) : null}
           </KVPairs>
-
-          {!metadata.requireAuth && hasAuthHeader ? (
-            <p className="text-muted-foreground text-xs">
-              已提供鉴权 Header 信息，但当前标记为无需鉴权。
-            </p>
-          ) : null}
         </TabsContent>
 
         <TabsContent value="request" className="space-y-3">
