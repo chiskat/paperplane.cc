@@ -5,16 +5,12 @@ import { usePathname } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
 import { useState } from 'react'
 
-import { useSession } from '@/lib/auth-client'
 import { isLinkActive, MainNavigation, moreLinks, NavItem, navLinks } from './MainNavigation'
-import { UserInfoBar } from './UserInfoBar'
+import UserInfoBar from './UserInfoBar'
 
 export default function MainLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
-  const { user } = useSession()
-  const userEmail = user?.email?.trim()
-  const userImage = user?.image?.trim()
 
   return (
     <div>
@@ -37,12 +33,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
           <MainNavigation pathname={pathname} />
 
-          <UserInfoBar
-            userEmail={userEmail}
-            userImage={userImage}
-            menuOpen={menuOpen}
-            onToggleMenu={() => setMenuOpen(v => !v)}
-          />
+          <UserInfoBar menuOpen={menuOpen} onToggleMenu={() => setMenuOpen(v => !v)} />
         </div>
 
         {/* 移动端下拉菜单 */}

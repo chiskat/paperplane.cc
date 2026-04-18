@@ -1,22 +1,25 @@
 'use client'
 
 import { IconMenu2, IconUser, IconX } from '@tabler/icons-react'
+import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 
 import LoginButton from '@/components/helper/LoginButton'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { authClient } from '@/lib/auth-client'
+import { Skeleton } from '@/components/ui/skeleton'
+import { authClient, useSession } from '@/lib/auth-client'
 import { cn } from '@/utils/style'
 
 type UserInfoBarProps = {
-  userEmail?: string
-  userImage?: string
   menuOpen: boolean
   onToggleMenu: () => void
 }
 
-export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: UserInfoBarProps) {
+function UserInfoBar({ menuOpen, onToggleMenu }: UserInfoBarProps) {
+  const { user, isPending } = useSession()
+  const userEmail = user?.email?.trim()
+  const userImage = user?.image?.trim()
   const userInitial = userEmail?.charAt(0).toUpperCase() ?? 'U'
   const [isUserPopoverOpen, setIsUserPopoverOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -77,7 +80,9 @@ export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: Us
                 userEmail ? 'bg-sky-100 text-sky-700' : 'bg-gray-100 text-gray-500'
               )}
             >
-              {userEmail && userImage ? (
+              {isPending ? (
+                <Skeleton className="h-full w-full rounded-sm" />
+              ) : userEmail && userImage ? (
                 <img
                   src={userImage}
                   alt={userEmail}
@@ -90,14 +95,14 @@ export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: Us
                 <IconUser size={16} stroke={1.8} />
               )}
             </div>
-            <span
+            <div
               className={cn(
                 'max-w-44 truncate text-[15px]',
                 userEmail ? 'text-gray-800' : 'text-gray-600'
               )}
             >
-              {userEmail ?? '未登录'}
-            </span>
+              {isPending ? <Skeleton className="h-4 w-20 rounded-full" /> : (userEmail ?? '未登录')}
+            </div>
           </button>
         </PopoverTrigger>
 
@@ -109,26 +114,36 @@ export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: Us
           onMouseLeave={scheduleCloseUserPopover}
         >
           <div className="space-y-3">
-            <p className="text-base font-medium text-gray-800">{userEmail ?? '未登录'}</p>
-            {isLoggedIn ? (
+            {isPending ? (
               <>
-                <p className="text-sm text-gray-500">你已登录，可继续浏览与管理个人内容。</p>
-                <Button
-                  className="h-9 w-full text-sm"
-                  variant="outline"
-                  size="lg"
-                  onClick={() => void logoutHandler()}
-                  disabled={isLoggingOut}
-                >
-                  {isLoggingOut ? '退出中...' : '退出登录'}
-                </Button>
+                <Skeleton className="h-5 w-40 rounded-full" />
+                <Skeleton className="h-4 w-full rounded-full" />
+                <Skeleton className="h-9 w-28 rounded-md" />
               </>
             ) : (
               <>
-                <p className="text-sm text-gray-500">可通过 Gitea OAuth 快速登录后继续操作。</p>
-                <LoginButton className="h-9 w-full text-sm" size="lg">
-                  通过 Gitea OAuth 登录
-                </LoginButton>
+                <p className="text-base font-medium text-gray-800">{userEmail ?? '未登录'}</p>
+                {isLoggedIn ? (
+                  <>
+                    <p className="text-sm text-gray-500">你已登录，可继续浏览与管理个人内容。</p>
+                    <Button
+                      className="h-9 text-sm"
+                      variant="outline"
+                      size="lg"
+                      onClick={() => void logoutHandler()}
+                      disabled={isLoggingOut}
+                    >
+                      {isLoggingOut ? '退出中...' : '退出登录'}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm text-gray-500">可通过 Gitea OAuth 快速登录后继续操作。</p>
+                    <LoginButton className="h-9 text-sm" size="lg">
+                      通过 Gitea OAuth 登录
+                    </LoginButton>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -146,3 +161,5 @@ export function UserInfoBar({ userEmail, userImage, menuOpen, onToggleMenu }: Us
     </div>
   )
 }
+
+export default dynamic(() => Promise.resolve(UserInfoBar), { ssr: false })
