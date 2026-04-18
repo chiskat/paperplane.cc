@@ -93,7 +93,9 @@ export function Form({
         <form.Field name="url">
           {field => (
             <label className="grid gap-2 sm:col-span-2">
-              <span className="text-xs text-slate-600">目标 URL</span>
+              <span className="text-xs text-slate-600">
+                目标 URL<span className="ml-0.5 text-red-500">*</span>
+              </span>
               <Input
                 type="url"
                 size="lg"
@@ -143,7 +145,9 @@ export function Form({
         <form.Field name="redirectType">
           {field => (
             <label className="grid gap-2">
-              <span className="text-xs text-slate-600">跳转类型</span>
+              <span className="text-xs text-slate-600">
+                跳转类型<span className="ml-0.5 text-red-500">*</span>
+              </span>
               <Select
                 collection={redirectTypeCollection}
                 value={[field.state.value ?? ShortRedirectType.PERMANENTLY]}

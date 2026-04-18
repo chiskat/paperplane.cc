@@ -8,6 +8,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/animate-ui/components/animate/tooltip'
+import { Button } from '@/components/ui/button'
+import { useSession } from '@/lib/auth-client'
 import { ListItemLinks } from './ListItemLinks'
 import { ListItemTags } from './ListItemTags'
 
@@ -37,6 +39,8 @@ export interface ListItemProps {
 }
 
 export function ListItem({ item }: ListItemProps) {
+  const { user, isPending } = useSession()
+
   const stars = item.stars || 0
   const starMarkTooltip = awesomeStarLevel(stars)
 
@@ -80,6 +84,28 @@ export function ListItem({ item }: ListItemProps) {
         <ListItemLinks awesome={item} />
         <ListItemTags awesome={item} />
       </TooltipProvider>
+
+      {!isPending && user ? (
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1 pl-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="xs"
+            className="border-[#8ad8ff] bg-[#f0faff] text-[12px] leading-none text-[#0093d1] hover:border-[#5cc8ff] hover:bg-[#e1f5ff] hover:text-[#007bb0]"
+          >
+            编辑
+          </Button>
+
+          <Button
+            type="button"
+            variant="destructive"
+            size="xs"
+            className="text-[12px] leading-none"
+          >
+            删除
+          </Button>
+        </span>
+      ) : null}
     </li>
   )
 }
