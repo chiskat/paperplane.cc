@@ -402,7 +402,7 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
                       : INDICATOR_TRANSITION,
                     opacity: INDICATOR_VISIBILITY_TRANSITION,
                   }}
-                  className="pointer-events-none absolute top-0 left-0 rounded-xs border-l-2 border-l-[#c0332f] bg-[#f8efef]"
+                  className="border-l-primary bg-primary/10 pointer-events-none absolute top-0 left-0 rounded-xs border-l-2"
                 />
               ) : null}
             </AnimatePresence>
@@ -431,9 +431,9 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
                     onClick={event => handleTocClick(event, item.id)}
                     aria-current={isActive ? 'location' : undefined}
                     className={cn(
-                      'font-en-sans relative z-1 block truncate py-px pl-2 text-[13px] text-[#4a5665] transition-colors',
-                      'pr-2 hover:text-[#c0332f]',
-                      isActive && 'text-[#c0332f]'
+                      'font-en-sans text-muted-foreground relative z-1 block truncate py-px pl-2 text-[13px] transition-[color,font-weight]',
+                      'hover:text-primary pr-2',
+                      isActive && 'text-primary font-medium'
                     )}
                   >
                     {item.text}
