@@ -1,10 +1,11 @@
 import type { MDXComponents } from 'mdx/types'
+import Link from 'next/link'
 import { cloneElement, isValidElement, type ComponentPropsWithoutRef } from 'react'
 
-import { ArticleHR } from '@/components/ui/article-hr'
-import { ArticlePreviewImage } from '@/components/ui/article-preview-image'
+import { ArticleHR } from '@/components/mdx/article-hr'
+import { ArticlePreviewImage } from '@/components/mdx/article-preview-image'
+import { MdxTab, MdxTabs } from '@/components/mdx/mdx-tabs'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
-import { MdxTab, MdxTabs } from '@/components/ui/mdx-tabs'
 import { cn } from '@/utils/style'
 import { Highlighter } from '../ui/highlighter'
 
@@ -21,11 +22,33 @@ export default function articleMDX(): MDXComponents {
     p({ children }: ComponentPropsWithoutRef<'p'>) {
       return <p className="my-3 whitespace-pre-line">{children}</p>
     },
-    a(props: ComponentPropsWithoutRef<'a'>) {
+    a({ href, target, rel, className, ...props }: ComponentPropsWithoutRef<'a'>) {
+      const isHashLink = typeof href === 'string' && href.startsWith('#')
+      const finalTarget = target ?? (isHashLink ? undefined : '_blank')
+      const finalRel = finalTarget === '_blank' ? (rel ?? 'noopener noreferrer') : rel
+
+      if (!href) {
+        return (
+          <a
+            {...props}
+            className={cn(
+              'text-[#2f629d] underline decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60',
+              className
+            )}
+          />
+        )
+      }
+
       return (
-        <a
+        <Link
+          href={href}
+          target={finalTarget}
+          rel={finalRel}
           {...props}
-          className="text-[#2f629d] underline decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
+          className={cn(
+            'text-[#2f629d] underline decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60',
+            className
+          )}
         />
       )
     },

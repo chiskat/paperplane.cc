@@ -52,7 +52,7 @@ export const items = router({
     if (noCatelog.length > 0) {
       result.unshift({
         id: '__no-id',
-        name: '(无类别)',
+        name: '(未分类)',
         index: -1,
         underAwesomes: noCatelog,
       } as (typeof result)[0])

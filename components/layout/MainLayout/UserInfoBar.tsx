@@ -2,11 +2,11 @@
 
 import { IconMenu2, IconUser, IconX } from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import LoginButton from '@/components/helper/LoginButton'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { authClient, useSession } from '@/lib/auth-client'
 import { cn } from '@/utils/style'
@@ -21,9 +21,8 @@ function UserInfoBar({ menuOpen, onToggleMenu }: UserInfoBarProps) {
   const userEmail = user?.email?.trim()
   const userImage = user?.image?.trim()
   const userInitial = userEmail?.charAt(0).toUpperCase() ?? 'U'
-  const [isUserPopoverOpen, setIsUserPopoverOpen] = useState(false)
+  const [isUserCardOpen, setIsUserCardOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isLoggedIn = Boolean(userEmail)
 
   const logoutHandler = async () => {
@@ -31,48 +30,35 @@ function UserInfoBar({ menuOpen, onToggleMenu }: UserInfoBarProps) {
       return
     }
 
+    setIsUserCardOpen(true)
     setIsLoggingOut(true)
     try {
       await authClient.signOut()
       window.location.reload()
     } finally {
       setIsLoggingOut(false)
+      setIsUserCardOpen(false)
     }
   }
-
-  const clearCloseTimer = () => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current)
-      closeTimerRef.current = null
-    }
-  }
-
-  const openUserPopover = () => {
-    clearCloseTimer()
-    setIsUserPopoverOpen(true)
-  }
-
-  const scheduleCloseUserPopover = () => {
-    clearCloseTimer()
-    closeTimerRef.current = setTimeout(() => {
-      setIsUserPopoverOpen(false)
-      closeTimerRef.current = null
-    }, 140)
-  }
-
-  useEffect(() => {
-    return () => clearCloseTimer()
-  }, [])
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Popover open={isUserPopoverOpen} onOpenChange={setIsUserPopoverOpen}>
-        <PopoverTrigger asChild>
+      <HoverCard
+        open={isLoggingOut || isUserCardOpen}
+        onOpenChange={({ open }) => {
+          if (isLoggingOut && !open) {
+            return
+          }
+          setIsUserCardOpen(open)
+        }}
+        openDelay={10}
+        closeDelay={140}
+        positioning={{ placement: 'bottom-end', offset: { mainAxis: 4 } }}
+      >
+        <HoverCardTrigger asChild>
           <button
             type="button"
             className="hidden min-w-0 cursor-pointer items-center gap-2 rounded-md bg-white/85 px-2 py-1 text-left sm:flex"
-            onMouseEnter={openUserPopover}
-            onMouseLeave={scheduleCloseUserPopover}
           >
             <div
               className={cn(
@@ -104,15 +90,9 @@ function UserInfoBar({ menuOpen, onToggleMenu }: UserInfoBarProps) {
               {isPending ? <Skeleton className="h-4 w-20 rounded-full" /> : (userEmail ?? '未登录')}
             </div>
           </button>
-        </PopoverTrigger>
+        </HoverCardTrigger>
 
-        <PopoverContent
-          className="w-sm px-4 py-4 text-sm"
-          align="end"
-          sideOffset={4}
-          onMouseEnter={openUserPopover}
-          onMouseLeave={scheduleCloseUserPopover}
-        >
+        <HoverCardContent className="w-sm px-4 py-4 text-sm">
           <div className="space-y-3">
             {isPending ? (
               <>
@@ -147,8 +127,8 @@ function UserInfoBar({ menuOpen, onToggleMenu }: UserInfoBarProps) {
               </>
             )}
           </div>
-        </PopoverContent>
-      </Popover>
+        </HoverCardContent>
+      </HoverCard>
 
       <button
         className="flex h-8 w-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 sm:hidden"

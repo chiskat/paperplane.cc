@@ -69,7 +69,7 @@ export default async function HomePage() {
   const groupedPosts = groupPostsByYear(posts)
 
   return (
-    <div className="my-8 space-y-10">
+    <div className="mb-8 space-y-10">
       {groupedPosts.map(([year, items]) => (
         <section key={year}>
           <h2 className="font-title-serif mb-3 text-[30px] text-[#4a5665]">{year}</h2>

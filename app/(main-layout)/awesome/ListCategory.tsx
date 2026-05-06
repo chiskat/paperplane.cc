@@ -1,20 +1,33 @@
 'use client'
 
-import { AwesomeTreeResult } from '@/apis/awesome/items'
-import { Button } from '@/components/ui/button'
+import type { AwesomeTreeResult } from '@/apis/awesome/items'
 import { useSession } from '@/lib/auth-client'
+import { AwesomeEditButton } from './AwesomeEditButton'
+import { AwesomeSortButton } from './AwesomeSortButton'
+import { CategoryDeleteButton } from './CategoryDeleteButton'
+import { CategoryEditButton, type CategoryFormValue } from './CategoryEditButton'
 import { ListItem } from './ListItem'
 
 export interface ListCategoryProps {
   catelog: AwesomeTreeResult
+  hasChildren?: boolean
   sectionRef: (element: HTMLElement | null) => void
+  onEditCategory?: (value: CategoryFormValue) => Promise<void>
 }
 
-export function ListCategory({ catelog, sectionRef }: ListCategoryProps) {
+export function ListCategory({
+  catelog,
+  hasChildren = false,
+  sectionRef,
+  onEditCategory,
+}: ListCategoryProps) {
   const { user, isPending } = useSession()
+  const softButtonClassName =
+    'justify-center border-slate-200 bg-slate-50 text-[12px] leading-none text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-700'
 
   const parentName = catelog.parent?.name
   const isSecondaryCategory = Boolean(parentName)
+  const isVirtualCategory = catelog.id === '__no-id'
 
   return (
     <section data-section-id={catelog.id} ref={sectionRef} className="scroll-mt-52 space-y-3">
@@ -33,42 +46,51 @@ export function ListCategory({ catelog, sectionRef }: ListCategoryProps) {
           {!isPending && user ? (
             <div className="ml-auto inline-flex shrink-0 items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100/90 p-1">
-                <Button
-                  type="button"
+                <AwesomeSortButton
+                  catelog={catelog}
                   variant="outline"
                   size="xs"
-                  className="min-w-16 justify-center border-[#f7c948] bg-[#fff7db] text-[12px] leading-none text-[#9a6700] hover:border-[#f2b705] hover:bg-[#fff1c2] hover:text-[#7a5200]"
+                  className={`min-w-16 ${softButtonClassName}`}
                 >
                   排序
-                </Button>
+                </AwesomeSortButton>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="xs"
-                  className="min-w-16 justify-center border-[#8ad8ff] bg-[#f0faff] text-[12px] leading-none text-[#0093d1] hover:border-[#5cc8ff] hover:bg-[#e1f5ff] hover:text-[#007bb0]"
-                >
-                  编辑
-                </Button>
+                {isVirtualCategory ? null : (
+                  <CategoryEditButton
+                    categoryId={catelog.id}
+                    parentId={catelog.parentId ?? undefined}
+                    variant="outline"
+                    size="xs"
+                    className={`min-w-16 ${softButtonClassName}`}
+                    onSubmit={async value => {
+                      await onEditCategory?.(value)
+                    }}
+                  >
+                    编辑
+                  </CategoryEditButton>
+                )}
 
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="xs"
-                  className="min-w-16 justify-center text-[12px] leading-none"
-                >
-                  删除
-                </Button>
+                {isVirtualCategory ? null : (
+                  <CategoryDeleteButton
+                    category={{ ...catelog, hasChildren }}
+                    type="button"
+                    variant="outline"
+                    size="xs"
+                    className={`min-w-16 ${softButtonClassName}`}
+                  >
+                    删除
+                  </CategoryDeleteButton>
+                )}
               </span>
 
-              <Button
-                type="button"
+              <AwesomeEditButton
                 variant="outline"
                 size="xs"
-                className="min-w-24 justify-center border-[#63e6be] bg-[#e6fcf5] text-[12px] leading-none text-[#087f5b] hover:border-[#38d9a9] hover:bg-[#c3fae8] hover:text-[#066649]"
+                className={`${softButtonClassName} min-w-24`}
+                catelogId={catelog.id === '__no-id' ? undefined : catelog.id}
               >
                 添加 Awesome
-              </Button>
+              </AwesomeEditButton>
             </div>
           ) : null}
         </div>

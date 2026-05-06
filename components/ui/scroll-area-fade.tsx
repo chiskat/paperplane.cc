@@ -1,6 +1,6 @@
 'use client'
 
-import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui'
+import { ScrollArea as ArkScrollArea } from '@ark-ui/react/scroll-area'
 import {
   useCallback,
   useEffect,
@@ -10,12 +10,12 @@ import {
   type ComponentRef,
 } from 'react'
 
-import { ScrollBar } from '@/components/ui/scroll-area'
+import { ScrollAreaScrollbar } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 
 const SCROLL_EPSILON = 1
 
-export interface ScrollAreaFadeProps extends ComponentProps<typeof ScrollAreaPrimitive.Root> {
+export interface ScrollAreaFadeProps extends ComponentProps<typeof ArkScrollArea.Root> {
   fadeSize?: number
   topFadeClassName?: string
   bottomFadeClassName?: string
@@ -29,7 +29,7 @@ function ScrollAreaFade({
   bottomFadeClassName,
   ...props
 }: ScrollAreaFadeProps) {
-  const rootRef = useRef<ComponentRef<typeof ScrollAreaPrimitive.Root> | null>(null)
+  const rootRef = useRef<ComponentRef<typeof ArkScrollArea.Root> | null>(null)
 
   const [showTopFade, setShowTopFade] = useState(false)
   const [showBottomFade, setShowBottomFade] = useState(false)
@@ -95,18 +95,18 @@ function ScrollAreaFade({
   }, [children, getViewport, updateFade])
 
   return (
-    <ScrollAreaPrimitive.Root
+    <ArkScrollArea.Root
       ref={rootRef}
       data-slot="scroll-area"
       className={cn('relative', className)}
       {...props}
     >
-      <ScrollAreaPrimitive.Viewport
+      <ArkScrollArea.Viewport
         data-slot="scroll-area-viewport"
-        className="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
+        className="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:outline-1 [&::-webkit-scrollbar]:hidden"
       >
-        {children}
-      </ScrollAreaPrimitive.Viewport>
+        <ArkScrollArea.Content data-slot="scroll-area-content">{children}</ArkScrollArea.Content>
+      </ArkScrollArea.Viewport>
 
       <div
         aria-hidden="true"
@@ -128,9 +128,10 @@ function ScrollAreaFade({
         style={{ height: fadeSize }}
       />
 
-      <ScrollBar />
-      <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
+      <ScrollAreaScrollbar orientation="vertical" />
+      <ScrollAreaScrollbar orientation="horizontal" />
+      <ArkScrollArea.Corner data-slot="scroll-area-corner" />
+    </ArkScrollArea.Root>
   )
 }
 

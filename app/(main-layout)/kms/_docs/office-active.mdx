@@ -1,0 +1,22 @@
+---
+title: 使用 KMS 激活 Office
+group: Office
+---
+
+如果你使用 Office Tool Plus 安装了 Office，那么同样使用它来完成激活：
+
+1. 选择左侧 “激活” 选项页签；
+2. 展开 “KMS 主机” 项目，在输入框中输入：`kms.p01.cc` 并确认；
+3. 展开 “密钥” 项，在 [微软 Office VOL 激活页面](https://learn.microsoft.com/zh-cn/office/volume-license-activation/configure-a-kms-host-computer-for-office) 找到对应版本的密钥填入，并点击安装；<br />例如，Office LTSC 2024 的密钥是 `F3D89BBF-C0EC-47CE-A8FA-E5A5F97E447F`；
+4. 输入完成后，点击 “设置主机” 即可，然后点击最上方的 “激活” 按钮。
+
+---
+
+如果你是从其它途径安装好了 VOL 版的 Office，不想用 Office Tool Plus 的话，可以这样：
+
+1. 运行 **管理员权限** 的命令行；
+2. 输入 `cd "C:\Program Files\Microsoft Office\Office16"` 然后按下回车键，前往 Office 安装目录；
+3. 输入 `cscript ospp.vbs /sethst:kms.p01.cc` 然后按下回车键；
+4. 前往 [微软 Office VOL 激活页面](https://learn.microsoft.com/zh-cn/office/volume-license-activation/configure-a-kms-host-computer-for-office) 查找已安装的 Office 对应版本的密钥并复制；<br />例如，Office LTSC 2024 的密钥是 `F3D89BBF-C0EC-47CE-A8FA-E5A5F97E447F`；
+5. 输入 `cscript ospp.vbs /inpkey:密钥`，这里替换成上一步复制的密钥，然后按下回车键；
+6. 输入 `cscript ospp.vbs /act` 然后按下回车键，完成激活。

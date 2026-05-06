@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 
-import { ScrollAreaFade } from '@/components/ui/scroll-area-fade'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 import { list } from './list'
 import { SnippetLink } from './SnippetLink'
@@ -60,15 +60,14 @@ export default function SnippetLayout({ children }: { children: ReactNode }) {
 
       <div className="grid gap-6 md:grid-cols-[24rem_minmax(0,1fr)]">
         <aside className="min-w-0 md:sticky md:top-28 md:h-[calc(100dvh-11rem)]">
-          <ScrollAreaFade
+          <ScrollArea
             className={cn(
               'mr-2 h-full min-h-0 rounded-3xl pr-1',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:w-1.5',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:p-0',
               '**:data-[slot=scroll-area-thumb]:bg-slate-300/45'
             )}
-            topFadeClassName="from-white/95 via-white/70"
-            bottomFadeClassName="from-white/95 via-white/70"
+            scrollFade
           >
             <div className="flex flex-col gap-6 pb-4">
               {snippetGroups.map(group => (
@@ -97,7 +96,7 @@ export default function SnippetLayout({ children }: { children: ReactNode }) {
                 </section>
               ))}
             </div>
-          </ScrollAreaFade>
+          </ScrollArea>
         </aside>
 
         <div className="min-w-0">{children}</div>

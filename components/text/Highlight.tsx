@@ -51,7 +51,7 @@ export function Highlight({
         return (
           <mark
             key={`${fragment.text}-${index}`}
-            className={cn('mx-0.5 rounded-xs px-0.5 text-inherit', highlightClassName)}
+            className={cn('mx-0.5 rounded-xs px-0.75 text-inherit', highlightClassName)}
             style={{ backgroundColor: highlightColor }}
           >
             {fragment.text}

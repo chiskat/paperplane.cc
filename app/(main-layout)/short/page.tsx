@@ -9,12 +9,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
+  DialogBody,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useSession } from '@/lib/auth-client'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { addShortItemZod, type ShortItemReturn } from '@/zods/short'
 import { APIDoc } from './APIDoc'
@@ -25,6 +26,8 @@ const linkColorClassName =
   'text-[#2f629d] decoration-[#2f629d]/40 transition-all duration-200 hover:text-[#c0332f] hover:decoration-[#c0332f]/60'
 
 export default function ShortPage() {
+  const { user } = useSession()
+  const canCreateShortLink = Boolean(user)
   const trpc = useTRPC()
   const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
@@ -48,7 +51,7 @@ export default function ShortPage() {
       <List
         actions={
           <>
-            <Dialog>
+            <Dialog closeOnInteractOutside={false}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="lg" className="h-10 gap-1.5 px-4 text-sm">
                   <IconApi />
@@ -57,34 +60,45 @@ export default function ShortPage() {
               </DialogTrigger>
 
               <DialogContent className="max-w-[min(92vw,920px)] p-0 sm:max-w-[min(92vw,920px)]">
-                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                  <DialogHeader className="mb-4">
-                    <DialogTitle className="text-xl">通过 API 创建短链接</DialogTitle>
-                    <DialogDescription className="text-base">
-                      在外部系统通过 API 快速创建短链接。
-                    </DialogDescription>
-                  </DialogHeader>
+                <DialogHeader
+                  title="通过 API 创建短链接"
+                  description="在外部系统通过 API 快速创建短链接。"
+                />
+                <DialogBody>
                   <APIDoc />
-                </div>
+                </DialogBody>
               </DialogContent>
             </Dialog>
 
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="lg" className="h-10 gap-1.5 px-4 text-sm">
-                  <IconPlus />
-                  新建短链接
-                </Button>
-              </DialogTrigger>
+            <Dialog
+              closeOnInteractOutside={false}
+              open={dialogOpen}
+              onOpenChange={({ open }) => setDialogOpen(open)}
+            >
+              {canCreateShortLink ? (
+                <DialogTrigger asChild>
+                  <Button size="lg" className="h-10 gap-1.5 px-4 text-sm">
+                    <IconPlus />
+                    新建短链接
+                  </Button>
+                </DialogTrigger>
+              ) : (
+                <Tooltip openDelay={150}>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex">
+                      <Button size="lg" className="h-10 gap-1.5 px-4 text-sm" disabled>
+                        <IconPlus />
+                        新建短链接
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>登录后可用</TooltipContent>
+                </Tooltip>
+              )}
 
               <DialogContent className="max-w-[min(92vw,920px)] p-0 sm:max-w-[min(92vw,920px)]">
-                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                  <DialogHeader className="mb-4">
-                    <DialogTitle className="text-xl">创建短链接</DialogTitle>
-                    <DialogDescription className="text-base">
-                      通过表单填写信息并创建短链接。
-                    </DialogDescription>
-                  </DialogHeader>
+                <DialogHeader title="创建短链接" description="通过表单填写信息并创建短链接。" />
+                <DialogBody>
                   <Form
                     pending={createMutation.isPending}
                     submitError={createMutation.error?.message ?? null}
@@ -92,7 +106,7 @@ export default function ShortPage() {
                       await createMutation.mutateAsync(value)
                     }}
                   />
-                </div>
+                </DialogBody>
               </DialogContent>
             </Dialog>
           </>

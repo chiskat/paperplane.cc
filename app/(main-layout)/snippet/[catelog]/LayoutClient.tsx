@@ -54,13 +54,14 @@ export function SnippetCatalogLayoutClient({
             backgroundImage: 'radial-gradient(transparent 1px, #fff 1px)',
             backgroundSize: '4px 4px',
             backdropFilter: 'blur(3px)',
+            mask: 'linear-gradient(rgba(0, 0, 0, 0) 0, rgb(0, 0, 0) 10px)',
           }}
           aria-hidden
         />
 
-        <div className="relative isolate z-30 flex flex-wrap items-end gap-4 rounded-lg bg-white/50 pb-2">
+        <div className="relative isolate z-30 flex flex-wrap items-end gap-4 bg-white/50 pb-2">
           <div
-            className="pointer-events-none absolute inset-0 -z-1 rounded-lg"
+            className="pointer-events-none absolute inset-0 -z-1"
             style={{
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',

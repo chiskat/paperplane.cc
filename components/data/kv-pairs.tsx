@@ -9,6 +9,8 @@ interface KVPairsContextValue {
   colon?: ReactNode
   reserveIconSpace: boolean
   labelWidth?: CSSProperties['width']
+  labelClassName?: string
+  contentClassName?: string
 }
 
 const KVPairsContext = createContext<KVPairsContextValue>({
@@ -20,6 +22,8 @@ export interface KVPairsProps extends ComponentProps<'dl'> {
   noReserveIconSpace?: boolean
   fitContentWidth?: boolean
   labelWidth?: CSSProperties['width']
+  labelClassName?: string
+  contentClassName?: string
 }
 
 export interface KVPairsItemProps extends Omit<ComponentProps<'div'>, 'children'> {
@@ -46,10 +50,20 @@ export function KVPairs({
   noReserveIconSpace,
   fitContentWidth,
   labelWidth,
+  labelClassName,
+  contentClassName,
   ...props
 }: KVPairsProps) {
   return (
-    <KVPairsContext.Provider value={{ colon, reserveIconSpace: !noReserveIconSpace, labelWidth }}>
+    <KVPairsContext.Provider
+      value={{
+        colon,
+        reserveIconSpace: !noReserveIconSpace,
+        labelWidth,
+        labelClassName,
+        contentClassName,
+      }}
+    >
       <dl
         data-slot="kv-pairs"
         className={cn(
@@ -77,7 +91,13 @@ export function KVPairsItem({
   style,
   ...props
 }: KVPairsItemProps) {
-  const { colon, reserveIconSpace, labelWidth: parentLabelWidth } = useContext(KVPairsContext)
+  const {
+    colon,
+    reserveIconSpace,
+    labelWidth: parentLabelWidth,
+    labelClassName: parentLabelClassName,
+    contentClassName: parentContentClassName,
+  } = useContext(KVPairsContext)
   const resolvedLabelWidth = resolveWidth(labelWidth ?? parentLabelWidth ?? '6.5rem')
   const gridTemplateColumns = reserveIconSpace
     ? `2.75rem ${resolvedLabelWidth} minmax(0,1fr)`
@@ -114,6 +134,7 @@ export function KVPairsItem({
           'm-0 flex items-start gap-1 self-stretch bg-[#f7f2ee] py-2 text-left leading-6 text-[#4a5665]',
           !reserveIconSpace && 'px-4',
           'font-medium',
+          parentLabelClassName,
           labelClassName
         )}
       >
@@ -131,6 +152,7 @@ export function KVPairsItem({
       <dd
         className={cn(
           'm-0 grid min-w-0 content-center px-4 py-2 leading-6 text-[#3f4a59]',
+          parentContentClassName,
           contentClassName
         )}
       >

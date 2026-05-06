@@ -61,21 +61,11 @@ export default function PostLoading() {
 
               <section className="space-y-3">
                 <Skeleton className="h-10 w-1/3" />
-                <Skeleton className="h-52 w-full rounded-md" />
+                <Skeleton className="h-40 w-full rounded-md" />
               </section>
             </article>
-
-            <div className="mt-10 space-y-3 pt-6">
-              <Skeleton className="h-6 w-44" />
-              <Skeleton className="h-5 w-72" />
-            </div>
           </div>
         </div>
-
-        <section className="mt-8 rounded-sm p-5">
-          <Skeleton className="mb-4 h-8 w-40" />
-          <Skeleton className="h-36 w-full rounded-md" />
-        </section>
       </div>
     </div>
   )

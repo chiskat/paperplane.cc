@@ -39,6 +39,7 @@ const withMDX = createMDX({
       ['remark-mdx-frontmatter'],
       ['remark-gfm'],
       ['remark-directive'],
+      [path.resolve(process.cwd(), './plugins/remark-plain-text-directive.mjs')],
       [path.resolve(process.cwd(), './plugins/remark-tabs-directive.mjs')],
       [path.resolve(process.cwd(), './plugins/remark-code-group.mjs')],
     ],

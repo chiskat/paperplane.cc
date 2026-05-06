@@ -1,12 +1,14 @@
 'use client'
 
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight, IconTrash } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState, type ReactNode } from 'react'
 
-import { CopyButton } from '@/components/copy-button'
 import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { CopyButton } from '@/components/ui/copy-button'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -15,9 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
 import { ShortRedirectType } from '@/models/enums'
 import { shortURLPrefix } from '@/zods/short'
+import { ShortDeleteButton } from './ShortDeleteButton'
 
 const PAGE_SIZE = 10
 
@@ -42,6 +47,7 @@ type ShortListItem = {
 }
 
 export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactNode }) {
+  const { user } = useSession()
   const trpc = useTRPC()
   const [keyword, setKeyword] = useState('')
   const [page, setPage] = useState(1)
@@ -62,8 +68,8 @@ export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactN
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white/90 py-2 backdrop-blur">
-        <label className="block w-full sm:w-[18rem] md:w-[20rem] lg:w-88">
+      <div className="flex flex-wrap items-end justify-between gap-3 rounded-xl bg-white/90 py-2 backdrop-blur">
+        <label className="block w-full min-w-0 sm:flex-1">
           <span className="mb-2 block text-xs tracking-wide text-slate-500 uppercase">
             搜索短链接
           </span>
@@ -85,7 +91,7 @@ export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactN
       {banner}
 
       <div>
-        <ShortTable data={data?.list ?? []} loading={isPending} />
+        <ShortTable data={data?.list ?? []} loading={isPending} canDelete={Boolean(user)} />
 
         <div className="mt-3 flex items-center justify-between px-1">
           <p className="text-sm text-slate-500">
@@ -93,7 +99,8 @@ export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactN
             条记录
             {isFetching && !isPending ? '，刷新中' : ''}
           </p>
-          <div className="flex items-center gap-2">
+
+          <ButtonGroup>
             <Button
               variant="outline"
               size="sm"
@@ -114,16 +121,91 @@ export function List({ actions, banner }: { actions?: ReactNode; banner?: ReactN
               下一页
               <IconChevronRight size={14} />
             </Button>
-          </div>
+          </ButtonGroup>
         </div>
       </div>
     </div>
   )
 }
 
-function ShortTable({ data, loading }: { data: ShortListItem[]; loading: boolean }) {
+function ShortTable({
+  data,
+  loading,
+  canDelete,
+}: {
+  data: ShortListItem[]
+  loading: boolean
+  canDelete: boolean
+}) {
   if (loading) {
-    return <p className="px-4 py-6 text-sm text-slate-500">正在加载...</p>
+    return (
+      <Table className="w-max min-w-full table-fixed">
+        <colgroup>
+          <col style={{ width: '10rem' }} />
+          <col style={{ width: '24rem' }} />
+          <col style={{ width: '8rem' }} />
+          <col style={{ width: '10rem' }} />
+          <col style={{ width: '10rem' }} />
+          <col style={{ width: '5rem' }} />
+          <col style={{ width: '10rem' }} />
+          <col style={{ width: '5rem' }} />
+        </colgroup>
+
+        <TableHeader>
+          <TableRow>
+            <TableHead>短链接</TableHead>
+            <TableHead>目标地址</TableHead>
+            <TableHead>标签</TableHead>
+            <TableHead>跳转类型</TableHead>
+            <TableHead>有效期</TableHead>
+            <TableHead>公开</TableHead>
+            <TableHead>创建时间</TableHead>
+            <TableHead>操作</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {Array.from({ length: PAGE_SIZE }).map((_, index) => (
+            <TableRow key={`short-row-skeleton-${index}`}>
+              <TableCell>
+                <div className="inline-flex w-full items-center gap-2">
+                  <Skeleton className="h-4 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-6 rounded" />
+                </div>
+              </TableCell>
+
+              <TableCell className="w-[24rem] max-w-[24rem]">
+                <Skeleton className="h-4 w-full rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-4 w-16 rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-4 w-28 rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-4 w-24 rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-4 w-8 rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-4 w-28 rounded-full" />
+              </TableCell>
+
+              <TableCell>
+                <Skeleton className="h-6 w-6 rounded" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    )
   }
 
   if (data.length === 0) {
@@ -140,6 +222,7 @@ function ShortTable({ data, loading }: { data: ShortListItem[]; loading: boolean
         <col style={{ width: '10rem' }} />
         <col style={{ width: '5rem' }} />
         <col style={{ width: '10rem' }} />
+        <col style={{ width: '5rem' }} />
       </colgroup>
 
       <TableHeader>
@@ -151,6 +234,7 @@ function ShortTable({ data, loading }: { data: ShortListItem[]; loading: boolean
           <TableHead>有效期</TableHead>
           <TableHead>公开</TableHead>
           <TableHead>创建时间</TableHead>
+          <TableHead>操作</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -195,6 +279,36 @@ function ShortTable({ data, loading }: { data: ShortListItem[]; loading: boolean
             <TableCell>{item.public ? '是' : '否'}</TableCell>
 
             <TableCell>{formatTime(item.createdAt)}</TableCell>
+
+            <TableCell>
+              {canDelete ? (
+                <ShortDeleteButton
+                  itemId={item.id}
+                  itemKey={item.key}
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 text-slate-500 hover:text-red-600"
+                >
+                  <IconTrash size={16} />
+                </ShortDeleteButton>
+              ) : (
+                <Tooltip openDelay={150}>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 text-slate-300"
+                        disabled
+                      >
+                        <IconTrash size={16} />
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>登录后可用</TooltipContent>
+                </Tooltip>
+              )}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

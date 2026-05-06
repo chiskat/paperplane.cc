@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
 import { AwesomeCatelog, Prisma } from '@/models/client'
 import { awesomeCatelogZod } from '@/zods/awesome'
-import { deleteZod, resortZod } from '@/zods/common'
+import { deleteZod, idZod, resortZod } from '@/zods/common'
 
 export interface AwesomeCatelogNode extends AwesomeCatelog {
   children: AwesomeCatelogNode[]
@@ -48,6 +48,10 @@ export const catelogs = router({
       .flat(2)
 
     return result
+  }),
+
+  get: publicProcedure.input(idZod).query(async ({ input }) => {
+    return prisma.awesomeCatelog.findFirstOrThrow({ where: { id: input.id } })
   }),
 
   add: loginProcedure.input(awesomeCatelogZod).mutation(async ({ input }) => {

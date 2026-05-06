@@ -69,6 +69,26 @@ const snippet = defineCollection({
   }),
 })
 
+const kms = defineCollection({
+  name: 'kms',
+  directory: 'app/(main-layout)/kms/_docs',
+  include: '**/*.mdx',
+  schema: z.object({
+    title: z.string(),
+    group: z.string().optional(),
+    content: z.string(),
+  }),
+})
+
+const llms = defineCollection({
+  name: 'llms',
+  directory: 'app/(misc)/llms.txt',
+  include: 'llms.md',
+  schema: z.object({
+    content: z.string(),
+  }),
+})
+
 export default defineConfig({
-  content: [articles, open, demos, registry, snippet],
+  content: [articles, open, demos, registry, snippet, kms, llms],
 })

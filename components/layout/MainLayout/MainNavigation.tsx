@@ -10,12 +10,22 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { HighlighterLink } from '@/components/animate-ui/primitives/effects/highlighter-link'
+import { Button } from '@/components/ui/button'
 import { Highlighter } from '@/components/ui/highlighter'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RippleButton } from '@/components/ui/ripple-button'
 import { cn } from '@/utils/style'
 
-export const navLinks = [
+interface NavLink {
+  label: string
+  href: string
+}
+
+interface NavLinkGroup {
+  title: string
+  links: NavLink[]
+}
+
+export const navLinks: NavLink[] = [
   { label: '博客', href: '/' },
   { label: 'Awesome', href: '/awesome' },
   { label: '开源', href: '/open' },
@@ -23,17 +33,20 @@ export const navLinks = [
   { label: '制品库', href: '/registry' },
 ]
 
-export const moreLinkGroups = [
+export const moreLinkGroups: NavLinkGroup[] = [
+  {
+    title: '在线服务',
+    links: [
+      { label: '短链接', href: '/short' },
+      { label: 'KMS 激活服务', href: '/kms' },
+    ],
+  },
   {
     title: '更多页面',
     links: [
       { label: '样板与配置', href: '/snippet' },
-      { label: '短链接', href: '/short' },
+      { label: '关于', href: '/about' },
     ],
-  },
-  {
-    title: '站点信息',
-    links: [{ label: '关于', href: '/about' }],
   },
 ]
 
@@ -167,26 +180,31 @@ export function MainNavigation({ pathname }: MainNavigationProps) {
         />
       ) : null}
 
-      <Popover open={isMorePopoverOpen} onOpenChange={setIsMorePopoverOpen}>
+      <Popover
+        open={isMorePopoverOpen}
+        onOpenChange={({ open }) => setIsMorePopoverOpen(open)}
+        positioning={{ placement: 'bottom', offset: { mainAxis: 8 } }}
+      >
         <PopoverTrigger asChild>
-          <RippleButton
-            className="ml-2 h-8 w-8 rounded-md border-0 bg-transparent p-0 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-            rippleColor="#6b7280"
-            duration="500ms"
+          <Button
+            variant="ghost"
+            size="icon-md"
+            className="ml-2 rounded-md border-0 bg-transparent p-0 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
             aria-label="更多导航"
           >
             <IconGridDots size={18} />
-          </RippleButton>
+          </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-sm px-4 py-4" align="center" sideOffset={8}>
-          <div className="space-y-6">
+        <PopoverContent className="w-sm px-4 py-4">
+          <div className="space-y-8">
             {moreLinkGroups.map(({ title, links }) => (
               <section key={title}>
-                <h3 className="px-1 text-left text-sm font-medium tracking-wide text-gray-500">
+                <h3 className="px-1 text-left text-[14px] font-medium tracking-wide text-gray-500">
                   {title}
                 </h3>
-                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-5">
+
+                <div className="mt-4 grid grid-cols-2 gap-4">
                   {links.map(({ label, href }) => (
                     <PopoverNavItem
                       key={href}

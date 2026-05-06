@@ -24,8 +24,8 @@ import {
 import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { CopyButton } from '../copy-button'
 import { Highlight } from '../text/Highlight'
+import { CopyButton } from '../ui/copy-button'
 
 export type ApiMethod =
   | 'GET'
@@ -100,7 +100,7 @@ function ApiKeyDisplay({ user, apiKey }: { user: unknown; apiKey: { key: string 
       <span className="select-all">{tokenVisible ? apiKey?.key : '•••••••••'}</span>
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-md"
         onClick={() => setTokenVisible(v => !v)}
         aria-label={tokenVisible ? '隐藏' : '显示'}
       >
@@ -153,32 +153,29 @@ export function ApiDoc({
             </p>
           ) : null}
 
-          <KVPairs colon="：" noReserveIconSpace labelWidth="11rem">
-            <KVPairsItem label="接口 URL" contentClassName="font-mono text-[13px]">
+          <KVPairs
+            colon="："
+            noReserveIconSpace
+            labelWidth="11rem"
+            contentClassName="font-mono text-[13px]"
+          >
+            <KVPairsItem label="接口 URL">
               <Highlight keywords={metadata.url}>
                 {process.env.NEXT_PUBLIC_BASE_URL + metadata.url}
               </Highlight>
             </KVPairsItem>
 
-            <KVPairsItem label="请求方法" contentClassName="font-mono text-[13px]">
-              {metadata.method}
-            </KVPairsItem>
+            <KVPairsItem label="请求方法">{metadata.method}</KVPairsItem>
 
-            <KVPairsItem label="Content-Type" contentClassName="font-mono text-[13px]">
-              {metadata.contentType}
-            </KVPairsItem>
+            <KVPairsItem label="Content-Type">{metadata.contentType}</KVPairsItem>
 
-            <KVPairsItem label="是否需鉴权" contentClassName="font-mono text-[13px]">
-              {metadata.requireAuth ? '是' : '否'}
-            </KVPairsItem>
+            <KVPairsItem label="是否需鉴权">{metadata.requireAuth ? '是' : '否'}</KVPairsItem>
 
             {metadata.requireAuth ? (
               <>
-                <KVPairsItem label="鉴权 Header 键" contentClassName="font-mono text-[13px]">
-                  X-API-KEY
-                </KVPairsItem>
+                <KVPairsItem label="鉴权 Header 键">X-API-KEY</KVPairsItem>
 
-                <KVPairsItem label="鉴权 Header 值" contentClassName="font-mono text-[13px]">
+                <KVPairsItem label="鉴权 Header 值">
                   <ApiKeyDisplay user={user} apiKey={apiKey} />
                 </KVPairsItem>
               </>

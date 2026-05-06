@@ -192,7 +192,7 @@ export const CalendarPrevTrigger = (
 ) => {
   return (
     <ArkCalendar.PrevTrigger asChild data-slot="calendar-prev-trigger" {...props}>
-      <Button className="me-auto" size="icon" variant="ghost">
+      <Button className="me-auto" size="icon-md" variant="ghost">
         <ChevronLeftIcon aria-hidden className="rtl:rotate-180" />
       </Button>
     </ArkCalendar.PrevTrigger>
@@ -204,7 +204,7 @@ export const CalendarNextTrigger = (
 ) => {
   return (
     <ArkCalendar.NextTrigger asChild data-slot="calendar-next-trigger" {...props}>
-      <Button className="ms-auto" size="icon" variant="ghost">
+      <Button className="ms-auto" size="icon-md" variant="ghost">
         <ChevronRightIcon aria-hidden className="rtl:rotate-180" />
       </Button>
     </ArkCalendar.NextTrigger>

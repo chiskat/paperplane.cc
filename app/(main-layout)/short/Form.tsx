@@ -324,12 +324,65 @@ export function Form({
   )
 }
 
-function FieldError({ error }: { error: unknown }) {
-  if (!error) {
+function resolveErrorMessage(error: unknown): string | null {
+  if (error == null || error === false) {
     return null
   }
 
-  return <span className="block text-xs text-rose-600">{String(error)}</span>
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (typeof error === 'number' || typeof error === 'boolean' || typeof error === 'bigint') {
+    return String(error)
+  }
+
+  if (error instanceof Error) {
+    return error.message || '输入内容不符合校验规则'
+  }
+
+  if (Array.isArray(error)) {
+    for (const item of error) {
+      const message = resolveErrorMessage(item)
+      if (message) {
+        return message
+      }
+    }
+    return null
+  }
+
+  if (typeof error === 'object') {
+    const record = error as Record<string, unknown>
+
+    if (typeof record.message === 'string') {
+      return record.message
+    }
+
+    if (Array.isArray(record.issues)) {
+      const message = resolveErrorMessage(record.issues)
+      if (message) {
+        return message
+      }
+    }
+
+    if (Array.isArray(record.errors)) {
+      const message = resolveErrorMessage(record.errors)
+      if (message) {
+        return message
+      }
+    }
+  }
+
+  return '输入内容不符合校验规则'
+}
+
+function FieldError({ error }: { error: unknown }) {
+  const message = resolveErrorMessage(error)
+  if (!message) {
+    return null
+  }
+
+  return <span className="block text-xs text-rose-600">{message}</span>
 }
 
 function BooleanOptionField({

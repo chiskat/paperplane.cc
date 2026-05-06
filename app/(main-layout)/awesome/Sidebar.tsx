@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { Switch } from '@/components/animate-ui/components/radix/switch'
-import { ScrollAreaFade } from '@/components/ui/scroll-area-fade'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
 import { SidebarItem } from './SidebarItem'
@@ -40,15 +40,14 @@ export function Sidebar({ onScrollToSection }: SidebarProps) {
             </div>
           </div>
 
-          <ScrollAreaFade
+          <ScrollArea
             className={cn(
               'mt-3 mr-1 min-h-0 flex-1',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:w-1.5',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:p-0',
               '**:data-[slot=scroll-area-thumb]:bg-slate-300/45'
             )}
-            topFadeClassName="from-white/90"
-            bottomFadeClassName="from-white/90"
+            scrollFade
           >
             <ul className="flex flex-col gap-1 pr-3">
               {catelogs.map(category => (
@@ -60,7 +59,7 @@ export function Sidebar({ onScrollToSection }: SidebarProps) {
                 />
               ))}
             </ul>
-          </ScrollAreaFade>
+          </ScrollArea>
         </div>
       </div>
     </aside>

@@ -1,55 +1,99 @@
 'use client'
 
-import { ScrollArea as ScrollAreaPrimitive } from 'radix-ui'
-import { type ComponentProps } from 'react'
+import { ScrollArea as ArkScrollArea, useScrollAreaContext } from '@ark-ui/react/scroll-area'
+import type React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
 
 import { cn } from '@/utils/style'
 
-function ScrollArea({
-  className,
-  children,
-  ...props
-}: ComponentProps<typeof ScrollAreaPrimitive.Root>) {
+export const useScrollArea = useScrollAreaContext
+
+const scrollAreaVariants = tv({
+  base: [
+    'h-full',
+    'rounded-[inherit]',
+    'transition-shadows',
+    'outline-none',
+    '[scrollbar-width:none]',
+    '[&::-webkit-scrollbar]:display-none',
+    'outline-none',
+    'transition-shadow',
+  ],
+  variants: {
+    scrollFade: {
+      true: [
+        'mask-t-from-[calc(100%-var(--fade-size))]',
+        'mask-b-from-[calc(100%-var(--fade-size))]',
+        'data-at-top:mask-t-from-100%',
+        'data-at-bottom:mask-b-from-100%',
+        'in-[[data-slot=scroll-area]:not([data-overflow-y])]:mask-t-from-100%',
+        'in-[[data-slot=scroll-area]:not([data-overflow-y])]:mask-b-from-100%',
+        'transition-shadow',
+      ],
+    },
+  },
+  defaultVariants: {
+    scrollFade: false,
+  },
+})
+
+interface ScrollAreaProps
+  extends
+    React.ComponentProps<typeof ArkScrollArea.Root>,
+    VariantProps<typeof scrollAreaVariants> {}
+
+export const ScrollArea = (props: ScrollAreaProps) => {
+  const { scrollFade = false, className, children, ...rest } = props
+
   return (
-    <ScrollAreaPrimitive.Root
+    <ArkScrollArea.Root
+      className={cn('size-full min-h-0 [--fade-size:1.5rem]', className)}
       data-slot="scroll-area"
-      className={cn('relative', className)}
-      {...props}
+      {...rest}
     >
-      <ScrollAreaPrimitive.Viewport
+      <ArkScrollArea.Viewport
+        className={cn(scrollAreaVariants({ scrollFade }))}
         data-slot="scroll-area-viewport"
-        className="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
       >
-        {children}
-      </ScrollAreaPrimitive.Viewport>
-      <ScrollBar />
-      <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
+        <ArkScrollArea.Content data-slot="scroll-area-content ">{children}</ArkScrollArea.Content>
+      </ArkScrollArea.Viewport>
+
+      <ScrollAreaScrollbar orientation="vertical" />
+      <ScrollAreaScrollbar orientation="horizontal" />
+
+      <ArkScrollArea.Corner data-slot="scroll-area-corner" />
+    </ArkScrollArea.Root>
   )
 }
 
-function ScrollBar({
-  className,
-  orientation = 'vertical',
-  ...props
-}: ComponentProps<typeof ScrollAreaPrimitive.Scrollbar>) {
+export const ScrollAreaScrollbar = (
+  props: React.ComponentProps<typeof ArkScrollArea.Scrollbar>
+) => {
+  const { orientation, className, ...rest } = props
+
   return (
-    <ScrollAreaPrimitive.Scrollbar
-      data-slot="scroll-area-scrollbar"
-      data-orientation={orientation}
-      orientation={orientation}
+    <ArkScrollArea.Scrollbar
       className={cn(
-        'flex touch-none p-px transition-colors select-none data-horizontal:h-2.5 data-horizontal:flex-col data-horizontal:border-t data-horizontal:border-t-transparent data-vertical:h-full data-vertical:w-2.5 data-vertical:border-l data-vertical:border-l-transparent',
+        'flex',
+        'm-1',
+        'bg-muted/48',
+        'opacity-0 transition-opacity delay-300',
+        'data-[orientation=vertical]:w-1.5',
+        'data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:flex-col',
+        'data-hover:opacity-100 data-hover:delay-0 data-hover:duration-100',
+        'data-scrolling:opacity-100 data-scrolling:delay-0 data-scrolling:duration-100',
+        'data-[orientation=vertical]:in-[[data-slot=scroll-area]:not([data-overflow-y])]:hidden',
+        'data-[orientation=horizontal]:in-[[data-slot=scroll-area]:not([data-overflow-x])]:hidden',
         className
       )}
-      {...props}
+      data-slot="scroll-area-scrollbar"
+      orientation={orientation}
+      {...rest}
     >
-      <ScrollAreaPrimitive.Thumb
+      <ArkScrollArea.Thumb
+        className="bg-foreground/20 relative flex-1 rounded-full"
         data-slot="scroll-area-thumb"
-        className="bg-border relative flex-1 rounded-full"
       />
-    </ScrollAreaPrimitive.Scrollbar>
+    </ArkScrollArea.Scrollbar>
   )
 }
-
-export { ScrollArea, ScrollBar }

@@ -65,7 +65,7 @@ export const Checkbox = (props: React.ComponentProps<typeof ArkCheckbox.Root>) =
 }
 
 export const CheckboxIndicator = (props: React.ComponentProps<typeof ArkCheckbox.Indicator>) => {
-  const { ...rest } = props
+  const { className, ...rest } = props
 
   return (
     <ArkCheckbox.Indicator
@@ -76,7 +76,8 @@ export const CheckboxIndicator = (props: React.ComponentProps<typeof ArkCheckbox
         'text-primary-foreground',
         'data-[state=checked]:bg-primary',
         'data-[state=unchecked]:hidden',
-        'data-[state=indeterminate]:text-foreground'
+        'data-[state=indeterminate]:text-foreground',
+        className
       )}
       data-slot="checkbox-indicator"
       {...rest}

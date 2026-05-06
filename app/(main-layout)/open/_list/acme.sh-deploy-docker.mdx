@@ -1,0 +1,12 @@
+---
+name: chiskat/acme.sh-deploy-docker
+repo: chiskat/acme.sh-deploy-docker
+type: docker
+---
+
+`chiskat/Acme.sh-Deploy-Docker` 是基于 [acme.sh](https://acme.sh) 的官方镜像 [`neilpang/acme.sh`](https://hub.docker.com/r/neilpang/acme.sh) 的集成 Docker CLI 版本。
+
+如果 Acme.sh 和 Nginx 都使用 Docker 部署，那么 Acme.sh 每次安装新的证书后，想要通过 `--reloadcmd` 通知 Nginx 运行 `nginx -s reload` 会很困难，因为容器之间是隔离的；
+而此镜像内置 Docker CLI，开发者只需把宿主机的 `/var/run/docker.sock` 原样挂载进来，便可直接在镜像中运行 `docker` 命令，从而对其它运行于 Docker 中的服务进行调度。
+
+定时任务会自动触发构建，定期同步最新版本的 Acme.sh，并以日期的形式作为版本号发布。

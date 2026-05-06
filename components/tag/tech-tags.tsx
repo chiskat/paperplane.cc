@@ -9,6 +9,7 @@ import dockerIcon from '@/assets/tech-icons/docker.svg'
 import dumiIcon from '@/assets/tech-icons/dumi.png'
 import elementIcon from '@/assets/tech-icons/element.svg'
 import hexoIcon from '@/assets/tech-icons/hexo.svg'
+import itToolsIcon from '@/assets/tech-icons/it-tools.png'
 import joplinIcon from '@/assets/tech-icons/joplin.png'
 import mantineIcon from '@/assets/tech-icons/mantine.svg'
 import memosIcon from '@/assets/tech-icons/memos.png'
@@ -27,7 +28,6 @@ import restifyIcon from '@/assets/tech-icons/restify.svg'
 import shadcnIcon from '@/assets/tech-icons/shadcn.svg'
 import shieldsIcon from '@/assets/tech-icons/shields-io.png'
 import tdesignIcon from '@/assets/tech-icons/tdesign.svg'
-import toolsIcon from '@/assets/tech-icons/tools.png'
 import trpcIcon from '@/assets/tech-icons/trpc.svg'
 import viteIcon from '@/assets/tech-icons/vite.svg'
 import vueIcon from '@/assets/tech-icons/vue.svg'
@@ -42,6 +42,7 @@ export const techIcons = {
   dumi: dumiIcon,
   element: elementIcon,
   hexo: hexoIcon,
+  ittools: itToolsIcon,
   joplin: joplinIcon,
   mantine: mantineIcon,
   memos: memosIcon,
@@ -60,7 +61,6 @@ export const techIcons = {
   shadcn: shadcnIcon,
   shieldsio: shieldsIcon,
   tdesign: tdesignIcon,
-  ittools: toolsIcon,
   trpc: trpcIcon,
   vite: viteIcon,
   vue: vueIcon,
@@ -136,7 +136,7 @@ export const OpenWebUITag = createTechTag({
 export const ITToolsTag = createTechTag({
   name: 'IT-Tools',
   href: 'https://github.com/CorentinTh/it-tools/',
-  icon: toolsIcon,
+  icon: itToolsIcon,
 })
 
 export const QuickReferenceTag = createTechTag({

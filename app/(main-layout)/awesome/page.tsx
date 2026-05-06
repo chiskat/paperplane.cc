@@ -1,24 +1,17 @@
 'use client'
 
-import { IconArrowsSort, IconCategoryPlus } from '@tabler/icons-react'
+import { IconArrowsSort, IconCategoryPlus, IconTags } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { CategoryForm, type CategoryFormValue } from './CategoryForm'
+import { CategoryEditButton, type CategoryFormValue } from './CategoryEditButton'
+import { CategorySortButton } from './CategorySortButton'
 import { ListCategory } from './ListCategory'
 import { Sidebar } from './Sidebar'
+import { TagManageButton } from './TagManageButton'
 
 const TOP_OFFSET = 184
 
@@ -45,14 +38,12 @@ export default function AwesomePage() {
   })
 
   const [keyword, setKeyword] = useState('')
-  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false)
 
   const createCategoryMutation = useMutation({
     mutationFn: async (value: CategoryFormValue) => {
       return await trpcClient.awesome.catelogs.add.mutate(value)
     },
     onSuccess: async () => {
-      setCategoryDialogOpen(false)
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: trpc.awesome.items.tree.pathKey() }),
         queryClient.invalidateQueries({ queryKey: trpc.awesome.catelogs.tree.pathKey() }),
@@ -60,7 +51,18 @@ export default function AwesomePage() {
       ])
     },
   })
-
+  const updateCategoryMutation = useMutation({
+    mutationFn: async (value: CategoryFormValue) => {
+      return await trpcClient.awesome.catelogs.update.mutate(value)
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: trpc.awesome.items.tree.pathKey() }),
+        queryClient.invalidateQueries({ queryKey: trpc.awesome.catelogs.tree.pathKey() }),
+        queryClient.invalidateQueries({ queryKey: trpc.awesome.catelogs.list.pathKey() }),
+      ])
+    },
+  })
   const filteredData = useMemo(() => {
     const keywordText = keyword.trim().toLowerCase()
     if (!keywordText) {
@@ -87,6 +89,17 @@ export default function AwesomePage() {
       .filter(catelog => catelog.underAwesomes.length > 0)
   }, [data, keyword])
 
+  const categoryChildrenCountMap = useMemo(() => {
+    const childrenCountMap = new Map<string, number>()
+    for (const catelog of data) {
+      if (!catelog.parentId) {
+        continue
+      }
+      childrenCountMap.set(catelog.parentId, (childrenCountMap.get(catelog.parentId) ?? 0) + 1)
+    }
+    return childrenCountMap
+  }, [data])
+
   return (
     <div>
       <div className="grid gap-6 md:grid-cols-[15rem_minmax(0,1fr)]">
@@ -95,7 +108,7 @@ export default function AwesomePage() {
         <div className="min-w-0">
           <div className="sticky top-28 z-40">
             <div
-              className="pointer-events-none absolute -top-5 -right-3 bottom-0 -left-3"
+              className="pointer-events-none absolute -top-5 -right-3 bottom-0 -left-3 bg-white"
               style={{
                 backgroundColor: 'transparent',
                 backgroundImage: 'radial-gradient(transparent 1px, #fff 1px)',
@@ -120,54 +133,33 @@ export default function AwesomePage() {
 
               {!isPending && user ? (
                 <div className="inline-flex h-10 shrink-0 items-center gap-2">
-                  <Button
-                    type="button"
+                  <TagManageButton
+                    variant="outline"
+                    className="h-10 min-w-20 rounded-xl bg-white px-4 text-sm leading-none hover:bg-slate-50"
+                  >
+                    <IconTags size={16} />
+                    标签管理
+                  </TagManageButton>
+
+                  <CategorySortButton
                     variant="outline"
                     className="h-10 min-w-20 rounded-xl bg-white px-4 text-sm leading-none hover:bg-slate-50"
                   >
                     <IconArrowsSort size={16} />
                     类别排序
-                  </Button>
+                  </CategorySortButton>
 
-                  <Dialog
-                    open={categoryDialogOpen}
-                    onOpenChange={open => {
-                      setCategoryDialogOpen(open)
-                      if (open) {
-                        createCategoryMutation.reset()
-                      }
+                  <CategoryEditButton
+                    variant="outline"
+                    className="h-10 min-w-20 rounded-xl bg-white px-4 text-sm leading-none hover:bg-slate-50"
+                    onSubmit={async value => {
+                      createCategoryMutation.reset()
+                      await createCategoryMutation.mutateAsync(value)
                     }}
                   >
-                    <DialogTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-10 min-w-20 rounded-xl bg-white px-4 text-sm leading-none hover:bg-slate-50"
-                      >
-                        <IconCategoryPlus size={16} />
-                        添加类别
-                      </Button>
-                    </DialogTrigger>
-
-                    <DialogContent className="max-w-[min(92vw,720px)] p-0 sm:max-w-[min(92vw,720px)]">
-                      <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                        <DialogHeader className="mb-4">
-                          <DialogTitle className="text-xl">添加类别</DialogTitle>
-                          <DialogDescription className="text-base">
-                            创建一个 Awesome 类别。
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        <CategoryForm
-                          pending={createCategoryMutation.isPending}
-                          submitError={createCategoryMutation.error?.message ?? null}
-                          onSubmit={async value => {
-                            await createCategoryMutation.mutateAsync(value)
-                          }}
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                    <IconCategoryPlus size={16} />
+                    添加类别
+                  </CategoryEditButton>
                 </div>
               ) : null}
             </div>
@@ -181,6 +173,11 @@ export default function AwesomePage() {
                 <ListCategory
                   key={catelog.id}
                   catelog={catelog}
+                  hasChildren={(categoryChildrenCountMap.get(catelog.id) ?? 0) > 0}
+                  onEditCategory={async value => {
+                    updateCategoryMutation.reset()
+                    await updateCategoryMutation.mutateAsync(value)
+                  }}
                   sectionRef={element => {
                     if (element) {
                       sectionRefs.current.set(catelog.id, element)

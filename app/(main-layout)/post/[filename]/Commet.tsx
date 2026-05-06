@@ -26,7 +26,7 @@ export default function Commet() {
         pageKey: pathname,
         pageTitle: document.title,
         server: process.env.NEXT_PUBLIC_ARTALK_SERVER,
-        site: '纸飞机的信笺',
+        site: 'PaperPlane.cc',
       })
     },
     [pathname]

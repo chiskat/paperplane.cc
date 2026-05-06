@@ -2,14 +2,10 @@ import { IconMichelinStar, IconPointFilled } from '@tabler/icons-react'
 import Link from 'next/link'
 
 import { AwesomeItemResult } from '@/apis/awesome/items'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/animate-ui/components/animate/tooltip'
-import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
+import { AwesomeDeleteButton } from './AwesomeDeleteButton'
+import { AwesomeEditButton } from './AwesomeEditButton'
 import { ListItemLinks } from './ListItemLinks'
 import { ListItemTags } from './ListItemTags'
 
@@ -40,6 +36,8 @@ export interface ListItemProps {
 
 export function ListItem({ item }: ListItemProps) {
   const { user, isPending } = useSession()
+  const softButtonClassName =
+    'border-slate-200 bg-slate-50 text-[12px] leading-none text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-700'
 
   const stars = item.stars || 0
   const starMarkTooltip = awesomeStarLevel(stars)
@@ -51,9 +49,9 @@ export function ListItem({ item }: ListItemProps) {
 
   return (
     <li className="flex items-center rounded-md px-2 py-0.5 text-[18px] text-slate-900 transition-colors hover:bg-[#f1f3f5]">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger className="mr-2 cursor-pointer">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="mr-2 inline-flex cursor-pointer">
             {stars >= 5 ? (
               <IconMichelinStar size={13} className="text-[#f01879]" />
             ) : stars >= 4 ? (
@@ -61,10 +59,10 @@ export function ListItem({ item }: ListItemProps) {
             ) : (
               <IconPointFilled size={13} className="text-[#adb5bd]" />
             )}
-          </TooltipTrigger>
-          <TooltipContent>{starMarkTooltip}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>{starMarkTooltip}</TooltipContent>
+      </Tooltip>
 
       <Link className="leading-[1.3]" href={`/awesome/${item.id}`}>
         {item.label}
@@ -80,30 +78,31 @@ export function ListItem({ item }: ListItemProps) {
         {displayUrl}
       </Link>
 
-      <TooltipProvider>
-        <ListItemLinks awesome={item} />
-        <ListItemTags awesome={item} />
-      </TooltipProvider>
+      <ListItemLinks awesome={item} />
+      <ListItemTags awesome={item} />
 
       {!isPending && user ? (
         <span className="ml-auto inline-flex shrink-0 items-center gap-1 pl-3">
-          <Button
+          <AwesomeEditButton
             type="button"
             variant="outline"
             size="xs"
-            className="border-[#8ad8ff] bg-[#f0faff] text-[12px] leading-none text-[#0093d1] hover:border-[#5cc8ff] hover:bg-[#e1f5ff] hover:text-[#007bb0]"
+            className={softButtonClassName}
+            id={item.id}
           >
             编辑
-          </Button>
+          </AwesomeEditButton>
 
-          <Button
+          <AwesomeDeleteButton
+            awesomeId={item.id}
+            awesomeName={item.label}
             type="button"
-            variant="destructive"
+            variant="outline"
             size="xs"
-            className="text-[12px] leading-none"
+            className={softButtonClassName}
           >
             删除
-          </Button>
+          </AwesomeDeleteButton>
         </span>
       ) : null}
     </li>

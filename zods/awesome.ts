@@ -32,10 +32,10 @@ export const awesomeTagZod = compatFormData(
     label: z.string('标签名称是必须的').min(2, '标签名称至少需要 2 个字符'),
     desc: z.string().nullish().default(''),
     color: z
-      .string()
-      .regex(/^(#[0-9A-F]{6})?$/i, '颜色格式不正确')
-      .nullish()
-      .default(''),
+      .union([z.string().regex(/^(#[0-9A-F]{6})$/i, '颜色格式不正确'), z.literal(''), z.null()])
+      .optional()
+      .transform(value => (value === '' ? null : value))
+      .default(null),
     icon: z.string().nullish(),
 
     iconFile: z.instanceof(File).nullish(),

@@ -8,13 +8,8 @@ import { AwesomeItemResult } from '@/apis/awesome/items'
 import dockerIcon from '@/assets/tech-icons/docker.svg'
 import githubIcon from '@/assets/tech-icons/github.svg'
 import npmFlatIcon from '@/assets/tech-icons/npm-flat.svg'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/animate-ui/components/animate/tooltip'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/utils/style'
 import { awesomeStarLevel } from './ListItem'
 
@@ -55,78 +50,6 @@ const CONTAINER_ANIMATE = {
 const DETAIL_SECTION_CLASSNAME = 'space-y-6 border-t border-blue-200/70 px-5 py-6 sm:px-8 sm:py-7'
 const NPM_HOSTS = new Set(['www.npmjs.com', 'npmjs.com'])
 
-function normalizeText(value?: string | null) {
-  const text = value?.trim()
-  return text ? text : null
-}
-
-function sortByIndex(index?: number | null) {
-  return index ?? Number.MAX_SAFE_INTEGER
-}
-
-function parseUrl(value: string) {
-  try {
-    return new URL(value)
-  } catch {
-    return null
-  }
-}
-
-function trimSegment(segment?: string) {
-  if (!segment) {
-    return null
-  }
-
-  const decoded = decodeURIComponent(segment).trim()
-  return decoded ? decoded : null
-}
-
-function normalizeOrg(segment?: string) {
-  const value = trimSegment(segment)
-  return value ? value.replace(/^@/, '') : null
-}
-
-function mergeOrgAndPkg(org?: string | null, pkg?: string | null) {
-  if (org && pkg) {
-    return `${org}/${pkg}`
-  }
-
-  return org ?? pkg ?? null
-}
-
-function parseNpmDisplay(segments: string[]) {
-  if (segments[0] !== 'package') {
-    return null
-  }
-
-  const first = trimSegment(segments[1])
-  if (!first) {
-    return null
-  }
-
-  if (first.startsWith('@')) {
-    return mergeOrgAndPkg(normalizeOrg(first), trimSegment(segments[2]))
-  }
-
-  return first
-}
-
-function parseDockerDisplay(segments: string[]) {
-  if (segments[0] === 'r') {
-    return mergeOrgAndPkg(normalizeOrg(segments[1]), trimSegment(segments[2]))
-  }
-
-  if (segments[0] === '_' && segments[1]) {
-    return trimSegment(segments[1])
-  }
-
-  if (segments[0] === 'repository' && segments[1] === 'docker') {
-    return mergeOrgAndPkg(normalizeOrg(segments[2]), trimSegment(segments[3]))
-  }
-
-  return null
-}
-
 function resolveLinkKind(host: string): LinkKind {
   if (host === 'github.com') {
     return 'github'
@@ -147,39 +70,51 @@ function stripProtocol(url: string) {
   return url.replace(/^https?:\/\//i, '')
 }
 
-function resolveLinkMeta(rawUrl: string) {
-  const parsed = parseUrl(rawUrl)
-  if (!parsed) {
-    return {
-      kind: 'other' as const,
-      displayUrl: stripProtocol(rawUrl),
-    }
+function resolveGithubDisplay(segments: string[]) {
+  const owner = segments[0]?.replace(/\.git$/i, '')
+  if (!owner) {
+    return 'github.com'
   }
 
+  const repo = segments[1]?.replace(/\.git$/i, '')
+  return repo ? `${owner}/${repo}` : owner
+}
+
+function resolveNpmDisplay(segments: string[]) {
+  const nameOrScope = segments[1]!
+  if (nameOrScope.startsWith('@')) {
+    return `${nameOrScope.slice(1)}/${segments[2]!}`
+  }
+  return nameOrScope
+}
+
+function resolveDockerDisplay(segments: string[]) {
+  if (segments[0] === 'r') {
+    return `${segments[1]!}/${segments[2]!}`
+  }
+
+  if (segments[0] === '_') {
+    return segments[1]!
+  }
+
+  return `${segments[2]!}/${segments[3]!}`
+}
+
+function resolveLinkMeta(rawUrl: string) {
+  const parsed = new URL(rawUrl)
   const kind = resolveLinkKind(parsed.hostname.toLowerCase())
   const segments = parsed.pathname.split('/').filter(Boolean)
 
   if (kind === 'github') {
-    const user = trimSegment(segments[0])
-    const repo = trimSegment(segments[1])?.replace(/\.git$/i, '')
-
-    if (user && repo) {
-      return { kind, displayUrl: `${user}/${repo}` }
-    }
+    return { kind, displayUrl: resolveGithubDisplay(segments) }
   }
 
   if (kind === 'npm') {
-    const npmDisplay = parseNpmDisplay(segments)
-    if (npmDisplay) {
-      return { kind, displayUrl: npmDisplay }
-    }
+    return { kind, displayUrl: resolveNpmDisplay(segments) }
   }
 
   if (kind === 'docker') {
-    const dockerDisplay = parseDockerDisplay(segments)
-    if (dockerDisplay) {
-      return { kind, displayUrl: dockerDisplay }
-    }
+    return { kind, displayUrl: resolveDockerDisplay(segments) }
   }
 
   return {
@@ -216,7 +151,7 @@ function createHighlightLink(type: HighlightLinkType, href: string): HighlightLi
   }
 }
 
-function buildHighlightLinks(sourceUrl: string | null, registryUrl: string | null) {
+function buildHighlightLinks(sourceUrl?: string | null, registryUrl?: string | null) {
   const links: HighlightLink[] = []
 
   if (sourceUrl) {
@@ -244,13 +179,15 @@ function resolveCategoryPath(awesome: AwesomeItemResult) {
 }
 
 function renderTagVisual(tag: AwesomeTagLike) {
-  const icon = normalizeText(tag.icon)
-  const color = normalizeText(tag.color)
-
-  const content = icon ? (
-    <img src={icon} alt="" aria-hidden className="h-5 w-5 object-cover" />
-  ) : color ? (
-    <IconPointFilled size={20} className="text-slate-500" aria-hidden style={{ color }} />
+  const content = tag.icon ? (
+    <img src={tag.icon} alt="" aria-hidden className="h-5 w-5 object-cover" />
+  ) : tag.color ? (
+    <IconPointFilled
+      size={20}
+      className="text-slate-500"
+      aria-hidden
+      style={{ color: tag.color }}
+    />
   ) : (
     <IconPointFilled size={20} className="text-slate-500" aria-hidden />
   )
@@ -304,120 +241,109 @@ function DetailHighlightLinkCard({ link }: { link: HighlightLink }) {
 export function AwesomeDetail({ awesome, mode = 'auto', className }: AwesomeDetailProps) {
   const isModal = mode === 'modal'
   const stars = awesome.stars ?? 0
+
   const categoryPath = resolveCategoryPath(awesome)
-  const homepageUrl = normalizeText(awesome.homepage)
-  const sourceUrl = normalizeText(awesome.source)
-  const registryUrl = normalizeText(awesome.registry)
-  const description = normalizeText(awesome.desc) ?? '暂无描述。'
-  const tags = [...(awesome.tags ?? [])].sort((a, b) => sortByIndex(a.index) - sortByIndex(b.index))
-  const highlightLinks = buildHighlightLinks(sourceUrl, registryUrl)
+  const tags = [...awesome.tags].sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+  const highlightLinks = buildHighlightLinks(awesome.source, awesome.registry)
 
   return (
-    <TooltipProvider>
-      <motion.article
-        variants={CONTAINER_ANIMATE}
-        initial="hidden"
-        animate="visible"
-        className={cn(
-          'relative overflow-hidden rounded-3xl border border-blue-200/70 bg-white',
-          'shadow-[0_20px_70px_-38px_rgba(30,64,175,0.3)]',
-          className
-        )}
-      >
-        <div className={cn('relative', isModal && 'max-h-[min(84vh,920px)] overflow-y-auto')}>
-          <div className={cn('px-5 py-6 sm:px-8 sm:py-7', isModal && 'sticky top-0 z-20 bg-white')}>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-stretch sm:gap-6">
-              <div className="min-w-0 flex-1">
-                <h1 className="font-title-serif mb-2 text-[1.72rem] leading-tight wrap-break-word text-slate-900 sm:text-[1.95rem]">
-                  {awesome.label}
-                </h1>
+    <motion.article
+      variants={CONTAINER_ANIMATE}
+      initial="hidden"
+      animate="visible"
+      className={cn(
+        'relative overflow-hidden rounded-3xl border border-blue-200/70 bg-white',
+        'shadow-[0_20px_70px_-38px_rgba(30,64,175,0.3)]',
+        className
+      )}
+    >
+      <div className={cn('relative', isModal && 'max-h-[min(84vh,920px)] overflow-y-auto')}>
+        <div className={cn('px-5 py-6 sm:px-8 sm:py-7', isModal && 'sticky top-0 z-20 bg-white')}>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-stretch sm:gap-6">
+            <div className="min-w-0 flex-1">
+              <h1 className="font-title-serif mb-2 text-[1.72rem] leading-tight wrap-break-word text-slate-900 sm:text-[1.95rem]">
+                {awesome.label}
+              </h1>
 
-                {homepageUrl ? (
-                  <Link
-                    href={homepageUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-en-sans mb-6 block text-[18px] leading-6 break-all text-[#2f629d] underline decoration-[#2f629d]/35 underline-offset-[3px] transition-colors hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
-                  >
-                    {homepageUrl}
-                  </Link>
-                ) : (
-                  <p className="font-en-sans mb-6 text-[16px] leading-6 text-slate-400">
-                    暂无主页链接
-                  </p>
-                )}
+              <Link
+                href={awesome.homepage}
+                target="_blank"
+                rel="noreferrer"
+                className="font-en-sans mb-6 block text-[18px] leading-6 break-all text-[#2f629d] underline decoration-[#2f629d]/35 underline-offset-[3px] transition-colors hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
+              >
+                {awesome.homepage}
+              </Link>
 
-                <p className="font-en-sans text-sm leading-relaxed text-slate-600 sm:text-[16px]">
-                  {description}
-                </p>
-              </div>
+              <p className="font-en-sans text-sm leading-relaxed text-slate-600 sm:text-[16px]">
+                {awesome.desc || '暂无描述。'}
+              </p>
+            </div>
 
-              <div className="relative w-full shrink-0 sm:ml-auto sm:w-55 sm:self-stretch sm:before:pointer-events-none sm:before:absolute sm:before:-top-7 sm:before:-bottom-7 sm:before:left-0 sm:before:w-px sm:before:bg-blue-200/70">
-                <div className="flex h-full border-t border-blue-200/70 pt-4 sm:border-t-0 sm:pt-0 sm:pl-6">
-                  <div className="w-full min-w-47.5 space-y-4 text-left">
-                    <div className="space-y-1">
-                      <p className="font-en-sans text-[14px] text-slate-400 uppercase">类别</p>
-                      <p className="text-[14px] leading-6 text-slate-600">{categoryPath}</p>
-                    </div>
+            <div className="relative w-full shrink-0 sm:ml-auto sm:w-55 sm:self-stretch sm:before:pointer-events-none sm:before:absolute sm:before:-top-7 sm:before:-bottom-7 sm:before:left-0 sm:before:w-px sm:before:bg-blue-200/70">
+              <div className="flex h-full border-t border-blue-200/70 pt-4 sm:border-t-0 sm:pt-0 sm:pl-6">
+                <div className="w-full min-w-47.5 space-y-4 text-left">
+                  <div className="space-y-1">
+                    <p className="font-en-sans text-[14px] text-slate-400 uppercase">类别</p>
+                    <p className="text-[14px] leading-6 text-slate-600">{categoryPath}</p>
+                  </div>
 
-                    <div className="space-y-1">
-                      <p className="font-en-sans text-[14px] text-slate-400 uppercase">星级</p>
-                      <p className="text-[14px] text-slate-600">{awesomeStarLevel(stars)}</p>
+                  <div className="space-y-1">
+                    <p className="font-en-sans text-[14px] text-slate-400 uppercase">星级</p>
+                    <p className="text-[14px] text-slate-600">{awesomeStarLevel(stars)}</p>
 
-                      <div className="inline-flex items-center gap-1 text-[#f01879]">
-                        {Array.from({ length: Math.max(stars, 1) }).map((_, index) => (
-                          <IconMichelinStar
-                            key={`star-${index}`}
-                            size={13}
-                            className={stars > 0 ? '' : 'text-slate-300'}
-                          />
-                        ))}
-                      </div>
+                    <div className="inline-flex items-center gap-1 text-[#f01879]">
+                      {Array.from({ length: Math.max(stars, 1) }).map((_, index) => (
+                        <IconMichelinStar
+                          key={`star-${index}`}
+                          size={13}
+                          className={stars > 0 ? '' : 'text-slate-300'}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {highlightLinks.length > 0 ? (
-            <section className={DETAIL_SECTION_CLASSNAME}>
-              <h2 className="font-title-serif text-xl text-slate-900">源码 / 软件包</h2>
-
-              <div className="flex flex-wrap gap-3">
-                {highlightLinks.map(link => (
-                  <DetailHighlightLinkCard key={link.href} link={link} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {tags.length > 0 ? (
-            <section className={DETAIL_SECTION_CLASSNAME}>
-              <h2 className="font-title-serif text-xl text-slate-900">标签</h2>
-
-              <div className="mt-3 flex flex-wrap gap-4">
-                {tags.map(tag => (
-                  <Tooltip key={tag.id}>
-                    <TooltipTrigger
-                      className={cn(
-                        'group inline-flex cursor-pointer items-center gap-2 border border-slate-300 px-2 py-1 text-[14px] text-slate-700 transition-colors hover:border-slate-400 hover:text-slate-900',
-                        tag.icon ? 'pr-3' : ''
-                      )}
-                    >
-                      {renderTagVisual(tag)}
-                      <span>{tag.label}</span>
-                    </TooltipTrigger>
-
-                    <TooltipContent>{normalizeText(tag.desc) ?? tag.label}</TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            </section>
-          ) : null}
         </div>
-      </motion.article>
-    </TooltipProvider>
+
+        {highlightLinks.length > 0 ? (
+          <section className={DETAIL_SECTION_CLASSNAME}>
+            <h2 className="font-title-serif text-xl text-slate-900">源码 / 软件包</h2>
+
+            <div className="flex flex-wrap gap-3">
+              {highlightLinks.map(link => (
+                <DetailHighlightLinkCard key={link.href} link={link} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {tags.length > 0 ? (
+          <section className={DETAIL_SECTION_CLASSNAME}>
+            <h2 className="font-title-serif text-xl text-slate-900">标签</h2>
+
+            <div className="mt-3 flex flex-wrap gap-4">
+              {tags.map(tag => (
+                <Tooltip key={tag.id}>
+                  <TooltipTrigger
+                    className={cn(
+                      'group inline-flex cursor-pointer items-center gap-2 border border-slate-300 px-2 py-1 text-[14px] text-slate-700 transition-colors hover:border-slate-400 hover:text-slate-900',
+                      tag.icon ? 'pr-3' : ''
+                    )}
+                  >
+                    {renderTagVisual(tag)}
+                    <span>{tag.label}</span>
+                  </TooltipTrigger>
+
+                  <TooltipContent>{tag.desc || tag.label}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </div>
+    </motion.article>
   )
 }
 

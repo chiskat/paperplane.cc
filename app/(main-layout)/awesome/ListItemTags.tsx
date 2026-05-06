@@ -1,9 +1,5 @@
 import { AwesomeItemResult } from '@/apis/awesome/items'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/animate-ui/components/animate/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from './ListItem'
 
 export interface ListItemTagsProps {

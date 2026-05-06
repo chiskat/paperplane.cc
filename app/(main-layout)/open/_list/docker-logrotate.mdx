@@ -1,0 +1,19 @@
+---
+name: chiskat/docker-logrotate
+repo: chiskat/docker-logrotate
+type: docker
+---
+
+`chiskat/Docker-Logrotate` 是内置了 Linux 工具 [`logrotate`](https://github.com/logrotate/logrotate) 的 Docker 镜像；它可作为非 k8s 环境下的 “Sidecar” 镜像，对其它服务的日志进行定时轮转等操作。
+
+> PaperPlane.cc 使用它管理大部分服务的日志。
+
+核心特性：
+
+- 此镜像可通过环境变量进行定制，调整 `logrotate` 的触发 cron 配置，自定义运行时间点；
+- 还可通过环境变量来定制执行 `logrotate` 时的命令行参数、默认读取的目录等配置；
+- 此镜像还内置了 Docker CLI，可在挂载了宿主机 `/var/run/docker.sock` 时，通过 `docker exec` 等命令调度其它镜像（例如同样运行在 Docker 中的 `nginx`），让其它服务重启或重载日志文件。
+
+---
+
+定时任务会自动触发构建，定期同步最新版本的依赖性，并以日期的形式作为版本号发布。

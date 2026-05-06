@@ -276,7 +276,7 @@ ls -l
 > 你可能对 `logrotate` 的这个 `daily` 有疑惑，它到底是每天的几点钟运行？
 >
 > 实际上，`logrotate` 的 `daily`、`weekly`、`monthly` 也都是利用 Linux 自身 `crontab` 定时任务来触发的，例如 `/etc/cron.daily/logrotate` 文件就是每日运行的启动脚本；
-> 而 `crontab` 执行 `daily` 任务的确切时间，可以通过 `cat /etc/crontab` 来查看，一般来说是 `6:25 AM` 这个时间 。
+> 而 `crontab` 执行 `daily` 任务的确切时间，可以通过 `cat /etc/crontab` 来查看，一般来说是 6:25 AM 这个时间 。
 
 # 内置特殊状态码
 

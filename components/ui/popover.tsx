@@ -1,80 +1,216 @@
 'use client'
 
-import { Popover as PopoverPrimitive } from 'radix-ui'
-import * as React from 'react'
+import { ark } from '@ark-ui/react/factory'
+import { Popover as ArkPopover, usePopoverContext } from '@ark-ui/react/popover'
+import { Portal } from '@ark-ui/react/portal'
+import { XIcon } from 'lucide-react'
 
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 
-function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />
-}
+export const usePopover = usePopoverContext
 
-function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
-}
+export const Popover = (props: React.ComponentProps<typeof ArkPopover.Root>) => {
+  const { lazyMount = true, unmountOnExit = true, modal = true, ...rest } = props
 
-function PopoverContent({
-  className,
-  align = 'center',
-  sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
-    <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
-        data-slot="popover-content"
-        align={align}
-        sideOffset={sideOffset}
+    <ArkPopover.Root
+      data-slot="popover"
+      lazyMount={lazyMount}
+      modal={modal}
+      unmountOnExit={unmountOnExit}
+      {...rest}
+    />
+  )
+}
+
+export const PopoverTrigger = (props: React.ComponentProps<typeof ArkPopover.Trigger>) => (
+  <ArkPopover.Trigger data-slot="popover-trigger" {...props} />
+)
+
+export const PopoverAnchor = (props: React.ComponentProps<typeof ArkPopover.Anchor>) => (
+  <ArkPopover.Anchor data-slot="popover-anchor" {...props} />
+)
+
+export const PopoverPositioner = (props: React.ComponentProps<typeof ArkPopover.Positioner>) => (
+  <ArkPopover.Positioner data-slot="popover-positioner" {...props} />
+)
+
+interface PopoverContentProps extends React.ComponentProps<typeof ArkPopover.Content> {
+  /**
+   * Show close button at the top right corner
+   *
+   * @default true
+   */
+  showCloseButton?: boolean
+}
+
+export const PopoverContent = (props: PopoverContentProps) => {
+  const { showCloseButton = false, className, children, ...rest } = props
+
+  return (
+    <Portal>
+      <PopoverPositioner>
+        <ArkPopover.Content
+          className={cn(
+            'relative',
+            'z-[calc(50+var(--layer-index,0))]',
+            '[--space:--spacing(4)]',
+            'w-auto min-w-32',
+            'flex flex-col',
+            'bg-popover',
+            'text-popover-foreground',
+            'rounded-xl border shadow-lg/5',
+            'outline-hidden',
+            'origin-(--transform-origin)',
+            'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+            'data-[state=closed]:zoom-out-[98%] data-[state=open]:zoom-in-[98%]',
+            'data-[state=closed]:animate-out data-[state=open]:animate-in',
+            'data-[placement=bottom]:slide-in-from-top-2',
+            'data-[placement=left]:slide-in-from-end-2',
+            'data-[placement=right]:slide-in-from-start-2',
+            'data-[placement=top]:slide-in-from-bottom-2',
+            className
+          )}
+          data-slot="popover-content"
+          {...rest}
+        >
+          {children}
+
+          {!!showCloseButton && (
+            <PopoverClose asChild>
+              <Button
+                aria-label="Close"
+                className="absolute inset-e-2 top-2 opacity-64 hover:opacity-100"
+                size="icon-sm"
+                variant="ghost"
+              >
+                <XIcon />
+              </Button>
+            </PopoverClose>
+          )}
+        </ArkPopover.Content>
+      </PopoverPositioner>
+    </Portal>
+  )
+}
+
+interface PopoverHeaderProps extends React.ComponentProps<typeof ark.div> {
+  /**
+   * The description of the popover header
+   */
+  description?: string
+  /**
+   * The title of the popover header
+   */
+  title?: string
+}
+
+export const PopoverHeader = (props: PopoverHeaderProps) => {
+  const { title, description, children, className, ...rest } = props
+
+  return (
+    <ark.div
+      className={cn(
+        'flex flex-col gap-2 p-(--space)',
+        'in-[[data-slot=popover-content]:has([data-slot=popover-body])]:pb-3',
+        className
+      )}
+      data-slot="popover-header"
+      {...rest}
+    >
+      {!!title && <PopoverTitle>{title}</PopoverTitle>}
+      {!!description && <PopoverDescription>{description}</PopoverDescription>}
+      {!title && typeof children === 'string' ? <PopoverTitle>{children}</PopoverTitle> : children}
+    </ark.div>
+  )
+}
+
+export const PopoverTitle = (props: React.ComponentProps<typeof ArkPopover.Title>) => {
+  const { className, ...rest } = props
+
+  return (
+    <ArkPopover.Title
+      className={cn('text-base leading-none font-semibold', className)}
+      data-slot="popover-title"
+      {...rest}
+    />
+  )
+}
+
+export const PopoverDescription = (props: React.ComponentProps<typeof ArkPopover.Description>) => {
+  const { className, ...rest } = props
+
+  return (
+    <ArkPopover.Description
+      className={cn('text-muted-foreground text-sm', className)}
+      data-slot="popover-description"
+      {...rest}
+    />
+  )
+}
+
+export const PopoverBody = (props: React.ComponentProps<typeof ark.div>) => {
+  const { className, ...rest } = props
+
+  return (
+    <ScrollArea>
+      <ark.div
         className={cn(
-          'bg-popover text-popover-foreground ring-foreground/10 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-4 rounded-lg p-2.5 text-xs shadow-md ring-1 outline-hidden duration-100',
+          'flex-1',
+          'p-(--space)',
+          'overflow-auto',
+          'in-[[data-slot=popover-content]:has([data-slot=popover-header])]:pt-1',
+          'in-[[data-slot=popover-content]:has([data-slot=popover-footer]:not(.border-t))]:pb-1',
           className
         )}
-        {...props}
+        data-slot="popover-body"
+        {...rest}
       />
-    </PopoverPrimitive.Portal>
+    </ScrollArea>
   )
 }
 
-function PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
-}
+export const PopoverFooter = (props: React.ComponentProps<typeof ark.div>) => {
+  const { className, ...rest } = props
 
-function PopoverHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="popover-header"
-      className={cn('flex flex-col gap-1 text-xs', className)}
-      {...props}
+    <ark.div
+      className={cn(
+        'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end',
+        'sm:rounded-b-[calc(var(--radius-lg)-1px)]',
+        'px-(--space) py-4',
+        'bg-muted/64',
+        'border-t',
+        className
+      )}
+      data-slot="popover-footer"
+      {...rest}
     />
   )
 }
 
-function PopoverTitle({ className, ...props }: React.ComponentProps<'h2'>) {
-  return (
-    <div
-      data-slot="popover-title"
-      className={cn('font-heading text-sm font-medium', className)}
-      {...props}
-    />
-  )
-}
+export const PopoverClose = (props: React.ComponentProps<typeof ArkPopover.CloseTrigger>) => (
+  <ArkPopover.CloseTrigger data-slot="popover-close-trigger" {...props} />
+)
 
-function PopoverDescription({ className, ...props }: React.ComponentProps<'p'>) {
-  return (
-    <p
-      data-slot="popover-description"
-      className={cn('text-muted-foreground', className)}
-      {...props}
-    />
-  )
-}
+export const PopoverArrow = (props: React.ComponentProps<typeof ArkPopover.Arrow>) => {
+  const { style, ...rest } = props
 
-export {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-  PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverTrigger,
+  return (
+    <ArkPopover.Arrow
+      data-slot="popover-arrow"
+      style={
+        {
+          '--arrow-background': 'var(--popover)',
+          '--arrow-size': 'calc(1.5 * var(--spacing))',
+          ...style,
+        } as React.CSSProperties
+      }
+      {...rest}
+    >
+      <ArkPopover.ArrowTip className="border-s border-t" />
+    </ArkPopover.Arrow>
+  )
 }

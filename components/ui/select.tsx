@@ -89,7 +89,7 @@ export const SelectValue = (props: React.ComponentProps<typeof ArkSelect.ValueTe
 }
 
 export const SelectContent = (props: React.ComponentProps<typeof ArkSelect.Content>) => {
-  const { className, ...rest } = props
+  const { className, children, ...rest } = props
 
   return (
     <Portal>
@@ -105,7 +105,7 @@ export const SelectContent = (props: React.ComponentProps<typeof ArkSelect.Conte
             'rounded-xl border shadow-lg/5',
             'origin-(--transform-origin)',
             'outline-none',
-            'overflow-y-auto',
+            'overflow-hidden',
             'duration-100',
             'data-[state=open]:animate-in',
             'data-[state=open]:fade-in-0',
@@ -118,7 +118,9 @@ export const SelectContent = (props: React.ComponentProps<typeof ArkSelect.Conte
           )}
           data-slot="select-content"
           {...rest}
-        />
+        >
+          <div className="max-h-94 overflow-y-auto p-1">{children}</div>
+        </ArkSelect.Content>
       </ArkSelect.Positioner>
     </Portal>
   )

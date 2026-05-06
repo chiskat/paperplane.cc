@@ -4,7 +4,7 @@ import { allDemos } from 'content-collections'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 
-import { ScrollAreaFade } from '@/components/ui/scroll-area-fade'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 import { DemoSidebarItem } from './DemoSidebarItem'
 import { filterAndSortByDemoOrder } from './sort'
@@ -22,13 +22,14 @@ export default function DemosLayout({ children }: { children: ReactNode }) {
 
       <div className="grid gap-6 md:grid-cols-[24rem_minmax(0,1fr)]">
         <aside className="min-w-0 md:sticky md:top-28 md:h-[calc(100dvh-11rem)]">
-          <ScrollAreaFade
+          <ScrollArea
             className={cn(
               'h-full min-h-0 pr-1',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:w-1.5',
               '[&_[data-slot=scroll-area-scrollbar][data-orientation=vertical]]:p-0',
               '**:data-[slot=scroll-area-thumb]:bg-slate-300/45'
             )}
+            scrollFade
           >
             <div className="flex flex-col gap-2">
               {sortedDemos.map(project => {
@@ -46,7 +47,7 @@ export default function DemosLayout({ children }: { children: ReactNode }) {
                 )
               })}
             </div>
-          </ScrollAreaFade>
+          </ScrollArea>
         </aside>
 
         <div className="min-w-0">{children}</div>

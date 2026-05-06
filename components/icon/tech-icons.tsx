@@ -13,6 +13,7 @@ import ElementAsset from '@/assets/tech-icons/element.svg'
 import GiteaAsset from '@/assets/tech-icons/gitea.svg'
 import GithubAsset from '@/assets/tech-icons/github.svg'
 import HexoAsset from '@/assets/tech-icons/hexo.svg'
+import ITToolsAsset from '@/assets/tech-icons/it-tools.png'
 import JoplinAsset from '@/assets/tech-icons/joplin.png'
 import MantineAsset from '@/assets/tech-icons/mantine.svg'
 import MemosAsset from '@/assets/tech-icons/memos.png'
@@ -37,7 +38,6 @@ import RestifyAsset from '@/assets/tech-icons/restify.svg'
 import ShadcnAsset from '@/assets/tech-icons/shadcn.svg'
 import ShieldsioAsset from '@/assets/tech-icons/shields-io.png'
 import TdesignAsset from '@/assets/tech-icons/tdesign.svg'
-import ToolsAsset from '@/assets/tech-icons/tools.png'
 import TrpcAsset from '@/assets/tech-icons/trpc.svg'
 import VerdaccioAsset from '@/assets/tech-icons/verdaccio.svg'
 import ViteAsset from '@/assets/tech-icons/vite.svg'
@@ -51,7 +51,7 @@ export interface TechIconProps {
   size?: number | string
 }
 
-function createTechIcon(src: StaticImageData, alt: string) {
+export function createTechIcon(src: StaticImageData, alt: string) {
   return function TechIcon({ className, style, size = '1em' }: TechIconProps) {
     return (
       <Image
@@ -76,6 +76,7 @@ export const ElementIcon = createTechIcon(ElementAsset, 'element')
 export const GiteaIcon = createTechIcon(GiteaAsset, 'gitea')
 export const GithubIcon = createTechIcon(GithubAsset, 'github')
 export const HexoIcon = createTechIcon(HexoAsset, 'hexo')
+export const ITToolsIcon = createTechIcon(ITToolsAsset, 'it-tools')
 export const JoplinIcon = createTechIcon(JoplinAsset, 'joplin')
 export const MantineIcon = createTechIcon(MantineAsset, 'mantine')
 export const MemosIcon = createTechIcon(MemosAsset, 'memos')
@@ -100,7 +101,6 @@ export const RestifyIcon = createTechIcon(RestifyAsset, 'restify')
 export const ShadcnIcon = createTechIcon(ShadcnAsset, 'shadcn')
 export const ShieldsioIcon = createTechIcon(ShieldsioAsset, 'shieldsio')
 export const TdesignIcon = createTechIcon(TdesignAsset, 'tdesign')
-export const ToolsIcon = createTechIcon(ToolsAsset, 'tools')
 export const TrpcIcon = createTechIcon(TrpcAsset, 'trpc')
 export const VerdaccioIcon = createTechIcon(VerdaccioAsset, 'verdaccio')
 export const ViteIcon = createTechIcon(ViteAsset, 'vite')
@@ -120,6 +120,7 @@ export const techIcons = {
   gitea: GiteaIcon,
   github: GithubIcon,
   hexo: HexoIcon,
+  'it-tools': ITToolsIcon,
   joplin: JoplinIcon,
   mantine: MantineIcon,
   memos: MemosIcon,
@@ -144,7 +145,6 @@ export const techIcons = {
   shadcn: ShadcnIcon,
   shields: ShieldsioIcon,
   tdesign: TdesignIcon,
-  tools: ToolsIcon,
   trpc: TrpcIcon,
   verdaccio: VerdaccioIcon,
   vite: ViteIcon,

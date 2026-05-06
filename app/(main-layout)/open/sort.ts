@@ -7,6 +7,8 @@ export const sort = [
   'cra-template-mui',
   'baseline-node',
   'artalk-go-full',
+  'docker-logrotate',
+  'acme.sh-deploy-docker',
   'docker-api',
 ]
 

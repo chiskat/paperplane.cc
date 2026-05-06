@@ -3,12 +3,8 @@ import Link from 'next/link'
 
 import { AwesomeItemResult } from '@/apis/awesome/items'
 import githubIcon from '@/assets/tech-icons/github.svg'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/animate-ui/components/animate/tooltip'
 import { fromURL, PackageIcon } from '@/components/icon/package-icon'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from './ListItem'
 
 export interface ListItemLinksProps {
@@ -39,13 +35,12 @@ export function ListItemLinks({ awesome }: ListItemLinksProps) {
       <span className="inline-flex items-center gap-1 leading-0">
         {sourceUrl ? (
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Link
                 href={sourceUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-5 w-5 items-center justify-center rounded-sm text-[#868e96] transition-colors hover:text-[#343a40]"
-                title="Source"
                 aria-label="打开 Source 链接"
               >
                 {isGithubSource(sourceUrl) ? (
@@ -62,13 +57,12 @@ export function ListItemLinks({ awesome }: ListItemLinksProps) {
 
         {registryUrl ? (
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Link
                 href={registryUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-5 w-5 items-center justify-center rounded-sm text-[#868e96] transition-colors hover:text-[#343a40]"
-                title="Registry"
                 aria-label="打开 Registry 链接"
               >
                 <PackageIcon type={fromURL(registryUrl)} className="h-4 w-4" />
