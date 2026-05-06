@@ -57,7 +57,13 @@ const isExternalHref = (href: string) => /^(?:[a-z][a-z\d+\-.]*:|\/\/)/i.test(hr
 
 export function isLinkActive(pathname: string, href: string) {
   if (href === '/') {
-    return pathname === '/' || pathname.startsWith('/post/')
+    return (
+      pathname === '/' ||
+      pathname.startsWith('/post/') ||
+      pathname.startsWith('/archives/') ||
+      pathname.startsWith('/categories/') ||
+      pathname.startsWith('/tags/')
+    )
   }
   return getFirstSegment(pathname) === getFirstSegment(href)
 }

@@ -55,7 +55,10 @@ async function githubHistory(repo: string, path: string): Promise<PostHistory[]>
 
 async function articleHistory(filename: string, oldFilename?: string) {
   const [history, oldHistory] = await Promise.all([
-    githubHistory('chiskat/paperplane.cc', `/articles/posts/${filename}.mdx`),
+    githubHistory(
+      'chiskat/paperplane.cc',
+      `/app/(main-layout)/(blog)/_articles/posts/${filename}.mdx`
+    ),
     oldFilename
       ? githubHistory('chiskat/paperplane-blog', `/source/_posts/${oldFilename}.md`)
       : Promise.resolve([]),
@@ -91,7 +94,7 @@ function getAllRevisionsUrl(filename: string) {
     .map(part => encodeURIComponent(part))
     .join('/')
 
-  return `https://github.com/chiskat/paperplane.cc/commits/main/articles/posts/${encodedFilename}.mdx`
+  return `https://github.com/chiskat/paperplane.cc/commits/main/app/(main-layout)/(blog)/_articles/posts/${encodedFilename}.mdx`
 }
 
 export default async function History({ filename, oldFilename }: HistoryProps) {

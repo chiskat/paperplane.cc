@@ -21,14 +21,6 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
-  redirects() {
-    return [
-      { source: '/alphabet', destination: '/about', permanent: false },
-      { source: '/a', destination: '/about', permanent: false },
-      { source: '/d/:path*', destination: '/s/:path*', permanent: false },
-      { source: '/p/:path*', destination: '/s/:path*', permanent: false },
-    ]
-  },
 }
 
 const withMDX = createMDX({

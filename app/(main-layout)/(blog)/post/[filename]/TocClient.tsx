@@ -433,7 +433,7 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
                     className={cn(
                       'font-en-sans text-muted-foreground relative z-1 block truncate py-px pl-2 text-[13px] transition-[color,font-weight]',
                       'hover:text-primary pr-2',
-                      isActive && 'text-primary font-medium'
+                      isActive && 'text-primary'
                     )}
                   >
                     {item.text}

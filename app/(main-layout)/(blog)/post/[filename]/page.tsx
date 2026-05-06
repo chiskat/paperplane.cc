@@ -1,5 +1,6 @@
 import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import absurdityBg from '@/assets/article-page/absurdity.png'
@@ -26,16 +27,17 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
     notFound()
   }
 
-  const { default: ArticleContent } = await import(`@/articles/posts/${filename}.mdx`)
+  const { default: ArticleContent } = await import(
+    `@/app/(main-layout)/(blog)/_articles/posts/${filename}.mdx`
+  )
 
   const tocItems = extractTocFromMdx(article.content)
-  const publishDate = dayjs(article.date).format('YYYY年 M月 D日')
-  const publishDateISO = dayjs(article.date).format('YYYY-MM-DD')
+  const publishDateValue = dayjs(article.date)
+  const publishDate = publishDateValue.format('YYYY年 M月 D日')
+  const publishDateISO = publishDateValue.format('YYYY-MM-DD')
+  const publishYear = publishDateValue.format('YYYY')
+  const publishMonth = publishDateValue.format('MM')
   const category = article.categories[0] ?? ''
-  const articleGithubUrl = `https://github.com/chiskat/paperplane.cc/blob/main/articles/posts/${filename
-    .split('/')
-    .map(part => encodeURIComponent(part))
-    .join('/')}.mdx`
 
   return (
     <div id="article-top" className="relative my-8 scroll-mt-40">
@@ -66,13 +68,33 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
             <h1 className="font-title-serif mt-2.5 mb-7.5 pr-[200px] text-4xl">{article.title}</h1>
 
             <div className="font-title-serif mb-7.5 flex items-center gap-7 border-y border-[#ddd] py-1.5 text-[18px] text-[#999] *:cursor-pointer [&>*+*]:relative [&>*+*]:before:absolute [&>*+*]:before:top-1/2 [&>*+*]:before:-left-3.5 [&>*+*]:before:h-5 [&>*+*]:before:w-[1.5px] [&>*+*]:before:-translate-y-1/2 [&>*+*]:before:bg-[#ddd] [&>*+*]:before:content-['']">
-              <time dateTime={publishDateISO}>{publishDate}</time>
-              <span>分类: {category}</span>
-              <a href="#comments">
+              <Link
+                className="transition-colors duration-200 hover:text-[#c0332f]"
+                href={`/archives/${publishYear}/${publishMonth}`}
+              >
+                <time dateTime={publishDateISO}>{publishDate}</time>
+              </Link>
+              <Link
+                className="transition-colors duration-200 hover:text-[#c0332f]"
+                href={`/categories/${encodeURIComponent(category)}`}
+              >
+                {category}
+              </Link>
+              {article.tags?.length ? (
+                <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {article.tags.map(tag => (
+                    <Link
+                      key={tag}
+                      className="transition-colors duration-200 hover:text-[#c0332f]"
+                      href={`/tags/${encodeURIComponent(tag)}`}
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </span>
+              ) : null}
+              <a className="transition-colors duration-200 hover:text-[#c0332f]" href="#comments">
                 留言: <span className="artalk-comment-count">...</span>
-              </a>
-              <a href={articleGithubUrl} target="_blank" rel="noreferrer">
-                GitHub 源码
               </a>
             </div>
 

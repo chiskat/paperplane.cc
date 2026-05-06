@@ -1,6 +1,7 @@
 import { readdir } from 'fs/promises'
 import path from 'path'
 import dayjs from 'dayjs'
+import Link from 'next/link'
 
 import { ArticleTitleLink } from './ArticleTitleLink'
 
@@ -22,14 +23,19 @@ interface PostListItem {
 }
 
 async function getPostList(): Promise<PostListItem[]> {
-  const files = await readdir(path.join(process.cwd(), './articles/posts'), { recursive: true })
+  const files = await readdir(
+    path.join(process.cwd(), './app/(main-layout)/(blog)/_articles/posts'),
+    { recursive: true }
+  )
   const mdxFiles = (files as string[]).filter(file => /\.mdx$/.test(file))
 
   const list = await Promise.all(
     mdxFiles.map(async file => {
       const normalizedPath = file.split(path.sep).join('/')
       const slug = normalizedPath.replace(/\.mdx$/, '')
-      const articleModule = (await import(`@/articles/posts/${normalizedPath}`)) as {
+      const articleModule = (await import(
+        `@/app/(main-layout)/(blog)/_articles/posts/${normalizedPath}`
+      )) as {
         frontmatter: PostFrontmatter
       }
       const frontmatter = articleModule.frontmatter
@@ -72,7 +78,11 @@ export default async function HomePage() {
     <div className="mb-8 space-y-10">
       {groupedPosts.map(([year, items]) => (
         <section key={year}>
-          <h2 className="font-title-serif mb-3 text-[30px] text-[#4a5665]">{year}</h2>
+          <h2 className="font-title-serif mb-3 text-[30px] text-[#4a5665]">
+            <Link href={`/archives/${year}`} className="hover:text-primary transition-colors">
+              {year}
+            </Link>
+          </h2>
           <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
             {items.map(item => (
               <li key={item.slug} className="relative rounded-sm px-2 py-1.5">
