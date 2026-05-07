@@ -82,6 +82,26 @@
       opacity: 0;
     }
   }
+
+  --animate-slide-up: slideUp 0.2s ease-out;
+
+  --animate-slide-down: slideDown 0.2s ease-out;
+  @keyframes slideUp {
+    from {
+      height: var(--height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes slideDown {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--height);
+    }
+  }
 }
 
 :root {

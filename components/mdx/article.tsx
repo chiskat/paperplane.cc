@@ -5,6 +5,7 @@ import { cloneElement, isValidElement, type ComponentPropsWithoutRef } from 'rea
 import { ArticleHR } from '@/components/mdx/article-hr'
 import { ArticlePreviewImage } from '@/components/mdx/article-preview-image'
 import { MdxAlert } from '@/components/mdx/mdx-alert'
+import { MdxCollapse } from '@/components/mdx/mdx-collapse'
 import { MdxTab, MdxTabs } from '@/components/mdx/mdx-tabs'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
 import { cn } from '@/utils/style'
@@ -20,6 +21,7 @@ export default function articleMDX(): MDXComponents {
     MdxTabs,
     MdxTab,
     MdxAlert,
+    MdxCollapse,
     hr: ArticleHR,
     p({ children }: ComponentPropsWithoutRef<'p'>) {
       return <p className="my-4 whitespace-pre-line">{children}</p>
