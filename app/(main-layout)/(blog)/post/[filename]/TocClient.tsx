@@ -142,14 +142,6 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
       event.preventDefault()
       cancelAutoScrollByUser()
 
-      if (window.location.hash) {
-        window.history.replaceState(
-          null,
-          '',
-          `${window.location.pathname}${window.location.search}`
-        )
-      }
-
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
     },
@@ -172,16 +164,11 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
       const targetOffset = getScrollTargetOffset()
       const rawTargetTop = heading.getBoundingClientRect().top + window.scrollY - targetOffset
       const targetTop = Math.min(Math.max(rawTargetTop, 0), maxScrollTop)
-      const targetHash = `#${encodeURIComponent(id)}`
 
       autoScrollTargetIdRef.current = id
       setActiveId(prev => (prev === id ? prev : id))
       clearIndicatorSettleTimeout()
       setIsIndicatorSoftTransition(true)
-
-      if (window.location.hash !== targetHash) {
-        window.history.pushState(null, '', targetHash)
-      }
 
       if (prefersReducedMotion) {
         window.scrollTo({ top: targetTop, behavior: 'auto' })
