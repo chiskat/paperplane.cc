@@ -90,7 +90,7 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     commands:
-      - docker cp paperplane.cc:/paperplane.cc/.next/ ./
+      - docker cp paperplane-cc:/paperplane.cc/.next/ ./
 
   - name: deploy-upload-s3
     image: plugins/s3
