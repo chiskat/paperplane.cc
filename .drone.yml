@@ -39,8 +39,8 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     commands:
-      - docker stop paperplane.cc
-      - docker rm paperplane.cc
+      - docker stop paperplane-cc
+      - docker rm paperplane-cc
 
   - name: rename-old-image
     image: docker:dind
