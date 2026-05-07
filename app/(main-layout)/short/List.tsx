@@ -20,8 +20,8 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
+import { shortURLPrefix } from '@/lib/zods/short'
 import { ShortRedirectType } from '@/models/enums'
-import { shortURLPrefix } from '@/zods/short'
 import { ShortDeleteButton } from './ShortDeleteButton'
 
 const PAGE_SIZE = 10

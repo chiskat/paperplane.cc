@@ -29,8 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { addShortItemZod } from '@/lib/zods/short'
 import { ShortRedirectType } from '@/models/enums'
-import { addShortItemZod } from '@/zods/short'
 
 const redirectTypeLabelMap: Record<ShortRedirectType, string> = {
   [ShortRedirectType.PERMANENTLY]: '永久重定向 (301)',

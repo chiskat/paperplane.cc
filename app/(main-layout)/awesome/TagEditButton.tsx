@@ -22,7 +22,7 @@ import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { FileUpload, FileUploadTrigger } from '@/components/ui/file-upload'
 import { toast } from '@/components/ui/toast'
 import { useTRPC } from '@/lib/trpc-client'
-import { awesomeTagZod } from '@/zods/awesome'
+import { awesomeTagZod } from '@/lib/zods/awesome'
 
 const swatches = [
   '#ef4444',

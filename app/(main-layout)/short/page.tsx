@@ -17,7 +17,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { addShortItemZod, type ShortItemReturn } from '@/zods/short'
+import { addShortItemZod, type ShortItemReturn } from '@/lib/zods/short'
 import { APIDoc } from './APIDoc'
 import { Form, type FormValue } from './Form'
 import { List } from './List'

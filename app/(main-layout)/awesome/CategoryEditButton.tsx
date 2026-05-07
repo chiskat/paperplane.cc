@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 import { useTRPC } from '@/lib/trpc-client'
-import { awesomeCatelogZod } from '@/zods/awesome'
+import { awesomeCatelogZod } from '@/lib/zods/awesome'
 
 export type CategoryFormValue = input<typeof awesomeCatelogZod>
 

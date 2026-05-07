@@ -2,9 +2,9 @@ import 'server-only'
 
 import { prisma } from '@/lib/prisma'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
+import { awesomeItemZod } from '@/lib/zods/awesome'
+import { deleteZod, idZod, resortZod } from '@/lib/zods/common'
 import { AwesomeCatelog, AwesomeItem, Prisma } from '@/models/client'
-import { awesomeItemZod } from '@/zods/awesome'
-import { deleteZod, idZod, resortZod } from '@/zods/common'
 
 export type AwesomeTreeResult = AwesomeCatelog & {
   underAwesomes: Omit<AwesomeItemResult, 'underAwesomes'>[]

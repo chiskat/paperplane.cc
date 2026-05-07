@@ -6,11 +6,11 @@ import z from 'zod'
 
 import { prisma } from '@/lib/prisma'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
+import { deleteZod, paginationZod } from '@/lib/zods/common'
+import { addShortItemZod, shortItemReturn, shortItemZod, shortURLPrefix } from '@/lib/zods/short'
 import { Short } from '@/models/client'
 import { ShortRedirectType } from '@/models/enums'
 import { ShortFindFirstArgs, ShortWhereInput } from '@/models/models'
-import { deleteZod, paginationZod } from '@/zods/common'
-import { addShortItemZod, shortItemReturn, shortItemZod, shortURLPrefix } from '@/zods/short'
 import { generateShortKeyByRecord, ShortKeyRecord } from './generateShortKey'
 
 async function findValidShortItemByKey(key: string, mergeOptions: ShortFindFirstArgs = {}) {

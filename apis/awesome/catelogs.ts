@@ -4,9 +4,9 @@ import { omit } from 'lodash-es'
 
 import { prisma } from '@/lib/prisma'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
+import { awesomeCatelogZod } from '@/lib/zods/awesome'
+import { deleteZod, idZod, resortZod } from '@/lib/zods/common'
 import { AwesomeCatelog, Prisma } from '@/models/client'
-import { awesomeCatelogZod } from '@/zods/awesome'
-import { deleteZod, idZod, resortZod } from '@/zods/common'
 
 export interface AwesomeCatelogNode extends AwesomeCatelog {
   children: AwesomeCatelogNode[]

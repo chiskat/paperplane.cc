@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { awesomeItemZod } from '@/zods/awesome'
+import { awesomeItemZod } from '@/lib/zods/awesome'
 
 const NONE_CATELOG_VALUE = '__no_catelog__'
 
