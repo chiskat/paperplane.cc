@@ -1,0 +1,13 @@
+# 本地运行专用 docker compose 文件
+services:
+  paperplane-cc-local:
+    image: chiskat/baseline-node20:2026.4.26
+    container_name: paperplane-cc-local
+    working_dir: /paperplane.cc
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/paperplane.cc
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    command: 'bash -c "pnpm i && pnpm dev"'
