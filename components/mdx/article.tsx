@@ -20,7 +20,7 @@ export default function articleMDX(): MDXComponents {
     MdxTab,
     hr: ArticleHR,
     p({ children }: ComponentPropsWithoutRef<'p'>) {
-      return <p className="my-3 whitespace-pre-line">{children}</p>
+      return <p className="my-4 whitespace-pre-line">{children}</p>
     },
     a({ href, target, rel, className, ...props }: ComponentPropsWithoutRef<'a'>) {
       const isHashLink = typeof href === 'string' && href.startsWith('#')
@@ -66,7 +66,7 @@ export default function articleMDX(): MDXComponents {
       return (
         <h2
           {...props}
-          className="group relative mt-14 mb-8 scroll-mt-32 text-[32px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
+          className="group relative mt-16 mb-8 scroll-mt-32 text-[32px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
           <Highlighter action="underline" iterations={2} color="var(--primary)" padding={0}>
             {children}
@@ -78,7 +78,7 @@ export default function articleMDX(): MDXComponents {
       return (
         <h3
           {...props}
-          className="group relative mt-14 mb-8 scroll-mt-32 text-[26px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
+          className="group relative mt-16 mb-8 scroll-mt-32 text-[28px] [&_a]:absolute [&_a]:ml-4 [&_a]:inline-flex [&_a]:no-underline! [&_a]:opacity-0 [&_a]:transition-opacity [&_a]:duration-200 hover:[&_a]:opacity-100"
         >
           <Highlighter action="underline" iterations={2} color="var(--primary)" padding={0}>
             {children}
