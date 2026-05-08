@@ -112,7 +112,7 @@ support personnel：**
 ---
 
 2025 更新：
-现在 Windows 系统更新了，提供 WSL Settings 这个工具，可以用于快速配置 WSL，在开始菜单中可以找到它：
+现在 Windows 系统更新了，提供 WSL Settings 工具，可以用于快速配置 WSL，在开始菜单中可以找到它：
 
 ![](../images/image-20250216230449379.png)
 
@@ -125,10 +125,9 @@ support personnel：**
 # WSL2 “镜像” 网络模式
 
 WSL 默认是 NAT 网络模式，也就是说 WSL 的操作系统运行在一个单独的网段，而我们的 Windows 系统充当子系统的 “网关”，此时两个系统之间的互访问会比较麻烦；
-如果是 WSL 中运行 Jellyfin 等场合，在不同的网段会导致 DLNA 等网络发现服务无法正常工作，带来很大的不便。
+如果是 WSL 中运行 Jellyfin 等场合，在不同的网段还会导致 DLNA 等网络发现服务无法正常工作。
 
-在 2025 年，WSL2 推出了 “镜像” 网络模式，在这个模式下，宿主机上的接口会 “镜像” 到 WSL 上，提高两者的互访问性。
-这里附带上 [官网文档](https://learn.microsoft.com/zh-cn/windows/wsl/networking)。
+在 2025 年，WSL2 推出了 “镜像” 网络模式，在这个模式下，宿主机上的接口会 “镜像” 到 WSL 上，提高两者的互访问性。这里附带上 [官网文档](https://learn.microsoft.com/zh-cn/windows/wsl/networking)。
 
 使用 `.wslconfig` 配置时，添加以下配置项：
 
@@ -277,10 +276,10 @@ cd ~
 
 这里的 `docker-desktop` 用于运行 Docker 引擎（也就是 dockerd），而 `docker-desktop-data` 用于存储容器和镜像。
 
-> 注意，从 Docker Desktop 4.30 开始，不再会有 `docker-desktop-data` 实例了。以前创建的会继续保留。
+> 注意，从 Docker Desktop 4.30 开始，不再会创建 `docker-desktop-data` 实例了。旧版本创建的会继续保留，对使用没有任何影响。
 
 即使在安装时没有选用 WSL，也可以后续在 Docker Desktop 设置页面找到 “Use the WSL 2 based engine” 复选框修改设置。
-如果你已有运行了的 WSL 的实例，也可以在 Docker Desktop 设置页面的 Resources > WSL integration 页面找到各个 WSL 实例，并配置允许哪些实例访问 Docker，在这些实例里面可以直接执行例如 `docker ps` 等命令。
+如果你已有运行了的 WSL 的实例，也可以在 Docker Desktop 设置页面的 Resources > WSL integration 页面找到各个 WSL 实例，并配置允许哪些实例访问 Docker。
 
 ---
 
@@ -306,6 +305,7 @@ sudo apt-get install -y git vim
 然后，推荐把宿主机的 SSH 公钥拷贝过来直接使用：
 
 ```bash
+# 拷贝密钥
 cp -r /mnt/c/Users/用户名/.ssh ~/.ssh
 
 # （重要）一定要改好权限，SSH 对密钥文件的权限很敏感
@@ -317,6 +317,27 @@ SSH 的密钥权限尽量设置为 `600`（也就是 `-rw-------`），过高的
 
 在 WSL 实例里开发，可以直接在 WSL 的实例中安装 Node.js 等环境；
 更推荐的做法是，把运行环境放在 Docker 镜像里，随项目提供 Docker Compose 配置和 Dockerfile，这样在 VS Code 连接 WSL 后，可以直接运行 `docker compose up` （此时不需要 `-d` 参数）来启动项目。目前 PaperPlane 的大部分项目均使用这种开发方式。
+
+# 检测 WSL 环境并访问宿主机目录
+
+可通过以下命令检测是否处于 WSL 中：
+
+```bash
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  # 进入此分支，表明检测到处于 WSL
+  # 获取 Windows 的用户名
+  WIN_USERNAME=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+fi
+```
+
+得到用户名后，便可以访问用户桌面、用户目录：
+
+```bash
+USER_PROFILE="/mnt/c/Users/${WIN_USERNAME}"
+USER_DESKTOP="/mnt/c/Users/${WIN_USERNAME}/Desktop"
+```
+
+这样可以方便的在 WSL 中运行一些程序并与宿主机交互。
 
 # WSL 1 和 2 的区别
 
