@@ -72,11 +72,20 @@ function createInlineAlert(node) {
   }
 
   const nextChildren = node.children.map(child => ({ ...child }))
-  nextChildren[0].value = firstLines.slice(1).join('\n').replace(/^\n+/, '')
-  nextChildren[nextChildren.length - 1].value = lastLines
-    .slice(0, -1)
-    .join('\n')
-    .replace(/\n+$/, '')
+
+  if (nextChildren.length === 1) {
+    nextChildren[0].value = firstLines
+      .slice(1, -1)
+      .join('\n')
+      .replace(/^\n+/, '')
+      .replace(/\n+$/, '')
+  } else {
+    nextChildren[0].value = firstLines.slice(1).join('\n').replace(/^\n+/, '')
+    nextChildren[nextChildren.length - 1].value = lastLines
+      .slice(0, -1)
+      .join('\n')
+      .replace(/\n+$/, '')
+  }
 
   const contentChildren = nextChildren.filter(child => child.type !== 'text' || child.value !== '')
 
