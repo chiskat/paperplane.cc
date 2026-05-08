@@ -351,7 +351,7 @@ TLS 既可以实现对网站的 “认证”，避免我们访问冒牌网站，
 
 中间人攻击是一种特殊的攻击方式，攻击者截获用户的请求，或者劫持用户 DNS 导向攻击者自己的服务器，假装网站服务器向浏览器返回一个 “服务器不支持 HTTPS，降级为 HTTP” 的响应，这样后续的连接就都不是 HTTPS 了，此后攻击者在中间充当 “中间人”，截取用户的请求转发给服务器，截取服务器的响应转发给用户。
 
-<br />
+---
 
 **HSTS：**
 
@@ -378,25 +378,79 @@ server {
 
 而 `ssl_ciphers`、`ssl_protocols` 声明了网站接受的加密方式和 TLS 协议版本，用以强化安全性。
 
-<br />
+---
 
-**OCSP 装订：**
+**OCSP 装订和 CRL：**
 
-OCSP 全名 “在线证书状态协议（Online Certificate Status Protocol)”，顾名思义，它用于查询证书的有效状态。客户端需要向证书机构的 OCSP 服务器查询网站的证书是否被吊销，这个过程既耗时，又容易泄密。
+OCSP 全名 “在线证书状态协议（Online Certificate Status Protocol）”，顾名思义，它用于查询证书的有效状态。客户端需要向证书机构的 OCSP 服务器查询网站的证书是否被吊销，这个过程既耗时，又容易泄密。
 
-因此，诞生了 “OCSP 装订 （OCSP stapling ）” 这一技术。只要网站服务器支持这个技术，那么它就会定期自动进行 OCSP 查询并缓存结果，收到浏览器的 TLS 握手时，将 OCSP 的结果直接在握手时返回给浏览器，这样浏览器端只需要校验 OCSP 而不需要额外发一次请求了，减小了访问延迟，也增强了安全性。
+因此，诞生了 “OCSP 装订 （OCSP stapling）” 这一技术。只要网站服务器支持这个技术，那么它就会定期自动进行 OCSP 查询并缓存结果，收到浏览器的 TLS 握手时，将 OCSP 的结果直接在握手时返回给浏览器，这样浏览器端只需要校验 OCSP 而不需要额外发一次请求了，减小了访问延迟，也增强了安全性。
 
 给出 Nginx 的配置 OCSP 装订的方式：
 
-```nginx {3-4}
+```nginx {3-4,8}
 server {
   # ...
   ssl_stapling on;
   ssl_stapling_verify on;
+
+  ssl_certificate /path/to/fullchain.pem;
+  ssl_certificate_key /path/to/key.pem;
+  ssl_trusted_certificate /path/to/ca.pem;
+  # ...
 }
 ```
 
 Nginx 版本号需要大约 1.3.7 及以上才能使用此功能。
+这里在 SSL 证书处还加了一行 `ssl_trusted_certificate`，如果你使用 `acme.sh` 等证书申请工具，记得加上这个 CA 文件的参数。
+
+```bash {4}
+acme.sh --install-cert -d 域名 \
+  --key-file       /path/to/key.pem \
+  --fullchain-file /path/to/fullchain.pem \
+  --ca-file        /path/to/ca.pem
+```
+
+也就是 `--ca-file` 参数。
+
+<br />
+
+使用 `acme.sh` 等工具申请 HTTPS 证书时，需要注意证书的厂商必须支持 OCSP 装订的扩展能力，且申请时需添加对应的参数。
+
+这里有一个重要的点：`acme.sh` 的默认证书提供商 Let's Encrypt 发布了一篇 [公告](https://letsencrypt.org/2024/12/05/ending-ocsp) 表示从 2025 年开始终止对 OCSP 的支持，并关停 OCSP 服务器。
+如果你仍然使用 Let's Encrypt 的证书并开启 OCSP 装订，那么 Nginx 会不断打印以下错误：
+
+```
+OCSP responder timed out (110: Operation timed out) while requesting certificate status, responder: ocsp.sectigo.com
+```
+
+因此，建议切换到 ZeroSSL 等证书颁发机构，这些机构仍然支持 OCSP。
+
+切换方法：
+
+```bash
+acme.sh --set-default-ca --server zerossl
+```
+
+ZeroSSL 必须使用账户，因此需要注册账户：
+
+```bash
+acme.sh --register-account -m 邮箱
+```
+
+请求颁发证书时，需要添加额外的参数 `--ocsp-must-staple` 在后面：
+
+```bash
+acme.sh --issue --dns DNS厂商 -d 域名 --dnssleep 10 --ocsp-must-staple
+```
+
+<br />
+
+OCSP 需要网站开发者主动向 OCSP 服务器查询证书的吊销状况，并随附在请求中传给客户端，这个过程存在延迟大和对 OCSP 服务器暴露服务器地址等问题；因此，更新的技术 “CRL （Certificate Revocation List）” 应运而生。
+
+网站开发者不需要做任何事，因为 CRL 是客户端实现的技术，它让客户端定期下载 “已吊销的证书列表”，从而减少 OCSP 服务端的压力。
+
+Let's Encrypt 正是因为 CRL 技术的推广而取消 OCSP 服务。
 
 ## 扩展：CDN 劫持
 
