@@ -97,6 +97,15 @@ function getAllRevisionsUrl(filename: string) {
   return `https://github.com/chiskat/paperplane.cc/commits/main/app/(main-layout)/(blog)/_articles/posts/${encodedFilename}.mdx`
 }
 
+function getOldHexoRevisionsUrl(oldFilename: string) {
+  const encodedFilename = oldFilename
+    .split('/')
+    .map(part => encodeURIComponent(part))
+    .join('/')
+
+  return `https://github.com/chiskat/paperplane-blog/commits/main/source/_posts/${encodedFilename}.md`
+}
+
 export default async function History({ filename, oldFilename }: HistoryProps) {
   const history = await articleHistory(filename, oldFilename)
   const sortedHistory = [...history].sort(
@@ -107,6 +116,14 @@ export default async function History({ filename, oldFilename }: HistoryProps) {
   const visibleHistory = shouldTruncateHistory
     ? sortedHistory.slice(0, HISTORY_LIMIT)
     : sortedHistory
+
+  const revisionLinks = [{ href: getAllRevisionsUrl(filename), text: '完整修订记录' }]
+  if (oldFilename) {
+    revisionLinks.push({
+      href: getOldHexoRevisionsUrl(oldFilename),
+      text: '旧版 Hexo 博客修订记录',
+    })
+  }
 
   return (
     <section id="history" className="font-title-serif mt-14 border-t border-[#ddd] pt-8">
@@ -147,15 +164,20 @@ export default async function History({ filename, oldFilename }: HistoryProps) {
           </ul>
 
           <div className="font-content-serif relative mt-5 text-left text-[18px] leading-normal before:absolute before:-top-5 before:left-2.75 before:h-3 before:w-px before:bg-[#ddd] before:content-['']">
-            {shouldTruncateHistory ? (
-              <a
-                href={getAllRevisionsUrl(filename)}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#2f629d] decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:underline hover:decoration-[#c0332f]/60"
-              >
-                查看全部修订
-              </a>
+            {revisionLinks.length > 0 ? (
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                {revisionLinks.map(item => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#2f629d] decoration-[#2f629d]/40 underline-offset-[3px] transition-all duration-200 hover:text-[#c0332f] hover:underline hover:decoration-[#c0332f]/60"
+                  >
+                    {item.text}
+                  </a>
+                ))}
+              </div>
             ) : (
               <span>已展示全部修订记录</span>
             )}
