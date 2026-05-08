@@ -16,7 +16,8 @@ Docker Hub：https://hub.docker.com/
 Docker Compose 文档：https://docs.docker.com/compose/compose-file/
 Dockerfile 文档：https://docs.docker.com/reference/dockerfile/
 Docker 配置文件 daemon.json 文档：https://docs.docker.com/reference/cli/dockerd/
-将 Docker run 转化为 Docker Compose：https://www.composerize.com/ （建议外网访问）
+
+将 Docker run 转化为 Docker Compose：https://tools.paperplane.cc/docker-run-to-docker-compose-converter/ （由我部署）
 
 # Docker 引擎 `daemon.json` 配置
 
@@ -52,19 +53,22 @@ sudo systemctl restart docker.service
 
 **使用 Docker 源镜像：**
 
-2025 年 2 月更新：
-来自 CoderJia 的可用 Docker 源镜像列表：
-https://www.coderjia.cn/archives/dba3f94c-a021-468a-8ac6-e840f85867ea
-量大管饱，可用状态也是一直在更新的，推荐选用。
-我自己部署的 Docker 源镜像：`https://docker-mirror.p01.cc`；服务器带宽比较低，拉取速度很慢，不建议使用。
+选择一：
+Docker 镜像监控站：
+https://status.anye.xyz/
+可以挑选几个连通性好的，组合成一组源镜像配置。
 
-2024 年 6 月更新：
-国内因政策原因，大部分 Docker 镜像站均已关闭。
-建议 [阅读此文](https://gist.github.com/y0ngb1n/7e8f16af3242c7815e7ca2f0833d3ea6) 了解还有什么国外可用的源镜像，此外文中还有利用 Cloudflare Workers 自行搭建反代的介绍，可以尝试。
+选择二：
+可用的镜像列表和搭建方法：
+https://gist.github.com/y0ngb1n/7e8f16af3242c7815e7ca2f0833d3ea6
 
-网上的版本太旧，很多都不能用了，GitHub Gist 上有人持续更新一个列表，[点击前往](https://gist.github.com/y0ngb1n/7e8f16af3242c7815e7ca2f0833d3ea6)。
+选择三：
+使用 PaperPlane.cc Docker 源镜像：
+https://docker-mirror.p01.cc
 
-编辑 `daemon.json`，这样配置：
+<br />
+
+使用第三方源镜像的方法：编辑 `daemon.json`，这样配置：
 
 ```json
 {
@@ -215,6 +219,17 @@ docker builder du
 
 ---
 
+【推荐】清理构建缓存：
+
+```bash
+# 清理未使用的构建缓存
+docker builder prune
+```
+
+如果你经常构建镜像，这个缓存的大小可能达到数十个 GB，非常推荐清理。
+
+---
+
 清理不用的镜像：
 被容器使用中镜像无法删除，未被任何容器使用的镜像可以删除：
 
@@ -226,15 +241,6 @@ docker rmi <镜像id>
 
 # 快速删除所有无标签的镜像
 docker image prune
-```
-
----
-
-【推荐】清理构建缓存：
-
-```bash
-# 清理未使用的构建缓存
-docker builder prune
 ```
 
 # 服务监听不到流量
@@ -475,7 +481,10 @@ sudo vim /etc/hosts
 ![](../images/image-20240417183553342.png)
 
 此处配置和 SSH 连接用的配置一样，端口是 22；认证方式我是用 SSH 密钥，如果是密码的方式，可以在下拉框处修改。
-服务器地址我这里填写了域名，如果你使用 IP 直连，改成 IP 即可。
+
+::: warning 注意 Host 的写法
+我这里写的是域名，因为我给数据库容器添加了 hosts；正确做法是写成 `localhost` 或者 `127.0.0.1`。
+:::
 
 然后配置数据库连接：
 ![](../images/image-20240417184130360.png)
@@ -504,3 +513,10 @@ sudo vim /etc/hosts
 ![](../images/image-20240417184619320.png)
 
 这样调试起来也会更容易。
+
+# Docker 与防火墙
+
+Docker 允许容器进行端口映射，映射的端口直接对外网开放，这个过程不需要手动调整系统内置的防火墙。
+这是因为，安装 Docker 后，它会接管本机的 iptables / nftables 防火墙，根据用户启动的容器来动态增删规则，容器的端口映射可以直接生效。
+
+Docker 给用户预留了名为 `DOCKER-USER` 的防火墙规则链，Docker 不会调整这里的规则，用户可以在这里添加一些前置规则，流量在进入 Docker 内部的网关之前，会先经过此规则链处理。
