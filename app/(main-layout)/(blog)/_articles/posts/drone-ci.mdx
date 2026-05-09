@@ -88,7 +88,6 @@ server {
 但是，对于纯前端项目而言，我个人更倾向于使用 `scp` 或者 `rsync` 等方式把文件拷贝到服务器指定目录，也强烈推荐这样做：
 
 - 如果使用对象存储作为 CDN 回源，可以在这一步直接把文件上传，这样就完成部署了；
-
 - 旧版本的 JS/CSS 等文件可以保留，如果用户停留在旧版本页面上，未及时刷新，此时懒加载到旧模块不会白屏报错（推荐试试我开发的 [`use-upgrade`](https://www.npmjs.com/package/use-upgrade)）；
 - 外层的 Nginx 统一控制访问行为，不需要多走一次容器内层的 Nginx，管理起来更方便；
 - 如果使用镜像的方式，则还需要在部署机上调度容器，增加了一系列的操作。
@@ -166,7 +165,9 @@ server {
 
 “DinD” 全名 “Docker in Docker”，即运行在 Docker 中的 Docker。在本机需要做构建+部署的场合，这是非常优选的方案，也是本文主要介绍的用法。
 
-**这里再次强调一下，此方式适合于 “构建和部署在同一台机器上” 的场合，也就是非常 “不正规” 的场景；公司业务之类的绝对不推荐这么做，用来做个人网站还是比较适合的。**
+::: info 前提
+这里再次强调一下，此方式适合于 “构建和部署在同一台机器上” 的场合，也就是非常 “不正规” 的场景；公司业务之类的绝对不推荐这么做，用来做个人网站还是比较适合的。
+:::
 
 <br />
 
@@ -187,7 +188,7 @@ services:
 原因是，Drone 的配置文件中，支持将宿主机的目录映射到构建过程中，而 Runner 本身也是一个容器，它不可能越过 Docker 直接把宿主机的文件直接挂在到另一个容器。
 因此，Runner 必须能访问宿主机的 Docker，通过它来完成目录挂载等越级操作。透传 Docker UNIX Socket 给 Runner，这便给了 Runner 访问宿主机上 Docker 的能力。
 
-而且，因为构建流程每一步都是跑在 Docker 容器中的，第一次运行时，Runner 必须自行去拉取这些容器的镜像，**此时 Runner 就会使用宿主机的 Docker 来进行拉取镜像操作**，这些拉取的镜像还会被持续存储在宿主机上，通过 `docker images` 命令直接看到。不过也正因如此，从第二次 CI/CD 开始便不再需要重新拉取一遍镜像了。
+而且，因为构建流程每一步都是跑在 Docker 容器中的，第一次运行时，Runner 必须自行去拉取这些容器的镜像，**此时 Runner 就会使用宿主机的 Docker 来进行拉取镜像操作**，这些拉取的镜像还会被持续存储在宿主机上，通过 `docker images` 命令直接看到。
 
 <br />
 
@@ -206,7 +207,7 @@ services:
 
 给出一个实例 `.drone.yml`：
 
-```yaml
+```yaml {4-6,10-13}
 steps:
   - name: build-image
     image: docker:dind
@@ -238,7 +239,7 @@ Exec Runner 会直接在安装这个 Runner 的机器上运行命令，这和 Je
 
 # 优化 CI/CD 的速度
 
-这里给出项目 [`paperplane-api`](https://git.paperplane.cc/chiskat/paperplane-api) 的 [构建流水线](https://drone.paperplane.cc/chiskat/paperplane-api) 记录：
+这里给出我自己 Gitea 上某个项目的构建流水线记录：
 
 ![](../images/image-20240501133030411.png)
 
@@ -264,7 +265,7 @@ Exec Runner 会直接在安装这个 Runner 的机器上运行命令，这和 Je
 Drone 的 Docker 流水线支持配置 `volumes` 来挂载宿主机的目录，可以将 yarn 的缓存目录对外挂载。
 参考如下 `.drone.yml` 配置：
 
-```yaml
+```yaml {4-6,10-13}
 steps:
   - name: install-deps
     image: node:20
@@ -324,13 +325,10 @@ volumes:
   项目所在的目录，基于你在 `.drone.yml` 中配置的 ["workspace.path"](https://docs.drone.io/pipeline/docker/syntax/workspace/)，默认是 `"/drone/src"`，所以默认情况下缓存目录是 `/drone/src/.pnpm-store`；
   如果你修改了 `workspace`，记得把挂载出去的缓存目录一并修改；
 - **这是因为 pnpm 的 `node_modules` 目录里面都是硬链接，不存在真实的文件，而真实的文件如果放在其他目录，在下一个流水线步骤时这些文件都会丢失掉，只有项目根目录下的文件才是从头到尾一直持久化的；**
-
 - 对于 “cache-dir”，它的默认目录是 `~/.cache/pnpm`；
   如果你需要安装很多全局包，或者执行很多条 `pnpm dlx` 命令，也可以把这个目录挂载出来持久化；
 - pnpm 的缓存和版本有关联，如果你在 `package.json` 中指定了 `"packageManager": "pnpm@版本号"`，那么大版本号变动时，旧版本的缓存无法应用，必须重新下载安装；
 - 顺带提一嘴，使用 `node` 镜像时，`yarn` 是预装的，但 `pnpm` 不是预装的，正确的开启方式是执行 `corepack enable` 指令，而不是 `npm i -g pnpm`。
-
-<br />
 
 为了测试以上内容，我创建了几个仓库：
 
@@ -362,7 +360,7 @@ Docker 镜像的产生需要通过 [Dockerfile](https://docs.docker.com/referenc
 
 只要保证 Layer 可以被复用，构建速度和上传速度都可以极大程度的加速。
 
-这里还是以 `paperplane-api` 的流水线举例，可以看到大部分步骤都被缓存了，构建步骤瞬间完成：
+这里还是以我自己的某个项目的流水线举例，可以看到大部分步骤都被缓存了，构建步骤瞬间完成：
 
 ![](../images/image-20240501141312479.png)
 
@@ -371,7 +369,7 @@ Docker 镜像的产生需要通过 [Dockerfile](https://docs.docker.com/referenc
 - 对于任何 Dockerfile 指令而言，**必须它之前的所有 Layer 都已使用缓存，它才能应用缓存**；
 - 通过 `ADD` 或 `COPY` 向镜像中添加文件时，文件的内容和结构均没有任何变化时，这一 Layer 的哈希才会不变，这样才能应用缓存。
 
-这两点机制是 Docker 用于在多次构建镜像时保证镜像的一致性的。但这些机制也给我们利用缓存机制提出了考验。
+这两点机制是 Docker 用于在多次构建镜像时保证镜像的一致性的；我们必须遵循这些机制，才能让构建缓存正确生效。
 
 可以发现：
 
@@ -448,7 +446,7 @@ RUN npm build
 
 Layer 的缓存机制固然好，但使用它时也需要注意一些问题：
 
-如果 Dockerfile 中需要执行一些带有副作用的操作，例如如果要 `curl` 发送一个请求，而 Docker 并不知道这一步有副作用，只要命令不被修改，这一步骤就会被缓存，从第二次执行开始就被跳过了，请求也就不再会被发出。
+如果 Dockerfile 中需要执行一些带有副作用的操作，例如如果要 `curl` 发送一个请求，而 Docker 并不知道这一步有副作用，这一步骤会被缓存，从第二次执行开始就被跳过了，请求也就不再会被发出。
 
 <br />
 
@@ -476,7 +474,7 @@ RUN yarn prisma generate
 ## 利用 docker buildx 的 `mount` 功能
 
 > 注意：这个功能必须开启 Docker 的 BuildKit，可以参考我的 [这篇文章](https://paperplane.cc/p/8a170662c899/) 来开启，这也会给 Docker 带来更多特性；
-> 开启 BuildKit 会导致你原先的所有镜像和容器不可用，基本等于重装系统。
+> 开启 BuildKit 需要切换为 `containerd` 的容器存储层；如果你使用的 Docker 版本低于 29，这个步骤会导致你原先的所有镜像和容器不可用，基本等于重装系统。
 >
 > 更换到 BuildKit 后，原来使用的构建指令 `docker build` 需要改成 `docker buildx build`，后者才能利用 BuildKit 的新特性。
 > 如果你觉得这样太麻烦，那么执行 `docker buildx install` 即可，这样原先的指令可以不用改继续用。
