@@ -379,6 +379,7 @@ export const ModelName = {
   AwesomeCatelog: 'AwesomeCatelog',
   AwesomeTag: 'AwesomeTag',
   AwesomeItem: 'AwesomeItem',
+  OARobotProfile: 'OARobotProfile',
   Short: 'Short',
   User: 'User',
   Session: 'Session',
@@ -408,6 +409,7 @@ export type TypeMap<
       | 'awesomeCatelog'
       | 'awesomeTag'
       | 'awesomeItem'
+      | 'oARobotProfile'
       | 'short'
       | 'user'
       | 'session'
@@ -638,6 +640,82 @@ export type TypeMap<
         count: {
           args: Prisma.AwesomeItemCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AwesomeItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    OARobotProfile: {
+      payload: Prisma.$OARobotProfilePayload<ExtArgs>
+      fields: Prisma.OARobotProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OARobotProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OARobotProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.OARobotProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OARobotProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        findMany: {
+          args: Prisma.OARobotProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>[]
+        }
+        create: {
+          args: Prisma.OARobotProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        createMany: {
+          args: Prisma.OARobotProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OARobotProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.OARobotProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        update: {
+          args: Prisma.OARobotProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.OARobotProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OARobotProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OARobotProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.OARobotProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OARobotProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.OARobotProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOARobotProfile>
+        }
+        groupBy: {
+          args: Prisma.OARobotProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OARobotProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OARobotProfileCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.OARobotProfileCountAggregateOutputType>
+            | number
         }
       }
     }
@@ -1168,6 +1246,22 @@ export const AwesomeItemScalarFieldEnum = {
 export type AwesomeItemScalarFieldEnum =
   (typeof AwesomeItemScalarFieldEnum)[keyof typeof AwesomeItemScalarFieldEnum]
 
+export const OARobotProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  desc: 'desc',
+  type: 'type',
+  accessToken: 'accessToken',
+  secret: 'secret',
+  extraAuthentication: 'extraAuthentication',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type OARobotProfileScalarFieldEnum =
+  (typeof OARobotProfileScalarFieldEnum)[keyof typeof OARobotProfileScalarFieldEnum]
+
 export const ShortScalarFieldEnum = {
   id: 'id',
   url: 'url',
@@ -1274,6 +1368,14 @@ export const SortOrder = {
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive',
@@ -1287,6 +1389,14 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 /**
  * Field references
@@ -1321,6 +1431,32 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+
+/**
+ * Reference to a field of type 'OARobotType'
+ */
+export type EnumOARobotTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'OARobotType'
+>
+
+/**
+ * Reference to a field of type 'OARobotType[]'
+ */
+export type ListEnumOARobotTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'OARobotType[]'
+>
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
 
 /**
  * Reference to a field of type 'ShortRedirectType'
@@ -1459,6 +1595,7 @@ export type GlobalOmitConfig = {
   awesomeCatelog?: Prisma.AwesomeCatelogOmit
   awesomeTag?: Prisma.AwesomeTagOmit
   awesomeItem?: Prisma.AwesomeItemOmit
+  oARobotProfile?: Prisma.OARobotProfileOmit
   short?: Prisma.ShortOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit

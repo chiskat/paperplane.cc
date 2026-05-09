@@ -199,6 +199,7 @@ export type UserWhereInput = {
   accounts?: Prisma.AccountListRelationFilter
   apikeys?: Prisma.ApikeyListRelationFilter
   short?: Prisma.ShortListRelationFilter
+  oarobotProfiles?: Prisma.OARobotProfileListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -213,6 +214,7 @@ export type UserOrderByWithRelationInput = {
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   apikeys?: Prisma.ApikeyOrderByRelationAggregateInput
   short?: Prisma.ShortOrderByRelationAggregateInput
+  oarobotProfiles?: Prisma.OARobotProfileOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -231,6 +233,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     accounts?: Prisma.AccountListRelationFilter
     apikeys?: Prisma.ApikeyListRelationFilter
     short?: Prisma.ShortListRelationFilter
+    oarobotProfiles?: Prisma.OARobotProfileListRelationFilter
   },
   'id' | 'email'
 >
@@ -273,6 +276,7 @@ export type UserCreateInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -287,6 +291,7 @@ export type UserUncheckedCreateInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -301,6 +306,7 @@ export type UserUpdateInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,6 +321,7 @@ export type UserUncheckedUpdateInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -385,6 +392,34 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserCreateNestedOneWithoutOarobotProfilesInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedCreateWithoutOarobotProfilesInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOarobotProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutOarobotProfilesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedCreateWithoutOarobotProfilesInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOarobotProfilesInput
+  upsert?: Prisma.UserUpsertWithoutOarobotProfilesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutOarobotProfilesInput,
+      Prisma.UserUpdateWithoutOarobotProfilesInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutOarobotProfilesInput
+  >
 }
 
 export type UserCreateNestedOneWithoutShortInput = {
@@ -493,6 +528,90 @@ export type UserUpdateOneRequiredWithoutApikeysNestedInput = {
   >
 }
 
+export type UserCreateWithoutOarobotProfilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  apikeys?: Prisma.ApikeyCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutOarobotProfilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  apikeys?: Prisma.ApikeyUncheckedCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutOarobotProfilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedCreateWithoutOarobotProfilesInput
+  >
+}
+
+export type UserUpsertWithoutOarobotProfilesInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedUpdateWithoutOarobotProfilesInput
+  >
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedCreateWithoutOarobotProfilesInput
+  >
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOarobotProfilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutOarobotProfilesInput,
+    Prisma.UserUncheckedUpdateWithoutOarobotProfilesInput
+  >
+}
+
+export type UserUpdateWithoutOarobotProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  apikeys?: Prisma.ApikeyUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOarobotProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  apikeys?: Prisma.ApikeyUncheckedUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
 export type UserCreateWithoutShortInput = {
   id: string
   name: string
@@ -504,6 +623,7 @@ export type UserCreateWithoutShortInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyCreateNestedManyWithoutUserInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutShortInput = {
@@ -517,6 +637,7 @@ export type UserUncheckedCreateWithoutShortInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyUncheckedCreateNestedManyWithoutUserInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutShortInput = {
@@ -555,6 +676,7 @@ export type UserUpdateWithoutShortInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUpdateManyWithoutUserNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutShortInput = {
@@ -568,6 +690,7 @@ export type UserUncheckedUpdateWithoutShortInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUncheckedUpdateManyWithoutUserNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -581,6 +704,7 @@ export type UserCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -594,6 +718,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -635,6 +760,7 @@ export type UserUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -648,6 +774,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -661,6 +788,7 @@ export type UserCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -674,6 +802,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   apikeys?: Prisma.ApikeyUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -715,6 +844,7 @@ export type UserUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -728,6 +858,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   apikeys?: Prisma.ApikeyUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutApikeysInput = {
@@ -741,6 +872,7 @@ export type UserCreateWithoutApikeysInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutApikeysInput = {
@@ -754,6 +886,7 @@ export type UserUncheckedCreateWithoutApikeysInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutApikeysInput = {
@@ -795,6 +928,7 @@ export type UserUpdateWithoutApikeysInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApikeysInput = {
@@ -808,6 +942,7 @@ export type UserUncheckedUpdateWithoutApikeysInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 /**
@@ -819,6 +954,7 @@ export type UserCountOutputType = {
   accounts: number
   apikeys: number
   short: number
+  oarobotProfiles: number
 }
 
 export type UserCountOutputTypeSelect<
@@ -828,6 +964,7 @@ export type UserCountOutputTypeSelect<
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   apikeys?: boolean | UserCountOutputTypeCountApikeysArgs
   short?: boolean | UserCountOutputTypeCountShortArgs
+  oarobotProfiles?: boolean | UserCountOutputTypeCountOarobotProfilesArgs
 }
 
 /**
@@ -878,6 +1015,15 @@ export type UserCountOutputTypeCountShortArgs<
   where?: Prisma.ShortWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOarobotProfilesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.OARobotProfileWhereInput
+}
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -893,6 +1039,7 @@ export type UserSelect<
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
     apikeys?: boolean | Prisma.User$apikeysArgs<ExtArgs>
     short?: boolean | Prisma.User$shortArgs<ExtArgs>
+    oarobotProfiles?: boolean | Prisma.User$oarobotProfilesArgs<ExtArgs>
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['user']
@@ -951,6 +1098,7 @@ export type UserInclude<
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   apikeys?: boolean | Prisma.User$apikeysArgs<ExtArgs>
   short?: boolean | Prisma.User$shortArgs<ExtArgs>
+  oarobotProfiles?: boolean | Prisma.User$oarobotProfilesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<
@@ -969,6 +1117,7 @@ export type $UserPayload<
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     apikeys: Prisma.$ApikeyPayload<ExtArgs>[]
     short: Prisma.$ShortPayload<ExtArgs>[]
+    oarobotProfiles: Prisma.$OARobotProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1527,6 +1676,17 @@ export interface Prisma__UserClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ShortPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
+  oarobotProfiles<T extends Prisma.User$oarobotProfilesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$oarobotProfilesArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$OARobotProfilePayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -2092,6 +2252,34 @@ export type User$shortArgs<
   take?: number
   skip?: number
   distinct?: Prisma.ShortScalarFieldEnum | Prisma.ShortScalarFieldEnum[]
+}
+
+/**
+ * User.oarobotProfiles
+ */
+export type User$oarobotProfilesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the OARobotProfile
+   */
+  select?: Prisma.OARobotProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OARobotProfile
+   */
+  omit?: Prisma.OARobotProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OARobotProfileInclude<ExtArgs> | null
+  where?: Prisma.OARobotProfileWhereInput
+  orderBy?:
+    | Prisma.OARobotProfileOrderByWithRelationInput
+    | Prisma.OARobotProfileOrderByWithRelationInput[]
+  cursor?: Prisma.OARobotProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OARobotProfileScalarFieldEnum | Prisma.OARobotProfileScalarFieldEnum[]
 }
 
 /**

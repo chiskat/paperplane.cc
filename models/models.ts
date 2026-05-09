@@ -10,6 +10,7 @@
 export type * from './models/AwesomeCatelog'
 export type * from './models/AwesomeTag'
 export type * from './models/AwesomeItem'
+export type * from './models/OARobotProfile'
 export type * from './models/Short'
 export type * from './models/User'
 export type * from './models/Session'

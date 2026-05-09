@@ -8,6 +8,14 @@
  * 🟢 You can import this file directly.
  */
 
+export const OARobotType = {
+  DINGTALK: 'DINGTALK',
+  WXBIZ: 'WXBIZ',
+  FEISHU: 'FEISHU',
+} as const
+
+export type OARobotType = (typeof OARobotType)[keyof typeof OARobotType]
+
 export const ShortRedirectType = {
   PERMANENTLY: 'PERMANENTLY',
   TEMPORARY: 'TEMPORARY',

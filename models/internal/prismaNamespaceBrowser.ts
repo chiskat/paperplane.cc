@@ -51,6 +51,7 @@ export const ModelName = {
   AwesomeCatelog: 'AwesomeCatelog',
   AwesomeTag: 'AwesomeTag',
   AwesomeItem: 'AwesomeItem',
+  OARobotProfile: 'OARobotProfile',
   Short: 'Short',
   User: 'User',
   Session: 'Session',
@@ -118,6 +119,22 @@ export const AwesomeItemScalarFieldEnum = {
 
 export type AwesomeItemScalarFieldEnum =
   (typeof AwesomeItemScalarFieldEnum)[keyof typeof AwesomeItemScalarFieldEnum]
+
+export const OARobotProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  desc: 'desc',
+  type: 'type',
+  accessToken: 'accessToken',
+  secret: 'secret',
+  extraAuthentication: 'extraAuthentication',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type OARobotProfileScalarFieldEnum =
+  (typeof OARobotProfileScalarFieldEnum)[keyof typeof OARobotProfileScalarFieldEnum]
 
 export const ShortScalarFieldEnum = {
   id: 'id',
@@ -225,6 +242,14 @@ export const SortOrder = {
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive',
@@ -238,3 +263,11 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]

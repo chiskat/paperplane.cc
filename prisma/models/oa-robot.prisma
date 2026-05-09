@@ -1,0 +1,30 @@
+/// OA 机器人类型
+enum OARobotType {
+  /// 钉钉
+  DINGTALK
+  /// 企业微信
+  WXBIZ
+  /// 飞书
+  FEISHU
+}
+
+/// OA 机器人档案
+model OARobotProfile {
+  id          String      @id @default(cuid())
+  name        String
+  desc        String?
+  type        OARobotType
+  accessToken String?     @map("access_token")
+  secret      String?
+
+  /// 额外配置，例如飞书所需使用的额外令牌
+  extraAuthentication Json? @map("extra_authentication")
+
+  userId String? @map("user_id")
+  author User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("oa_robot_profile")
+}

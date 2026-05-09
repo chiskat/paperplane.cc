@@ -61,6 +61,11 @@ export type AwesomeTag = Prisma.AwesomeTagModel
  */
 export type AwesomeItem = Prisma.AwesomeItemModel
 /**
+ * Model OARobotProfile
+ * OA 机器人档案
+ */
+export type OARobotProfile = Prisma.OARobotProfileModel
+/**
  * Model Short
  * 短网址记录
  */

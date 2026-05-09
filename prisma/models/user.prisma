@@ -13,7 +13,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  short Short[]
+  short           Short[]
+  oarobotProfiles OARobotProfile[]
 
   @@unique([email])
   @@map("user")
