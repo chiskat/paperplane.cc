@@ -473,7 +473,7 @@ RUN yarn prisma generate
 
 ## 利用 docker buildx 的 `mount` 功能
 
-> 注意：这个功能必须开启 Docker 的 BuildKit，可以参考我的 [这篇文章](https://paperplane.cc/p/8a170662c899/) 来开启，这也会给 Docker 带来更多特性；
+> 注意：这个功能必须开启 Docker 的 BuildKit，可以参考我的 [这篇文章](https://paperplane.cc/post/docker-arch) 来开启，这也会给 Docker 带来更多特性；
 > 开启 BuildKit 需要切换为 `containerd` 的容器存储层；如果你使用的 Docker 版本低于 29，这个步骤会导致你原先的所有镜像和容器不可用，基本等于重装系统。
 >
 > 更换到 BuildKit 后，原来使用的构建指令 `docker build` 需要改成 `docker buildx build`，后者才能利用 BuildKit 的新特性。
