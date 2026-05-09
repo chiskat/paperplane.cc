@@ -1,0 +1,525 @@
+---
+title: JS 的生成器和迭代器
+date: 2018-04-11 16:00:00
+tags: [JS]
+categories: [JS]
+---
+
+本文介绍 JS 中 “生成器” 和 “迭代” 相关内容。
+生成器包含了 “生成器函数” 和 “生成器对象”；迭代部分包含了 “迭代器对象” 和 “迭代器协议”。
+
+# 初识生成器函数
+
+形如 `function* func()` 的函数是生成器函数，和普通函数不同的是，多了一个星号 `*`。
+
+生成器函数具备以下特点：
+
+- 它可以使用 `yield` 来向外输出结果值；
+- 每次运行到 `yield` 语句并将结果值输出后，代码运行到的位置会保留；
+  如果被要求 “继续生成”，那么会从之前暂停的位置继续运行；
+  如果被要求 “重新生成”，那么又会像普通函数一样从顶部开始运行；
+- 如果运行到方法结尾或是 `return` 语句，则表示不再有新的值可供生成了，函数会表明 “生成结束”。
+
+这个逻辑引出了一连串问题：
+
+1. 作为一个函数，它如何接收到 “继续生成” 的信号？
+2. 又如何表明 “生成结束”？
+3. 此外，之前执行到的位置又如何记忆？
+
+---
+
+我们通过代码来实践。
+在浏览器 F12 控制台中输入以下内容：
+
+```js
+function* generator() {
+  yield 1
+  yield 2
+  yield 3
+}
+```
+
+这样，便完成定义了一个生成器函数。
+
+我们可以利用 `...` 展开运算符来测试生成器函数的值：
+
+```js
+[...generator()]
+// → [1, 2, 3]
+```
+
+这是预期的结果。但是，这没有直接打印生成器函数的返回值。
+我们尝试把返回值存储为变量，看看它到底是什么：
+
+```js
+console.log(generator())
+// → generator {<suspended>}
+```
+
+打印出的结果却是 `generator {<suspended>}`，这是一个特殊对象，没有可见属性，它也并不是我们 `yield` 预取返回的结果。
+这个对象是什么？它与生成器函数的关系是什么？
+
+# 生成器对象
+
+通过浏览器代码编辑器，可以看出这个对象上还是有一些方法属性的，这些属性继承自它的原型，因此控制台里也看不到；
+例如它具备 `.next()` 函数，尝试执行：
+
+```js
+const generatorResult = generator()
+
+generatorResult.next()
+// → {value: 1, done: false}
+
+generatorResult.next()
+// → {value: 2, done: false}
+
+generatorResult.next()
+// → {value: 3, done: false}
+
+generatorResult.next()
+// → {value: undefined, done: true}
+// 后续再执行都是这个值
+```
+
+看到这，是不是立马豁然开朗了！
+原来，生成器函数运行后，并不是立刻返回 `yield` 的值，而是返回一个对象，后续可以通过这个对象来得到各个 `yield` 的值。
+
+这样以来，之前的几个问题便得到了解答：
+
+1. 我们通调用这个对象的 `.next()` 方法，表明要求 “继续生成”，后续的返回值就是包装过的 `yield` 输出；
+2. 这个返回值的 `done` 属性表明生成器是否 “生成结束”；
+3. 因为生成器函数返回一个对象，这个对象内部一定隐含着 JS 引擎记录的生成器函数上次执行到的位置；生成器函数在不同作用域被多次调用时，每次都返回独立的对象，这些对象分别储存着每次的运行位置。
+
+生成器函数返回的对象，我们称之为 **“生成器对象”**。
+实际上，**“生成器对象” 就是一个特殊的 “迭代器对象”。**
+
+# 迭代器对象
+
+::: info 生成器对象和迭代器对象的关系
+迭代器对象只要满足特定结构就行；
+但生成器对象只能由生成器函数返回，因为它内部有一些 JS 引擎记录生成器函数执行位置的内部数据，很难自行构造出来的。
+:::
+
+任何一个对象，只要满足以下规范，它便可作为一个 “迭代器对象”：
+
+- 具备一个 `.next()` 方法属性；
+- 调用这个方法，返回值格式为 `{ value, done }`，其中：
+  - `value` 表示本次迭代的值；
+  - `done` 是布尔值，表示是否 `yield` 输出了所有结果。
+
+写一个最简的迭代器对象：
+
+```js {2-4}
+const iteratorObject = {
+  next() {
+    return { value: undefined, done: true }
+  }
+}
+```
+
+然后，通过 `...` 展开运算符对它进行测试：
+
+```js
+[...iteratorObject]
+// → Uncaught TypeError: iteratorObject is not iterable
+```
+
+这段错误翻译过来是：“"iteratorObject" 不可迭代”。
+我们已经实现了迭代器对象的规范，但运行这段代码时却出现上述错误提示，同样的代码，换成真正生成器函数返回的生成器对象就不会报错。这是我们的实现有问题吗？
+
+这是因为，JS 引擎可以通过一些方式得知一个对象是不是 “可迭代的”；
+而这个迭代器对象是我们 “手搓” 的，虽然它满足迭代器对象的规范，但并不被当作是 “可迭代的”，它缺少一个 “身份证”。
+
+而这个 “身份证”，叫做 [“迭代器协议”](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)，我喜欢称之为 “可迭代协议”。
+
+# 迭代器协议 `[Symbol.iterator]`
+
+在我的另一篇博客文章 [《JavaScript 标准库备忘》](https://paperplane.cc/post/js-std) 的 `Symbol` 章节中，提到了 `Symbol.iterator` 这个常量，如果某个对象按规范实现了这个键的属性，那么它便可被认为是 “可迭代的对象”。
+
+简单来说，这个规范是这样的：
+
+- 对象需要实现 `[Symbol.iterator]` 方法属性；
+- 此方法属性必须返回一个**迭代器对象**；
+  最简单的实现方式，因为任何生成器函数都可以直接返回迭代器对象，这个函数可以直接是一个生成器函数；
+  或者，开发者自己手写一个函数返回一个模拟的迭代器对象，也可以。
+
+这个规范便叫做 “迭代器协议”，或者 “可迭代协议”。
+
+实现了迭代器协议的对象，便被称之为 “可迭代对象”。
+我们对这种对象使用 `...` 展开运算符或者 `for ... of ...` 运算符，JS 引擎便可以正确运行而不报错。
+
+# 可迭代对象
+
+我们按照上述规则实现一个最简单的 “可迭代对象”：
+
+```js
+// 这是上一步做的，模拟一个 “迭代器对象”
+const iteratorObject = {
+  next() {
+    return { value: undefined, done: true }
+  }
+}
+
+const iterableObject = {
+  [Symbol.iterator]() {
+    return iteratorObject
+  }
+}
+```
+
+然后进行测试：
+
+```js
+[...iterableObject]
+// → []
+```
+
+因为我们的迭代器对象直接返回 `{ done: true }`，所以这个数组是空的。
+
+可见，`[Symbol.iterator]` 属性就是对象 “可迭代” 的 “身份证”；符合这个规范的对象，我们称之为实现了 “迭代器协议”，对象便是 “可迭代的”。
+
+---
+
+上面这个例子，返回一个空数组。
+我们可以尝试让它能返回 `[1, 2, 3]`，改写代码：
+
+```js
+// 模拟一个 “迭代器对象”
+const iteratorObject = {
+  _num: 0,
+  next() {
+    this._num = this._num + 1
+    return { value: this._num, done: this._num > 3 }
+  }
+}
+
+const iterableObject = {
+  [Symbol.iterator]() {
+    return iteratorObject
+  }
+}
+```
+
+然后进行测试：
+
+```js
+[...iterableObject]
+// → [1, 2, 3]
+```
+
+这种写法，需要手动管理内部状态；
+如果使用生成器函数配合 `yield`，将是由 JS 引擎在内部管理执行位置，会简便很多。
+
+---
+
+因为生成器函数返回的就是一个迭代器对象，所以 `[Symbol.iterator]` 可以直接使用一个生成器函数。
+我们写代码测试一下：
+
+```js
+const iterableObject = {
+  *[Symbol.iterator]() {
+    yield 1
+    yield 2
+    yield 3
+  }
+}
+```
+
+打印输出：
+
+```js
+[...iterableObject]
+// → [1, 2, 3]
+```
+
+符合我们的预期。
+
+---
+
+接下来，回到最开始的问题，生成器函数的返回值 “生成器对象”，它为什么可以被 `...` 展开？
+你可能一眼就看出答案了：**生成器对象自身是 “可迭代的”！说明这个对象自己也实现了 “迭代器协议”！**
+
+而我们在最开始自己手写的 “生成器对象”，并没有实现 “迭代器协议”，所以使用 `...` 时会报错。
+
+# 迭代器（生成器）对象详解
+
+回想一下迭代器对象和迭代器协议：
+
+- 某对象具备 `.next()` 方法属性，且返回 `{ value, done }`，它便是迭代器对象；
+- 某对象具备 `[Symbol.iterator]` 方法属性，且返回一个 “迭代器对象”，它便是可迭代对象。
+
+**是不是发现了，一个迭代器对象，只需要在 `[Symbol.iterator]` 中返回自身，它便满足上面的两个条件！**
+
+动手试一下，构造以下代码：
+
+```js {9-12}
+const iteratorObject = {
+  _num: 0,
+
+  next() {
+    this._num = this._num + 1
+    return { value: this._num, done: this._num > 3 }
+  },
+
+  // 实现可迭代协议，返回自身即可
+  [Symbol.iterator]() {
+    return this
+  }
+}
+```
+
+进行测试：
+
+```js
+[...iteratorObject]
+// → [1, 2, 3]
+```
+
+这完全可行。
+
+再回想之前的生成器函数，它的返回值是一个生成器对象，这个对象正好是既包含 `.next()` 属性，又可以被 `...` 展开，可被迭代；这说明，**生成器对象既是一个迭代器对象，也是可迭代对象！**
+
+还记得最开始的时候，我们发现 `generator()` 的返回值是一个对象，但对它进行 `...` 展开操作，却可以组成数组；因为生成器函数返回了一个生成器对象，这个对象既是迭代器对象，可以不断地 `.next()` 获取下一次 `yield` 值，也是可迭代对象，支持 `...` 等运算符。
+
+::: info 补充说明
+生成器对象的 `[Symbol.iterator]` 是由 JS 引擎内部隐藏实现的，它并不是直接返回自身；
+但这不重要，我们自己写代码时完全可以这样实现。
+:::
+
+## 生成器对象与生成器的关系
+
+实际上，这个对象还会在内部记住生成器函数的（本轮次的）执行位置。
+我们构造以下代码进行测试：
+
+```js
+function* generator() {
+  yield 1
+  yield 2
+  yield 3
+}
+```
+
+还是最开始的生成器函数，然后，我们获取它返回的 “生成器对象”：
+
+```js
+const generatorResult = generator()
+
+generatorResult.next()
+// → {value: 1, done: false}
+```
+
+进行第一次 `.next()` 操作后，我们不再继续，而是使用 `...` 展开它：
+
+```js
+[...generatorResult]
+// → [2, 3]
+```
+
+可见，通过 `.next()` 操作消费掉第一个 `yield` 值后，它就只剩下两个 `yield` 值了，此时使用 `...` 展开，也只能打印剩余两个值；
+这也侧面说明了，生成器对象内部存储了生成器函数的运行位置。
+
+继续执行，结果显而易见：
+
+```js
+[...generatorResult]
+// → []
+```
+
+因为生成器函数的 `yield` 已被我们消费完了。
+
+## JS 的迭代操作
+
+我们的 `...` 展开运算符、`for ... of ...` 语法、数组解构赋值 `const [a, b] = something` 等代码，实际上隐含了 “迭代” 操作；还有例如 `new Set()` 时，JS 也会对入参进行 “迭代” 操作时会触发。
+
+这个 “迭代” 操作是怎样的？
+
+JS 的很多类型都是可迭代的，数组、字符串，甚至是对象。
+我们可以通过 `Proxy` 来代理一个数组，查看 JS 引擎如何执行 “迭代” 动作：
+
+```js
+const array = [1, 2, 3]
+
+const proxiedArray = new Proxy(array, {
+  get(target, prop, receiver) {
+    if (prop === Symbol.iterator) {
+      console.log('[get] Symbol.iterator')
+
+      const originalIteratorMethod = Reflect.get(target, prop, receiver)
+
+      return function (...args) {
+        console.log('[call] Symbol.iterator()')
+
+        return originalIteratorMethod.apply(this, args)
+      }
+    }
+
+    return Reflect.get(target, prop, receiver)
+  }
+})
+```
+
+这里，`proxiedArray` 是一个被代理的数组，我们对它进行迭代操作：
+
+```js
+[...proxiedArray]
+// →
+// [get] Symbol.iterator
+// [call] Symbol.iterator()
+```
+
+可见，JS 想要对一个对象进行 “迭代” 操作，就会调用它的 `[Symbol.iterator]` 方法属性，得到一个迭代器对象用于后续运算。
+
+---
+
+我们更进一步，对这个迭代器对象进行代理：
+
+```js
+const array = [1, 2, 3]
+
+const proxiedArray = new Proxy(array, {
+  get(target, prop, receiver) {
+    if (prop === Symbol.iterator) {
+      const originalIteratorMethod = Reflect.get(target, prop, receiver)
+
+      return function (...args) {
+        console.log('[call] Symbol.iterator()')
+
+        // 返回的迭代器对象
+        const iterator = originalIteratorMethod.apply(this, args)
+        // 对它进行代理
+        return new Proxy(iterator, {
+          get(itTarget, itProp, itReceiver) {
+            if (itProp === 'next') {
+              const originalNext = Reflect.get(itTarget, itProp, itReceiver)
+
+              return function (...nextArgs) {
+                const result = originalNext.apply(itTarget, nextArgs)
+                console.log('  [call] iterator.next() ->', result)
+
+                return result
+              }
+            }
+
+            return Reflect.get(itTarget, itProp, itReceiver)
+          }
+        })
+      }
+    }
+
+    return Reflect.get(target, prop, receiver)
+  }
+})
+```
+
+这里针对迭代器对象也进行了代理，我们运行测试代码查看输出：
+
+```js
+[...proxiedArray]
+// →
+// [call] Symbol.iterator()
+//   [call] iterator.next() -> {value: 1, done: false}
+//   [call] iterator.next() -> {value: 2, done: false}
+//   [call] iterator.next() -> {value: 3, done: false}
+//   [call] iterator.next() -> {value: undefined, done: true}
+```
+
+可见，JS 内部的 “迭代” 操作，实际上就是对迭代器对象进行不断地 `.next()` 操作，获取它的下一个值，直到 `done: true` 为止。
+
+## 完整的迭代器对象
+
+我们上文中只给出了迭代器对象的最简例子。
+实际上，这个对象支持很多方法属性：
+
+属性 `.next([val])`：
+JS 引擎会在进行迭代时不断调用此函数，来尝试获取下一个结果值，此函数的返回值格式应为 `{ done, value }`，JS 引擎会根据 `done` 来判断迭代是否完毕。
+此函数可以接受一个参数，如果这个迭代器对象是由生成器函数创建的，那么这个参数会进入生成器函数内部，见下文。
+
+属性 `.return([val])`：
+如果迭代器被提前终止，例如 `for` 循环中使用 `break` 提前跳出或因为代码抛出错误提前结束循环，JS 引擎会调用迭代器对象的此函数；
+此函数此时应该返回一个 `{ done: true }` 的对象；
+此函数可以接受一个参数，参数应该成为结果值的 `.value`。
+
+属性 `.throw(error)`：
+如果这个迭代器对象是由生成器函数创建的，那么这个参数会进入生成器函数内部，见下文。
+
+## 生成器函数和生成器对象的交互
+
+生成器对象本身就是一个迭代器对象，只不过，它 “关联” 到了这个生成器函数上，可以和生成器函数之间产生一些交互；
+
+作为一个迭代器对象时，`.next()` 函数的参数没有意义；
+但是，如果它是由某个生成器函数创建而来，那么 `.next()` 传入的值将进入函数内部，作为 `yield` 语句的返回值。
+
+这里引出了 `yield` 语句的特殊用法：
+
+```js
+function* generator() {
+  const result = yield 1
+  // ...
+}
+```
+
+可见，`yield` 语句是可以有返回值的；每次调用它返回的迭代器对象的 `.next()` 并传入参数，这个参数便会作为 `yield` 的返回值。
+
+首先声明一个生成器函数：
+
+```js
+function* generator() {
+  const result_1 = yield 1
+  console.log(result_1)
+
+  const result_2 = yield 2
+  console.log(result_2)
+
+  const result_3 = yield 3
+  console.log(result_3)
+}
+```
+
+测试它的输出：
+
+```js
+[...generator()]
+// →
+// undefined
+// undefined
+// undefined
+// [1, 2, 3]
+```
+
+因为 JS 引擎的迭代操作不会给 `yield` 任何返回值，所以 `console.log()` 打印的都为 `undefined`。
+
+使用迭代器对象，通过调用 `.next()` 的方式手动迭代，且调用时传入参数值：
+
+```js {4}
+const generatorResult = generator()
+
+generatorResult.next('aaa')
+// → {value: 1, done: false}
+
+generatorResult.next('bbb')
+// → "bbb"
+// → {value: 2, done: false}
+
+generatorResult.next('ccc')
+// → "ccc"
+// → {value: 3, done: false}
+
+generatorResult.next('ddd')
+// → "ddd"
+// → {value: undefined, done: true}
+
+generatorResult.next('eee')
+// → {value: undefined, done: true}
+// 后续都是这个输出
+```
+
+注意代码中高亮的部分，`'aaa'` 并没有被打印出来，第二次开始却直接打印了 `'bbb'`；**第一次的 `.next()` 传入的参数莫名其妙 “消失” 了，甚至都没触发到 `console.log()`**。
+
+这是因为，JS 执行到 `yield` 语句得到输出值后，就会暂停执行，**此时 `yield` 还没返回（也就是说 `result_1` 还没被赋值）**，而下一次调用 `next()` 时传入的参数会直接覆盖掉第一次传的直接作为 `yield` 语句的结果（也就是说第二次的 `'bbb'` 变成了 `yield 1` 的返回值了），所以前一次的输入就被覆盖了。
+
+此外，JS 会迭代到函数返回 `{ done: true }` 为止，因此 `yield` 执行完成后，还会继续运行代码，直到 `return` 语句或函数结尾，因此所有 `yield` 语句后面的代码也会在最后一次 `.next()` 后被运行到。
+
+---
+
+生成器对象还有一个函数属性 `.throw([error])`，它用于在 `yield` 处抛出一个错误；
+通常来说，生成器函数内部可能使用 `try ... catch ...` 包裹 `yield`，此时抛出错误便可让生成器函数捕获这个错误并进入处理流程。
