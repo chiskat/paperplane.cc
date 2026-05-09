@@ -117,7 +117,7 @@ export default function articleMDX(): MDXComponents {
         <li
           {...props}
           className={cn(
-            'marker:font-title-serif my-1 pl-1 whitespace-pre-line marker:font-semibold',
+            'marker:font-title-serif my-1 pl-1 whitespace-pre-line marker:font-semibold [&>ol]:whitespace-normal [&>ul]:whitespace-normal',
             className
           )}
         />
