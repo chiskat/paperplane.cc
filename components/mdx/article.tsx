@@ -1,7 +1,14 @@
 import type { MDXComponents } from 'mdx/types'
 import Link from 'next/link'
-import { cloneElement, isValidElement, type ComponentPropsWithoutRef } from 'react'
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from 'react'
 
+import { CopyButton } from '@/components/animate-ui/components/buttons/copy'
 import { ArticleHR } from '@/components/mdx/article-hr'
 import { ArticlePreviewImage } from '@/components/mdx/article-preview-image'
 import { MdxAlert } from '@/components/mdx/mdx-alert'
@@ -10,6 +17,22 @@ import { MdxTab, MdxTabs } from '@/components/mdx/mdx-tabs'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
 import { cn } from '@/utils/style'
 import { Highlighter } from '../ui/highlighter'
+
+function extractCodeText(node: ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node)
+  }
+
+  if (Array.isArray(node)) {
+    return node.map(extractCodeText).join('')
+  }
+
+  if (isValidElement(node)) {
+    return extractCodeText((node.props as { children?: ReactNode }).children)
+  }
+
+  return ''
+}
 
 export default function articleMDX(): MDXComponents {
   return {
@@ -124,6 +147,7 @@ export default function articleMDX(): MDXComponents {
       )
     },
     pre({ children, className, ...props }: ComponentPropsWithoutRef<'pre'>) {
+      const codeText = Children.toArray(children).map(extractCodeText).join('').replace(/\n$/, '')
       const codeBlock = isValidElement(children)
         ? cloneElement<any>(children, {
             className: cn('code-block', (children as any).props.className),
@@ -131,15 +155,26 @@ export default function articleMDX(): MDXComponents {
         : children
 
       return (
-        <pre
-          {...props}
-          className={cn(
-            'mt-2 mb-6 overflow-x-auto rounded-md bg-[#f5f2f0] px-4 py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-xs **:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4 [&_code]:not-italic! [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
-            className
-          )}
-        >
-          {codeBlock}
-        </pre>
+        <div className="group relative mt-2 mb-6">
+          {codeText ? (
+            <CopyButton
+              content={codeText}
+              variant="outline"
+              size="xs"
+              className="pointer-events-none absolute top-2 right-2 z-10 cursor-pointer bg-[#f5f2f0]/90 opacity-0 backdrop-blur-sm transition-opacity duration-200 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
+              aria-label="复制代码"
+            />
+          ) : null}
+          <pre
+            {...props}
+            className={cn(
+              'overflow-x-auto rounded-md bg-[#f5f2f0] px-4 py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-xs **:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4 [&_code]:not-italic! [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
+              className
+            )}
+          >
+            {codeBlock}
+          </pre>
+        </div>
       )
     },
     code({ children, className, ...props }: ComponentPropsWithoutRef<'code'>) {
