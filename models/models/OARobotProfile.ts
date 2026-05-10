@@ -21,12 +21,23 @@ export type OARobotProfileModel =
 
 export type AggregateOARobotProfile = {
   _count: OARobotProfileCountAggregateOutputType | null
+  _avg: OARobotProfileAvgAggregateOutputType | null
+  _sum: OARobotProfileSumAggregateOutputType | null
   _min: OARobotProfileMinAggregateOutputType | null
   _max: OARobotProfileMaxAggregateOutputType | null
 }
 
+export type OARobotProfileAvgAggregateOutputType = {
+  index: number | null
+}
+
+export type OARobotProfileSumAggregateOutputType = {
+  index: number | null
+}
+
 export type OARobotProfileMinAggregateOutputType = {
   id: string | null
+  index: number | null
   name: string | null
   desc: string | null
   type: $Enums.OARobotType | null
@@ -39,6 +50,7 @@ export type OARobotProfileMinAggregateOutputType = {
 
 export type OARobotProfileMaxAggregateOutputType = {
   id: string | null
+  index: number | null
   name: string | null
   desc: string | null
   type: $Enums.OARobotType | null
@@ -51,6 +63,7 @@ export type OARobotProfileMaxAggregateOutputType = {
 
 export type OARobotProfileCountAggregateOutputType = {
   id: number
+  index: number
   name: number
   desc: number
   type: number
@@ -63,8 +76,17 @@ export type OARobotProfileCountAggregateOutputType = {
   _all: number
 }
 
+export type OARobotProfileAvgAggregateInputType = {
+  index?: true
+}
+
+export type OARobotProfileSumAggregateInputType = {
+  index?: true
+}
+
 export type OARobotProfileMinAggregateInputType = {
   id?: true
+  index?: true
   name?: true
   desc?: true
   type?: true
@@ -77,6 +99,7 @@ export type OARobotProfileMinAggregateInputType = {
 
 export type OARobotProfileMaxAggregateInputType = {
   id?: true
+  index?: true
   name?: true
   desc?: true
   type?: true
@@ -89,6 +112,7 @@ export type OARobotProfileMaxAggregateInputType = {
 
 export type OARobotProfileCountAggregateInputType = {
   id?: true
+  index?: true
   name?: true
   desc?: true
   type?: true
@@ -143,6 +167,18 @@ export type OARobotProfileAggregateArgs<
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+   **/
+  _avg?: OARobotProfileAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+   **/
+  _sum?: OARobotProfileSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
    **/
   _min?: OARobotProfileMinAggregateInputType
@@ -174,12 +210,15 @@ export type OARobotProfileGroupByArgs<
   take?: number
   skip?: number
   _count?: OARobotProfileCountAggregateInputType | true
+  _avg?: OARobotProfileAvgAggregateInputType
+  _sum?: OARobotProfileSumAggregateInputType
   _min?: OARobotProfileMinAggregateInputType
   _max?: OARobotProfileMaxAggregateInputType
 }
 
 export type OARobotProfileGroupByOutputType = {
   id: string
+  index: number | null
   name: string
   desc: string | null
   type: $Enums.OARobotType
@@ -190,6 +229,8 @@ export type OARobotProfileGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: OARobotProfileCountAggregateOutputType | null
+  _avg: OARobotProfileAvgAggregateOutputType | null
+  _sum: OARobotProfileSumAggregateOutputType | null
   _min: OARobotProfileMinAggregateOutputType | null
   _max: OARobotProfileMaxAggregateOutputType | null
 }
@@ -212,6 +253,7 @@ export type OARobotProfileWhereInput = {
   OR?: Prisma.OARobotProfileWhereInput[]
   NOT?: Prisma.OARobotProfileWhereInput | Prisma.OARobotProfileWhereInput[]
   id?: Prisma.StringFilter<'OARobotProfile'> | string
+  index?: Prisma.IntNullableFilter<'OARobotProfile'> | number | null
   name?: Prisma.StringFilter<'OARobotProfile'> | string
   desc?: Prisma.StringNullableFilter<'OARobotProfile'> | string | null
   type?: Prisma.EnumOARobotTypeFilter<'OARobotProfile'> | $Enums.OARobotType
@@ -226,6 +268,7 @@ export type OARobotProfileWhereInput = {
 
 export type OARobotProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  index?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   desc?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -244,6 +287,7 @@ export type OARobotProfileWhereUniqueInput = Prisma.AtLeast<
     AND?: Prisma.OARobotProfileWhereInput | Prisma.OARobotProfileWhereInput[]
     OR?: Prisma.OARobotProfileWhereInput[]
     NOT?: Prisma.OARobotProfileWhereInput | Prisma.OARobotProfileWhereInput[]
+    index?: Prisma.IntNullableFilter<'OARobotProfile'> | number | null
     name?: Prisma.StringFilter<'OARobotProfile'> | string
     desc?: Prisma.StringNullableFilter<'OARobotProfile'> | string | null
     type?: Prisma.EnumOARobotTypeFilter<'OARobotProfile'> | $Enums.OARobotType
@@ -260,6 +304,7 @@ export type OARobotProfileWhereUniqueInput = Prisma.AtLeast<
 
 export type OARobotProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  index?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   desc?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -270,8 +315,10 @@ export type OARobotProfileOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OARobotProfileCountOrderByAggregateInput
+  _avg?: Prisma.OARobotProfileAvgOrderByAggregateInput
   _max?: Prisma.OARobotProfileMaxOrderByAggregateInput
   _min?: Prisma.OARobotProfileMinOrderByAggregateInput
+  _sum?: Prisma.OARobotProfileSumOrderByAggregateInput
 }
 
 export type OARobotProfileScalarWhereWithAggregatesInput = {
@@ -283,6 +330,7 @@ export type OARobotProfileScalarWhereWithAggregatesInput = {
     | Prisma.OARobotProfileScalarWhereWithAggregatesInput
     | Prisma.OARobotProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<'OARobotProfile'> | string
+  index?: Prisma.IntNullableWithAggregatesFilter<'OARobotProfile'> | number | null
   name?: Prisma.StringWithAggregatesFilter<'OARobotProfile'> | string
   desc?: Prisma.StringNullableWithAggregatesFilter<'OARobotProfile'> | string | null
   type?: Prisma.EnumOARobotTypeWithAggregatesFilter<'OARobotProfile'> | $Enums.OARobotType
@@ -296,6 +344,7 @@ export type OARobotProfileScalarWhereWithAggregatesInput = {
 
 export type OARobotProfileCreateInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -309,6 +358,7 @@ export type OARobotProfileCreateInput = {
 
 export type OARobotProfileUncheckedCreateInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -322,6 +372,7 @@ export type OARobotProfileUncheckedCreateInput = {
 
 export type OARobotProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -335,6 +386,7 @@ export type OARobotProfileUpdateInput = {
 
 export type OARobotProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -348,6 +400,7 @@ export type OARobotProfileUncheckedUpdateInput = {
 
 export type OARobotProfileCreateManyInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -361,6 +414,7 @@ export type OARobotProfileCreateManyInput = {
 
 export type OARobotProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -373,6 +427,7 @@ export type OARobotProfileUpdateManyMutationInput = {
 
 export type OARobotProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -386,6 +441,7 @@ export type OARobotProfileUncheckedUpdateManyInput = {
 
 export type OARobotProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  index?: Prisma.SortOrder
   name?: Prisma.SortOrder
   desc?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -397,8 +453,13 @@ export type OARobotProfileCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type OARobotProfileAvgOrderByAggregateInput = {
+  index?: Prisma.SortOrder
+}
+
 export type OARobotProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  index?: Prisma.SortOrder
   name?: Prisma.SortOrder
   desc?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -411,6 +472,7 @@ export type OARobotProfileMaxOrderByAggregateInput = {
 
 export type OARobotProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  index?: Prisma.SortOrder
   name?: Prisma.SortOrder
   desc?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -419,6 +481,10 @@ export type OARobotProfileMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OARobotProfileSumOrderByAggregateInput = {
+  index?: Prisma.SortOrder
 }
 
 export type OARobotProfileListRelationFilter = {
@@ -523,6 +589,7 @@ export type OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput = {
 
 export type OARobotProfileCreateWithoutAuthorInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -535,6 +602,7 @@ export type OARobotProfileCreateWithoutAuthorInput = {
 
 export type OARobotProfileUncheckedCreateWithoutAuthorInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -591,6 +659,7 @@ export type OARobotProfileScalarWhereInput = {
   OR?: Prisma.OARobotProfileScalarWhereInput[]
   NOT?: Prisma.OARobotProfileScalarWhereInput | Prisma.OARobotProfileScalarWhereInput[]
   id?: Prisma.StringFilter<'OARobotProfile'> | string
+  index?: Prisma.IntNullableFilter<'OARobotProfile'> | number | null
   name?: Prisma.StringFilter<'OARobotProfile'> | string
   desc?: Prisma.StringNullableFilter<'OARobotProfile'> | string | null
   type?: Prisma.EnumOARobotTypeFilter<'OARobotProfile'> | $Enums.OARobotType
@@ -604,6 +673,7 @@ export type OARobotProfileScalarWhereInput = {
 
 export type OARobotProfileCreateManyAuthorInput = {
   id?: string
+  index?: number | null
   name: string
   desc?: string | null
   type: $Enums.OARobotType
@@ -616,6 +686,7 @@ export type OARobotProfileCreateManyAuthorInput = {
 
 export type OARobotProfileUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -628,6 +699,7 @@ export type OARobotProfileUpdateWithoutAuthorInput = {
 
 export type OARobotProfileUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -640,6 +712,7 @@ export type OARobotProfileUncheckedUpdateWithoutAuthorInput = {
 
 export type OARobotProfileUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   desc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumOARobotTypeFieldUpdateOperationsInput | $Enums.OARobotType
@@ -655,6 +728,7 @@ export type OARobotProfileSelect<
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean
+    index?: boolean
     name?: boolean
     desc?: boolean
     type?: boolean
@@ -674,6 +748,7 @@ export type OARobotProfileSelectCreateManyAndReturn<
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean
+    index?: boolean
     name?: boolean
     desc?: boolean
     type?: boolean
@@ -693,6 +768,7 @@ export type OARobotProfileSelectUpdateManyAndReturn<
 > = runtime.Types.Extensions.GetSelect<
   {
     id?: boolean
+    index?: boolean
     name?: boolean
     desc?: boolean
     type?: boolean
@@ -709,6 +785,7 @@ export type OARobotProfileSelectUpdateManyAndReturn<
 
 export type OARobotProfileSelectScalar = {
   id?: boolean
+  index?: boolean
   name?: boolean
   desc?: boolean
   type?: boolean
@@ -724,6 +801,7 @@ export type OARobotProfileOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
   | 'id'
+  | 'index'
   | 'name'
   | 'desc'
   | 'type'
@@ -761,6 +839,7 @@ export type $OARobotProfilePayload<
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: string
+      index: number | null
       name: string
       desc: string | null
       type: $Enums.OARobotType
@@ -1357,6 +1436,7 @@ export interface Prisma__OARobotProfileClient<
  */
 export interface OARobotProfileFieldRefs {
   readonly id: Prisma.FieldRef<'OARobotProfile', 'String'>
+  readonly index: Prisma.FieldRef<'OARobotProfile', 'Int'>
   readonly name: Prisma.FieldRef<'OARobotProfile', 'String'>
   readonly desc: Prisma.FieldRef<'OARobotProfile', 'String'>
   readonly type: Prisma.FieldRef<'OARobotProfile', 'OARobotType'>

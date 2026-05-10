@@ -1248,6 +1248,7 @@ export type AwesomeItemScalarFieldEnum =
 
 export const OARobotProfileScalarFieldEnum = {
   id: 'id',
+  index: 'index',
   name: 'name',
   desc: 'desc',
   type: 'type',
