@@ -6,6 +6,8 @@ import type React from 'react'
 import { annotate } from 'rough-notation'
 import { type RoughAnnotation } from 'rough-notation/lib/model'
 
+import { cn } from '@/utils/style'
+
 type AnnotationAction =
   | 'highlight'
   | 'underline'
@@ -17,6 +19,7 @@ type AnnotationAction =
 
 interface HighlighterProps {
   children: React.ReactNode
+  className?: string
   action?: AnnotationAction
   color?: string
   strokeWidth?: number
@@ -29,6 +32,7 @@ interface HighlighterProps {
 
 export function Highlighter({
   children,
+  className,
   action = 'highlight',
   color = '#ffd1dc',
   strokeWidth = 1.5,
@@ -98,7 +102,7 @@ export function Highlighter({
   }, [shouldShow, action, color, strokeWidth, animationDuration, iterations, padding, multiline])
 
   return (
-    <span ref={elementRef} className="relative inline-block bg-transparent">
+    <span ref={elementRef} className={cn('relative inline-block bg-transparent', className)}>
       {children}
     </span>
   )

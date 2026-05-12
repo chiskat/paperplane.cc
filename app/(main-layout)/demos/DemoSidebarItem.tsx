@@ -64,10 +64,16 @@ export function DemoSidebarItem({ title, active, filename, type, status }: DemoS
     >
       <div className="relative z-10 flex min-w-0 flex-col gap-0.5 pl-2">
         {hovered ? (
-          <Highlighter action="underline" color="#97d7ff" iterations={1} padding={0}>
+          <Highlighter
+            className="max-w-full self-start"
+            action="underline"
+            color="#97d7ff"
+            iterations={1}
+            padding={0}
+          >
             <p
               className={cn(
-                'font-title-serif min-w-0 truncate text-[20px] text-slate-700 transition-colors duration-300'
+                'font-title-serif max-w-full min-w-0 truncate text-[20px] text-slate-700 transition-colors duration-300'
               )}
             >
               {title}
@@ -76,7 +82,7 @@ export function DemoSidebarItem({ title, active, filename, type, status }: DemoS
         ) : (
           <p
             className={cn(
-              'font-title-serif min-w-0 truncate text-[20px] text-slate-700 transition-colors duration-300'
+              'font-title-serif max-w-full min-w-0 self-start truncate text-[20px] text-slate-700 transition-colors duration-300'
             )}
           >
             {title}
