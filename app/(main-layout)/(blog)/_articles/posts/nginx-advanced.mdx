@@ -172,7 +172,7 @@ location /robots.txt {
 需要注意的点如下：
 
 - Cloudflare 会处理请求，将用户真实访问 IP 作为 `CF-Connecting-IP`、`CF-Connecting-IPv6` 请求头，此外还会带有一些 `CF-` 开头的额外的请求头，具体可以参考 [Cloudflare 官方文档](https://developers.cloudflare.com/fundamentals/reference/http-headers/)；
-- Cloudflare 像用户服务器请求的网关的 IP 地址是固定的，可以在 [Cloudflare IP 段页面](https://www.cloudflare.com/ips/) 找到所有 IP 段。
+- Cloudflare 向用户服务器请求的网关的 IP 地址是固定的，可以在 [Cloudflare IP 段页面](https://www.cloudflare.com/ips/) 找到所有 IP 段。
 
 因此，我们可以指定针对 **来自 Cloudflare IP 段的请求** 进行信任，并进行特殊处理。
 以下给出配置：
