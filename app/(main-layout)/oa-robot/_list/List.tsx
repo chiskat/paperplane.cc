@@ -11,9 +11,9 @@ import { useMounted } from '@/hooks/use-mounted'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
 import ListItem from './ListItem'
-import { useOARobotLocalProfiles, type OARobotProfileListItem } from './localProfileStorage'
-import { OARobotEditButton } from './OARobotEditButton'
 import { OARobotSortButton } from './SortButton'
+import { OARobotEditButton } from '../_item/OARobotEditButton'
+import { useOARobotLocalProfiles, type OARobotProfileListItem } from '../localProfileStorage'
 
 type OARobotProfileSource = 'local' | 'cloud'
 

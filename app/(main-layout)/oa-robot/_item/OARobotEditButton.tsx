@@ -42,8 +42,8 @@ import {
   useOARobotLocalProfiles,
   type OARobotLocalProfile,
   type OARobotLocalProfilePayload,
-} from './localProfileStorage'
-import { oaRobotTypeOptions } from './robot-icon'
+} from '../localProfileStorage'
+import { oaRobotTypeOptions } from '../robot-icon'
 
 type OARobotStorageSource = 'local' | 'cloud'
 type FeishuCredentials = {

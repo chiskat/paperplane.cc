@@ -11,7 +11,7 @@ import npmFlatIcon from '@/assets/tech-icons/npm-flat.svg'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/utils/style'
-import { awesomeStarLevel } from './ListItem'
+import { awesomeStarLevel } from '../_list/ListItem'
 
 export type AwesomeDetailMode = 'auto' | 'page' | 'modal'
 

@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { AwesomeItemResult } from '@/apis/awesome/items'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
-import { AwesomeDeleteButton } from './AwesomeDeleteButton'
-import { AwesomeEditButton } from './AwesomeEditButton'
 import { ListItemLinks } from './ListItemLinks'
 import { ListItemTags } from './ListItemTags'
+import { AwesomeDeleteButton } from '../_item/AwesomeDeleteButton'
+import { AwesomeEditButton } from '../_item/AwesomeEditButton'
 
 export function awesomeStarLevel(stars: number) {
   return stars >= 5

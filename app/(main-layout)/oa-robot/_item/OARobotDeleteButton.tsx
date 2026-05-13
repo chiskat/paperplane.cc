@@ -6,7 +6,7 @@ import { useState, type ComponentProps, type ReactNode } from 'react'
 import { ConfirmButton } from '@/components/button/ConfirmButton'
 import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { deleteOARobotLocalProfile, useOARobotLocalProfiles } from './localProfileStorage'
+import { deleteOARobotLocalProfile, useOARobotLocalProfiles } from '../localProfileStorage'
 
 export interface OARobotDeleteButtonProps extends Omit<
   ComponentProps<typeof ConfirmButton>,

@@ -26,12 +26,12 @@ import { toast } from '@/components/ui/toast'
 import { useTRPCClient } from '@/lib/trpc-client'
 import { OARobotMessageType, OARobotMessageZod } from '@/lib/zods/oa-robot'
 import { OARobotType } from '@/models/enums'
-import type { OARobotListSelectedProfile } from './List'
-import type { OARobotLocalProfile } from './localProfileStorage'
-import { oaRobotTypeIconMap } from './robot-icon'
 import { SendMessageFieldAtList } from './SendMessageFieldAtList'
 import { SendMessagePlaceholder } from './SendMessagePlaceholder'
 import { SendMessageTipsImage, SendMessageTipsMarkdown } from './SendMessageTips'
+import type { OARobotListSelectedProfile } from '../_list/List'
+import type { OARobotLocalProfile } from '../localProfileStorage'
+import { oaRobotTypeIconMap } from '../robot-icon'
 
 type SendMessageFormProps = {
   selectedProfile: OARobotListSelectedProfile | null

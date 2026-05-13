@@ -4,10 +4,10 @@ import { IconEdit, IconTrash } from '@tabler/icons-react'
 import Image from 'next/image'
 
 import { cn } from '@/utils/style'
-import type { OARobotProfileListItem } from './localProfileStorage'
-import { OARobotDeleteButton } from './OARobotDeleteButton'
-import { OARobotEditButton } from './OARobotEditButton'
-import { oaRobotTypeIconMap } from './robot-icon'
+import { OARobotDeleteButton } from '../_item/OARobotDeleteButton'
+import { OARobotEditButton } from '../_item/OARobotEditButton'
+import type { OARobotProfileListItem } from '../localProfileStorage'
+import { oaRobotTypeIconMap } from '../robot-icon'
 
 type ListItemProps = {
   item: OARobotProfileListItem

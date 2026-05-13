@@ -7,11 +7,11 @@ import { useMemo, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { CategoryEditButton, type CategoryFormValue } from './CategoryEditButton'
-import { CategorySortButton } from './CategorySortButton'
-import { ListCategory } from './ListCategory'
-import { Sidebar } from './Sidebar'
-import { TagManageButton } from './TagManageButton'
+import { CategoryEditButton, type CategoryFormValue } from './_category/CategoryEditButton'
+import { CategorySortButton } from './_category/CategorySortButton'
+import { ListCategory } from './_list/ListCategory'
+import { Sidebar } from './_sidebar/Sidebar'
+import { TagManageButton } from './_tag/TagManageButton'
 
 const TOP_OFFSET = 184
 

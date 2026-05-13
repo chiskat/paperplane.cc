@@ -41,8 +41,8 @@ import {
   resortOARobotLocalProfiles,
   useOARobotLocalProfiles,
   type OARobotProfileListItem,
-} from './localProfileStorage'
-import { oaRobotTypeIconMap } from './robot-icon'
+} from '../localProfileStorage'
+import { oaRobotTypeIconMap } from '../robot-icon'
 
 interface SortableProfileItem {
   id: string
