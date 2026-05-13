@@ -382,7 +382,7 @@ function FieldError({ error }: { error: unknown }) {
     return null
   }
 
-  return <span className="block text-xs text-rose-600">{message}</span>
+  return <span className="block text-base text-rose-600">{message}</span>
 }
 
 function BooleanOptionField({
