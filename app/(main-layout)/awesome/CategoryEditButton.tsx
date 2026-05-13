@@ -273,7 +273,7 @@ export function CategoryEditButton({
             </form.Field>
 
             {submitError ? (
-              <p className="rounded-md border border-rose-300 bg-rose-50 px-2 py-1 text-xs text-rose-700">
+              <p className="rounded-md border border-rose-300 bg-rose-50 px-2 py-1 text-base text-rose-700">
                 {submitError}
               </p>
             ) : null}

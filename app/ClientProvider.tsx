@@ -7,6 +7,7 @@ import { createTRPCClient } from '@trpc/client'
 import { PropsWithChildren, useState } from 'react'
 
 import type { AppRouter } from '@/apis/appRouter'
+import { Toaster } from '@/components/ui/toast'
 import { getQueryClient } from '@/lib/query-client'
 import { trpcClientConfig, TRPCProvider } from '@/lib/trpc-client'
 import { replaceEqualDeep } from '@/utils/structural-sharing'
@@ -21,6 +22,7 @@ export default function QueryProvider(props: PropsWithChildren) {
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <AuthQueryProvider queryOptions={{ structuralSharing: replaceEqualDeep }}>
             {props.children}
+            <Toaster />
           </AuthQueryProvider>
         </TRPCProvider>
       </QueryClientProvider>
