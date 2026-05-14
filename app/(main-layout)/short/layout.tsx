@@ -10,7 +10,7 @@ export default async function ShortLayout({ children }: LayoutProps<'/short'>) {
   const queryClient = getQueryClient()
 
   await Promise.all([
-    prefetchSession(auth, queryClient, { headers: await headers() }),
+    prefetchSession(auth as any, queryClient, { headers: await headers() }),
 
     queryClient.prefetchQuery(trpcServer.short.items.list.queryOptions()),
   ])

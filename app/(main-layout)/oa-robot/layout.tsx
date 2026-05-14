@@ -10,7 +10,7 @@ export default async function OARobotLayout({ children }: LayoutProps<'/oa-robot
   const queryClient = getQueryClient()
 
   await Promise.all([
-    prefetchSession(auth, queryClient, { headers: await headers() }),
+    prefetchSession(auth as any, queryClient, { headers: await headers() }),
 
     queryClient.prefetchQuery(trpcServer.oaRobot.profile.list.queryOptions()),
   ])

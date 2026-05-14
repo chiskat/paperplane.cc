@@ -8,7 +8,6 @@ model User {
 
   sessions Session[]
   accounts Account[]
-  apikeys  Apikey[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -90,18 +89,18 @@ model Apikey {
   expiresAt      DateTime? @map("expires_at")
   permissions    String?
   metadata       String?
+  configId       String    @default("default") @map("config_id")
+  referenceId    String    @map("reference_id")
 
   rateLimitEnabled    Boolean? @default(true) @map("rate_limit_enabled")
   rateLimitTimeWindow Int?     @default(86400000) @map("rate_limit_time_window")
   rateLimitMax        Int?     @default(10) @map("rate_limit_max")
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @map("created_at")
   updatedAt DateTime @map("updated_at")
 
   @@index([key])
-  @@index([userId])
+  @@index([configId])
+  @@index([referenceId])
   @@map("apikey")
 }

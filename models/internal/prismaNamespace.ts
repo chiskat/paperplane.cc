@@ -1351,10 +1351,11 @@ export const ApikeyScalarFieldEnum = {
   expiresAt: 'expiresAt',
   permissions: 'permissions',
   metadata: 'metadata',
+  configId: 'configId',
+  referenceId: 'referenceId',
   rateLimitEnabled: 'rateLimitEnabled',
   rateLimitTimeWindow: 'rateLimitTimeWindow',
   rateLimitMax: 'rateLimitMax',
-  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 } as const
