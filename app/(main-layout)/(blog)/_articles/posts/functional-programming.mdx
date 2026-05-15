@@ -1079,7 +1079,7 @@ format('2019-01-01', 'yyyy-MM-dd')
 
 下面是 `dayjs` 的常用示例：
 
-:::code-group
+::: code-group
 
 ```ts [配置 i18n]
 import dayjs from 'dayjs'
@@ -1106,7 +1106,7 @@ dayjs.duration({ months: 3 }).humanize() // 输出：3 个月
 
 使用 `date-fns` 的示例：
 
-:::code-group
+::: code-group
 
 ```ts [配置 i18n]
 import { format } from 'date-fns'
@@ -1133,7 +1133,7 @@ formatDuration({ months: 3 }) // 输出：3 个月
 - 这些函数均为已柯里化的，**且参数的顺序与原本是相反的**；
 - 这些函数默认是不接受配置参数的，如果需要传入配置参数（例如 `format()` 的第三个参数），请使用这些函数带有 `WithOptions` 名称后缀的版本（例如 `formatWithOptions()`），此时配置参数位于第一位。
 
-:::code-group
+::: code-group
 
 ```ts [常规使用]
 import { format } from 'date-fns/fp'

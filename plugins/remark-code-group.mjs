@@ -1,5 +1,5 @@
-const OPEN_MARKER_RE = /^:::\s*code-group\s*$/
-const CLOSE_MARKER_RE = /^:::\s*$/
+const OPEN_MARKER_RE = /^:{3,}\s*code-group\s*$/
+const CLOSE_MARKER_RE = /^:{3,}\s*$/
 const CODE_GROUP_DIRECTIVE_NAME = 'code-group'
 
 export default function remarkCodeGroup() {

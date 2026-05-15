@@ -584,7 +584,7 @@ tag(array, you, me)
 
 代码示例：
 
-:::code-group
+::: code-group
 
 ```js [支持注释]
 const f1 = new Function('a', 'b = 10 /* 我是注释 */', 'return a + b // 我也是注释')
@@ -691,7 +691,7 @@ f2(10, 20)
 此方法非常强大（[文档](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)），第一个参数指定地区和语言，第二个参数可以精确配置格式化的各种行为；
 代码示例：
 
-:::code-group
+::: code-group
 
 ```js [自动插入千分符]
 (123456.789).toLocaleString()
@@ -720,7 +720,7 @@ f2(10, 20)
 此外，它的四舍五入为准确值，甚至还可以指定为银行家算法，甚至还提供负数范围的处理模式；
 代码示例：
 
-:::code-group
+::: code-group
 
 ```js [四舍五入]
 (0.45).toLocaleString('zh-CN', {
@@ -743,7 +743,7 @@ f2(10, 20)
 
 还可以输出汉字、带货币单位、带百分号等格式：
 
-:::code-group
+::: code-group
 
 ```js [输入汉字数字]
 (123456.789).toLocaleString('zh-Hans-CN-u-nu-hanidec')
