@@ -30,11 +30,11 @@ const withMDX = createMDX({
       ['remark-frontmatter'],
       ['remark-mdx-frontmatter'],
       ['remark-gfm'],
+      [path.resolve(process.cwd(), './plugins/remark-tabs-directive.mjs')],
       ['remark-directive'],
       [path.resolve(process.cwd(), './plugins/remark-plain-text-directive.mjs')],
       [path.resolve(process.cwd(), './plugins/remark-alert-directive.mjs')],
       [path.resolve(process.cwd(), './plugins/remark-collapse-directive.mjs')],
-      [path.resolve(process.cwd(), './plugins/remark-tabs-directive.mjs')],
       [path.resolve(process.cwd(), './plugins/remark-code-group.mjs')],
     ],
     rehypePlugins: [

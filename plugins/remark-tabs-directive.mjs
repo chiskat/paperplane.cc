@@ -1,11 +1,33 @@
 const TABS_DIRECTIVE_NAME = 'tabs'
 const TAB_DIRECTIVE_NAME = 'tab'
 const CLOSE_MARKER_RE = /^:::\s*$/
+const SPACED_TABS_OPEN_RE = /^:::: tabs$/gm
+const SPACED_TAB_OPEN_RE = /^::: tab \[([^\]\r\n]+)\]$/gm
 
 export default function remarkTabsDirective() {
+  const parser = this.parser
+
+  if (typeof parser === 'function') {
+    this.parser = function parseTabsDirectiveSpaces(document, file) {
+      const value = normalizeTabsDirectiveSpaces(document)
+
+      if (file) {
+        file.value = value
+      }
+
+      return parser.call(this, value, file)
+    }
+  }
+
   return tree => {
     transformChildren(tree)
   }
+}
+
+function normalizeTabsDirectiveSpaces(document) {
+  return String(document)
+    .replace(SPACED_TABS_OPEN_RE, '::::tabs')
+    .replace(SPACED_TAB_OPEN_RE, ':::tab[$1]')
 }
 
 function transformChildren(parent) {
