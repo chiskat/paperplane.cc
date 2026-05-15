@@ -988,8 +988,7 @@ yarn add ramda-adjunct
 
 这个包基于 `ramda` 扩展了更多函数，这里给几个例子：
 
-- 对于 `ramda` 中不支持 `Promise` 的函数，`ramda-adjunct` 添加了支持 `Promise` 的函数，这些函数以 `P` 作为后缀，例如：
-  `reduceP()` 提供了数组的异步折叠计算支持；`allP()` 可以等待数组中所有 `Promise` 类型已完成再返回结果；
+- 对于 `ramda` 中不支持 `Promise` 的函数，`ramda-adjunct` 添加了支持 `Promise` 的函数，这些函数以 `P` 作为后缀，例如：`reduceP()` 提供了数组的异步折叠计算支持；`allP()` 可以等待数组中所有 `Promise` 类型已完成再返回结果；
 - 对于对象数据：
   函数 `renameKeys()` 提供了对对象键名的重命名能力，而 `renameKeysWith()` 提供了对对象键名的变换的能力；函数 `omitBy()` 提供了依判断条件删除属性的能力；函数 `mergePaths()` 提供了精确控制合并路径的能力；除此之外还有更多功能强大的函数；
 - 提供了 `isDate()`、`isArray()` 等一系列类型判断函数，这些函数还有 `isNotDate()`、`isNotArray()` 的反向版本；
