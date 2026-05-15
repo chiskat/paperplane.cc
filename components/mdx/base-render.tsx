@@ -9,6 +9,7 @@ import {
 } from 'react'
 
 import { MdxAlert } from '@/components/mdx/mdx-alert'
+import { MdxCodeBlock } from '@/components/mdx/mdx-code-block'
 import { MdxCollapse } from '@/components/mdx/mdx-collapse'
 import { MdxHr } from '@/components/mdx/mdx-hr'
 import { MdxPreviewImage } from '@/components/mdx/mdx-preview-image'
@@ -172,15 +173,15 @@ export default function baseMDX(): MDXComponents {
         : children
 
       return (
-        <pre
+        <MdxCodeBlock
           {...props}
           className={cn(
-            'mt-2 mb-6 overflow-x-auto rounded-md bg-[#f5f2f0] px-4 py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-xs **:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4 [&_code]:not-italic! [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
+            '**:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4',
             className
           )}
         >
           {codeBlock}
-        </pre>
+        </MdxCodeBlock>
       )
     },
     code({ children, className, ...props }: ComponentPropsWithoutRef<'code'>) {

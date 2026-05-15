@@ -71,7 +71,7 @@ export function CodeGroup({ children }: { children: ReactNode }) {
         </TabsList>
       </TabsHighlight>
 
-      <TabsContents className="[&_figure]:m-0 [&_figure]:overflow-hidden [&_pre]:mt-0 [&_pre]:mb-0 [&_pre]:rounded-t-none [&_pre]:shadow-none">
+      <TabsContents className="[&_figure]:m-0 [&_figure]:overflow-hidden [&_figure]:rounded-none [&_figure]:shadow-none [&_pre]:mt-0 [&_pre]:mb-0 [&_pre]:rounded-none [&_pre]:shadow-none">
         {items.map((item, index) => {
           const value = values[index]
 
