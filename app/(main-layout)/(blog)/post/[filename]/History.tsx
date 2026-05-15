@@ -117,7 +117,7 @@ export default async function History({ filename, oldFilename }: HistoryProps) {
     ? sortedHistory.slice(0, HISTORY_LIMIT)
     : sortedHistory
 
-  const revisionLinks = [{ href: getAllRevisionsUrl(filename), text: '完整修订记录' }]
+  const revisionLinks = [{ href: getAllRevisionsUrl(filename), text: '修订记录' }]
   if (oldFilename) {
     revisionLinks.push({
       href: getOldHexoRevisionsUrl(oldFilename),
