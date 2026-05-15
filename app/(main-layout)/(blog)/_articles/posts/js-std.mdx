@@ -15,10 +15,8 @@ categories: [JS]
 
 - `Infinity`
   无穷大，也可以使用 `Number.POSITIVE_INFINITY` 来代指；
-
 - `NaN`
   非数字，非法的数学运算会产生这个值；也可以使用 `Number.NaN` 来代指；注意 `NaN` 不和任何值相等，即使是两个 `NaN` 也是互不相等的；
-
 - `undefined`
   表示未定义的值，可以使用 `void` 运算符来得到 `undefined`，例如 `void 0`；
 - `null`
@@ -58,16 +56,13 @@ function fixedEncodeURIComponent (str) {
 - `isNaN()`
   判断输入值是否为非数值，它会尝试将输入值转换为数值，如果转换后还是无法当做数值，那么返回 `true`；
   注意它和 `Number.isNaN()` 不同，`Number.isNaN()` 对不是 `NaN` 的值永远返回 `false`；
-
 - `isFinite()`
   判断输入值是否有限，它会尝试将输入值转换为数值，只有输入值能当做数值并且有限，才会返回 `true`；
   注意它和 `Number.isFinite()` 不同，`Number.isFinite()` 对非数值类型永远返回 `false`；
-
 - `parseInt(str, radix)`
   从字符串中解析整数，按照从左往右顺序并忽略空格，如果遇到非法字符则停止解析并保留已解析的部分，返回解析出来的数值或 `NaN`；注意它不支持科学计数法，且不会识别小数点；
   还可以传入第二个参数 `radix` 表示进制数；默认情况只有 0x 开头的字符串会当做十六进制，**建议在任何使用场景下都须传入第二个参数**；
   此方法完全等于 `Number.parseInt()`，但更好的选择是 `Number()`；
-
 - `parseFloat()`
   从字符串中解析浮点数，具体方式同上，但是此方法不支持指定进制数；
   此方法完全等于 `Number.parseFloat()`，但更好的选择是 `Number()`。
@@ -81,13 +76,10 @@ function fixedEncodeURIComponent (str) {
 - `setTimeout(callback, delay = 0, [args...])`
   指定延迟毫秒后执行对应的方法，还可以提前指定好要传入的参数 `args`，在浏览器上它返回一个数字 ID 用于清除定时器，在 Node.js 上它返回一个 `Timeout` 对象（但是带有 `[Symbol.toPrimitive]` 方法属性以转为数值，所以也可以当做数值来看待）；
   `delay` 为 0 则回调会直接在本轮事件循环的宏任务（比 `Promise` 的微任务更晚）中执行；
-
 - `clearTimeout(id)`
   传入定时器的 ID 以清除定时器；
-
 - `setInterval(callback, delay = 0, [args...])`
   循环地每隔指定延迟毫秒后执行对应的方法，还可以提前指定好要传入的参数 `args`，它的返回值行为和 `setTimeout()` 相似；
-
 - `clearInterval(id)`
   传入循环定时器的 ID 以清除定时器。
 
@@ -97,7 +89,7 @@ function fixedEncodeURIComponent (str) {
 
 - `eval()`
   执行传入其中的 JS 代码，返回这些代码执行后的返回值；
-  需要注意的是，**直接调用该方法，如果产生了变量则是局部变量，而通过引用调用该方法，则会生成全局变量**；
+  注意：**直接调用该方法，产生的变量是局部变量；通过引用调用该方法，则会生成全局变量**；
   这个方法的性能很差，且会产生变量的泄露，所以推荐使用 `new Function()` 的方式取代它。
 
 # Array.prototype
@@ -114,16 +106,12 @@ function fixedEncodeURIComponent (str) {
 
 - `array.push(item)`
   “尾追加”，修改数组，末尾追加一个元素，返回数组新的长度；
-
 - `array.pop()`
   “尾删除”，修改数组，末尾移除一个元素，返回移出的元素；
-
 - `array.unshift(item)`
   “头插入”，修改数组，开头追加一个元素，返回数组新的长度；
-
 - `array.shift()`
   “头删除”，修改数组，开头移除一个元素，返回移出的元素；
-
 - `array.splice(start = 0, [delLength = array.length,] [...newItem])`
   “万能增删”，修改数组，从指定下标元素的前一位开始删除数个元素，然后再插入数个元素，返回被删除的元素的数组；
   这是原生 JS 中最强的数组调整函数，可从任意位置一次性删除并插入多个元素；
@@ -136,12 +124,10 @@ function fixedEncodeURIComponent (str) {
 - `array.reverse()`
   “反转数组”，修改数组，反转所有元素的顺序，返回自身；
   它也有不会修改数组自身的版本，见下文的 `.toReversed()` 方法；
-
 - `array.sort([sortFn])`
   “排序数组”，修改数组，按照给定的排序回调来排序，返回自身；
   注意**回调 `sortFn` 默认会将元素按字符串顺序排序**，所以建议一定提供一个排序函数作为参数，不要留空；
   它也有不会修改数组自身的版本，见下文的 `.toSorted()` 方法；
-
 - `array.fill(value | fillFn, [start = 0,] [end = array.length])`
   “填充数组”，修改数组，将所有元素填充成指定的值 `value` 或回调方法 `fillFn` 的返回值，还可以指定填充范围开始和结束的下标；
 - `array.copyWithin(target, [start = 0,] [end = array.length])`
@@ -153,7 +139,6 @@ function fixedEncodeURIComponent (str) {
 
 - `array.concat(...arrsOrValue)`
   “连接数组”，返回一个当前数组连接所有值和数组后的新数组；
-
 - `array.join(separator = ',')`
   “转字符串”，返回当前数组用给定分隔符连接形成的字符串；
 - `array.flat([depth = 1])`
@@ -162,7 +147,6 @@ function fixedEncodeURIComponent (str) {
   “定制拍平”，同上，但会使用回调来处理每个元素，以回调的返回值为准；展平的深度固定为 `1`；
 - `array.every(fn, [thisArg])`
   “全部满足”，依次对元素执行回调，只有在所有回调均返回真值结果，该函数才返回 `true`，否则返回 `false`；
-
 - `array.some(fn, [thisArg])`
   “任一满足”，同上，但是任何回调返回真值时该函数直接返回 `true`。
 
@@ -172,16 +156,12 @@ function fixedEncodeURIComponent (str) {
 
 - `array.at(index)`
   类似于下标访问，但它支持负数，会从数组尾部开始算（最尾部元素下标为 `-1`）；
-
 - `array.includes(item, [fromIndex = 0])`
   返回数组是否包含某个元素的布尔值；
-
 - `array.indexOf(item, [fromIndex = 0])` / `array.lastIndexOf()`
   返回给定元素在数组中首次/末次出现的下标位置，找不到则返回 `-1`；
-
 - `array.find(fn, [thisArg])` / `array.findLast()`
   从数组中找到并返回首个/末个能使回调 `fn` 返回真值的元素，找不到则返回 `undefined`；
-
 - `array.findIndex(fn, [thisArg])` / `array.findLastIndex()`
   从数组中找到并返回首个/末个能使回调 `fn` 返回真值的元素的下标，找不到则返回 `-1`。
 
@@ -191,7 +171,6 @@ function fixedEncodeURIComponent (str) {
 
 - `array.filter(fn, [thisArg])`
   “筛选”，提取能使回调 `fn` 返回真值的元素，形成新数组返回；
-
 - `array.slice(start = 0, [end = array.length])`
   “截取”，选取从开头到结尾下标的元素组成新数组并返回，参数可以为负数。
 
@@ -201,7 +180,6 @@ function fixedEncodeURIComponent (str) {
 
 - `array.forEach(fn, [thisArg])`
   “遍历”，依次对元素执行回调；
-
 - `array.map(fn, [thisArg])`
   “变换”，依次对元素执行回调，将返回值形成新数组返回。
 
@@ -212,7 +190,6 @@ function fixedEncodeURIComponent (str) {
 - `array.reduce(reduceFn, [initValue = array[0]])`
   “折叠”，接受回调 `reduceFn(sum, current, index, array)`，参数依次是之前的计算结果、当前元素的值、当前元素的下标、原数组，依次对数组中的元素执行回调，并将结果用于下一个元素的计算；
   此方法将数组所有项聚合为一个数据，可用于实现求和、数组转对象等一系列需求；
-
 - `array.reduceRight(reduceFn, [initValue = array[array.length - 1]])`
   “右折叠”，同上，但从数组尾部开始，反向遍历。
 
@@ -245,7 +222,6 @@ function fixedEncodeURIComponent (str) {
 
 - `new Array(length)`
   仅参数为一个数值时，返回此长度的空数组，所有元素都是 “空位” 而不是 `undefined`；
-
 - `new Array(...items)`
   多个参数时，将这些参数形成一个数组并返回；不建议这种用法，请使用 `Array.of(...items)` 代替。
 
@@ -257,10 +233,8 @@ function fixedEncodeURIComponent (str) {
   将伪数组或可迭代对象转为数组，`mapFn` 回调可用来变换元素，签名为 `mapFn(el, index)`；
 - `Array.fromAsync(arrLike, [mapFn,] [thisArg])`
   同上，但它支持异步可迭代对象；注意兼容性（2024）；
-
 - `Array.of(...items)`
   将多个参数转为数组并返回；
-
 - `Array.isArray(val)`
   判断给定的值是否为数组，返回布尔值。
 
@@ -270,7 +244,6 @@ function fixedEncodeURIComponent (str) {
 
 - `string.length`
   返回字符串长度；
-
 - `string[index]`
   返回指定下标的字符；注意它是只读的，修改无效。
 
@@ -280,19 +253,15 @@ function fixedEncodeURIComponent (str) {
 
 - `string.includes(str, [start = 0])`
   判断字符串是否包含某子串并返回布尔值；
-
 - `string.indexOf(str, [start = 0])` / `string.lastIndexOf()`
   查找并返回另一个字符串首次/末次出现的下标，找不到则返回 `-1`；
-
 - `string.search(reg)`
   查找并返回首次匹配正则表达式子串的位置下标，查找不到则返回 `-1`；
-
 - `string.match(reg)`
   查找并返回匹配捕获正则表达式的结果，是一个数组，下文有详细说明，未匹配则返回 `null`；
 - `string.matchAll(reg)`
   同上，但它支持正则表达式带 `g` 标志位时捕获组，且要求必须开启此标志，否则会报错；
   它返回可迭代对象，其每个子结果和 `.match()` 相同；
-
 - `string.replace(reg | str, newStr | fn)`
   将匹配正则表达式或给定字符串的子串替换为新的字符串 `newStr` 或 `fn` 回调结果；
   如果第一个参数是正则表达式且有 `g` 标记，则是全局替换，否则仅替换第一次匹配到的值；
@@ -305,10 +274,8 @@ function fixedEncodeURIComponent (str) {
 
 - `string.concat(...strs)`
   拼接多个字符串并返回拼接结果；
-
 - `string.repeat(count)`
   将字符串重复数次并连接一起，返回结果；
-
 - `string.split(separator, [limit])`
   以指定分隔符或正则表达式将字符串分割为数组并返回，匹配分隔标识的内容会被 “吃掉”。
 
@@ -318,10 +285,8 @@ function fixedEncodeURIComponent (str) {
 
 - `string.trim()` / `string.trimStart()` / `string.trimEnd()`
   删除两端/开头/结尾的不可见字符；
-
 - `string.padStart(length, [fillBy = ' '])` / `string.padEnd()`
   在字符串的开头/结尾用指定字符串填充到指定长度并返回；
-
 - `string.startsWith(str, [start = 0])` / `string.endsWith()`
   判断字符串是否以指定字串开头/结尾，返回布尔值。
 
@@ -331,17 +296,14 @@ function fixedEncodeURIComponent (str) {
 
 - `string.slice(start, [end = string.length - 1])`
   按下标提取并返回字符串的一部分；参数可以为负数；
-
 - `string.substring(start, [end = string.length - 1])`
   同上，但它可以在 `end` 小于 `start` 时自动交换二者，并具有一些额外的特性；
-
 - `string.substr(start = 0, [length = string.length])`
   已被标记废弃；按长度提取并返回字符串的一部分；
 - `string.chatAt(index)`
   类似于下标访问，提取字符串某个位置的字符；
 - `string.charCodeAt(index)`
   选择字符串某下标位置的字符，返回其 BMP 范围内的 Unicode 码点；
-
 - `string.codePointAt(index)`
   同上，但是它对超出 BMP 范围的字符支持更好，可以返回其完整的 Unicode 码点。
 
@@ -354,13 +316,10 @@ function fixedEncodeURIComponent (str) {
 
 - `string.toLowerCase()` / `.toUpperCase()`
   返回转为小写/大写的字符串；
-
 - `string.toLocalelLowerCase()` / `string.toLocaleUpperCase()`
   同上，但按照本地化方式处理；
-
 - `string.normalize(opt = 'NFC')`
   按照 Unicode 正规化方式处理字符串并返回，参数还可选 `'NFD'`、`'NFKC'`、`'NFKD'`；
-
 - `string.localeCompare(str, [loacl,] [opt])`
   用于字符串本地化排序，返回数字，可用做 `array.sort()` 的回调；参见 MDN 上的 [相关介绍](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)；
 - `string.toWellFormed()`
@@ -398,13 +357,9 @@ function fixedEncodeURIComponent (str) {
 如果第二个参数是字符串，那么可以在字符串里面使用以下转义标记：
 
 - `$$` 表示 `$` 字符串本身；
-
 - `$&` 表示匹配的子串；
-
 - `` $` `` 表示匹配子串左边的剩余字符串内容；
-
 - `$'` 表示匹配子串右边的剩余字符串内容；
-
 - `$n` 其中 `n` 从 1 开始，`$n` 表示括号捕获的第 `n` 个字符串。
 
 如果第二个参数是回调函数，它的签名为 `fn(match, ...p, offset, string)`；
@@ -422,7 +377,6 @@ function fixedEncodeURIComponent (str) {
 - 字符串对象本身也是一个可迭代对象，可被 `...` 展开，可被 `for ... of ...` 迭代；
 - 字符串对象带有大量早期浏览器的旧 API，例如 `.bold()` 返回一个套了 `<b>` 标签的结果，这些 API 均已被废弃多年，请勿使用，本文亦不介绍；
 - 以上方法中的 `.match()`、`.matchAll()`、`replace()`、`search()`、`split()`，都可以接受其他类型的参数输入；
-  具体而言：
   例如以 `.match()` 或 `.matchAll()` 举例，实际上它接受的参数只需要实现了 `[Symbol.match]` 或 `[Symbol.matchAll]` 方法属性即可，JS 会自动调用这个方法，并把当前字符串作为参数传入；上面列出的其他几个方法也同理；
   当然 JS 内置的 `RegExp`、`String` 类型都实现了这些属性，所以我们可以直接传入使用。
 
@@ -455,7 +409,7 @@ function fixedEncodeURIComponent (str) {
 变量部分：有 2 个变量 `you`、`me`；
 原始部分：有 3 个字符串 `'你好'`、`'我叫'`、`''`，原始部分一定会包含首尾，即使模板字符串的首尾是变量，也需一个空字符串占位；
 
-拼接时，按照 “原始字符串”、“变量”、“原始字符串”、“变量”、……、“原始字符串” 这样交替拼接，最左侧和最右侧一定是原始字符串，所以原始字符串的数量一定比变量要多一个，一定会包住左右两侧，即使用空字符串占位；
+拼接时，按照 “原始字符串”、“变量”、“原始字符串”、“变量”、……、“原始字符串” 这样交替拼接，最左侧和最右侧一定是原始字符串，所以原始字符串的数量一定比变量要多一个，一定会包住左右两侧；如果开头或结尾不是原始字符串，则使用空字符串 `""` 占位；
 
 如果用做标签模板，JS 会自动将它的原始字符串部分转为数组 `['你好', '，我叫', '']`，且此数组带有一个 `raw` 属性，指向它自身，然后变量部分会作为依次作为剩余参数；
 假设标签函数为 `tag`，举例：
@@ -529,11 +483,9 @@ tag(array, you, me)
 
 - `Object.is(v1, v2)`
   “同值相等” 判断，类似于 `===` 运算符，但有两点例外：`+0` 不等于 `-0`、并且 `NaN` 与自身相等；
-
 - `Object.assign(target, ...objs)`
   合并对象，将第二个开始所有参数的属性合并到 `target`，返回合并后对象；
   注意这里的合并操作是浅拷贝，重复的属性是后面的覆盖前面的；
-
 - `Object.create(proto, [assignObj = undefined])`
   以第一个参数作为 `__proto__` 原型创建新对象；`assignObj` 参数表示要合并入新对象的属性；
   可以用它实现 “继承” 操作，也可以用它创建出原型为 `null` 的对象；
@@ -548,13 +500,10 @@ tag(array, you, me)
 
 - `Object.defineProperty(object, propName, desc)`
   以指定的属性描述符在对象上定义属性，有关属性描述符的解释见本章节末尾处；
-
 - `Object.defineProperties(object, props)`
   同上，第二个参数是一个对象，可以一次性为多个属性的设置描述符；
-
 - `Object.getOwnPropertyDescriptor(object, propName)`
   获取对象自身（不包括原型）的某个属性的属性描述符，没有该属性则返回 `undefined`；
-
 - `Object.getOwnPropertyDescriptors(object)`
   同上，但是列出对象自身（不包括原型）的所有属性的描述符。
 
@@ -564,13 +513,10 @@ tag(array, you, me)
 
 - `Object.getOwnPropertyNames(object)`
   返回一个对象自身的（不包括原型）所有属性名数组，包括不可枚举的，**始终忽略 `Symbol` 属性**；
-
 - `Object.getOwnPropertySymbols(object)`
   返回一个对象自身的（不包括原型）所有 `Symbol` 类型的属性数组；
-
 - `Object.keys(object)` / `Object.values(object)`
   获取对象的自身（不包括原型）的键/值的数组；
-
 - `Object.entries(object)`
   获取对象自身（不包括原型）的键值对数组 `[key, value]` 的数组。
 
@@ -580,7 +526,6 @@ tag(array, you, me)
 
 - `Object.setPropertyOf(object)`
   设置一个对象的 `__proto__` 原型链；
-
 - `Object.getPropertyOf(object)`
   获取一个对象的 `__proto__` 原型链。
 
@@ -590,13 +535,10 @@ tag(array, you, me)
 
 - `Object.preventExtensions(object)`
   阻止扩展对象，使它无法添加属性；
-
 - `Object.seal(object)`
   密封对象，阻止增/删/配置属性；
-
 - `Object.freeze(object)`
   冻结对象，阻止增/删/配置属性，对象的任何属性值均无法修改；
-
 - `Object.isExtensible(object)` / `Object.isSealed()` / `Object.isFrozen()`
   判断对象是否被阻止扩展/密封/冻结。
 
@@ -656,7 +598,7 @@ f2(10, 20)
 // 结果：30
 ```
 
-```js [无法方式局部变量]
+```js [无法访问局部变量]
 (function(){
   const a = 888
   const f3 = Function('return a')
@@ -673,18 +615,14 @@ f2(10, 20)
 
 - `function.name`
   返回方法名，匿名方法返回 `'anonymous'`；
-
 - `function.length`
   返回方法所需要参数个数，**注意带默认值的参数、剩余参数都是不计入的**；
 - `function.prototype`
   显式原型，方法被使用 `new` 调用时，此值会成为被构造出新对象的原型；
-
 - `function.call(thisArg, [argsArr = []])`
   传入一个值作为方法内部的 `this` 来执行该方法，`argsArr` 是一个表示参数的数组；
-
 - `function.apply(thisArg, [...args])`
   同上，但是提供参数时是以 REST 参数的形式提供；
-
 - `function.bind(thisArg, [...args])`
   返回一个新方法，新方法绑定了 `this` 对象和预设的参数。
 
@@ -696,7 +634,6 @@ f2(10, 20)
 
 - `new Number(input)`
   基本用不到；使用指定数值构造一个 `Numebr` 对象，不是原始值；一般使用下面的 `Number()`；
-
 - `Number(input)`
   将参数转化为十进制数值并返回，无法转换时返回 `NaN`；
   - 特殊规则：`null` 转为 `0`，`undefined` 转为 `NaN`，`true` 转为 `1`，`false` 转为 `0`；
@@ -709,13 +646,10 @@ f2(10, 20)
 
 - `Number.isNaN(input)`
   判断是否为 `NaN`，它对不是 `NaN` 的值永远返回 `false`，不会尝试任何转换；
-
 - `Number.isFinite(input)`
   判断数值是否可数，对非数值始终返回 `false` 值，不会尝试任何转换；
-
 - `Number.parseInteger(input)` / `Number.parseFloat()`
   和全局的同名方法完全一致，见文章最开始章节；
-
 - `Number.isInteger(input)` / `Number.isSafeInteger()`
   判断是否为整数/安全整数，对非数值始终返回 `false`。
 
@@ -727,13 +661,10 @@ f2(10, 20)
   同全局的 `NaN`，表示非数值；
 - `Number.EPSILON`
   可区分两个数值的最小间隔；
-
 - `Number.MAX_VALUE` / `Number.MIN_VALUE`
   最大/最小数字值；
-
 - `Number.MAX_SAFE_INTEGER` / `Number.MIN_SAFE_INTEGER`
   最大/最小的安全整数；
-
 - `Number.NEGATIVE_INFINITY` / `Number.POSITIVE_INFINITY`
   正负无穷大。
 
@@ -744,15 +675,12 @@ f2(10, 20)
 - `number.toFixed(n = 0)`
   四舍五入保留 `n` 位小数，不足位数用 `'0'` 补全，返回字符串；
   **但是，因为 JS 的浮点数有精度问题，它的四舍五入可能并不准确，不建议直接使用；**
-
 - `number.toExponential(n)`
   四舍五入保留 `n` 位小数的科学计数法，不足位数用 `'0'` 补全，返回字符串；
   **此方法内部使用了 `.toFixed()`，它也存在精度的问题，不建议直接使用**；
-
 - `number.toPrecision(n)`
   四舍五入保留 `n` 位有效数字的字符串，位数过长会自动转为科学计数法，返回字符串；
   **此方法内部使用了 `.toFixed()`，它也存在精度的问题，不建议直接使用**；
-
 - `number.toLocaleString([locale,] [options])`
   以本地化形式返回数值的字符串显式，可以配置显示货币样式、千分符样式等，参考 [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)。
 
@@ -875,13 +803,10 @@ JS 遵循 IEEE 754 规范的双精度 64 位浮点数标准，所有的数值会
 
 - `Math.abs()`
   计算数值的绝对值；
-
 - `Math.sign()`
   返回 `0`、**`-0`**、`1`、`-1` 来判断一个数的符号；
-
 - `Math.max(...n)` / `Math.min(...n)`
   返回所有参数中的最大/最小值；
-
 - `Math.hypot(...n)`
   返回参数总所有数的平方和的平方根。
 
@@ -904,13 +829,10 @@ JS 遵循 IEEE 754 规范的双精度 64 位浮点数标准，所有的数值会
 
 - `Math.sin()` /`Math.cos()` / `Math.tan()`
   三种三角函数；
-
 - `Math.asin()` / `Math.acos()` / `Math.atan()`
   反三角函数；
-
 - `Math.sinh()` / `Math.cosh()` / `Math.tanh()`
   双曲三角函数；
-
 - `Math.asinh()` / `Math.acosh()` / `Math.atanh()`
   反双曲三角函数。
 
@@ -920,13 +842,10 @@ JS 遵循 IEEE 754 规范的双精度 64 位浮点数标准，所有的数值会
 
 - `Math.pow(a, b)`
   `a` 的 `b` 次幂；
-
 - `Math.sqrt()` / `Math.cbrt()`
   平方根/立方根；
-
 - `Math.log(x)` / `Math.log1p(x)` / `Math.log10(x)` / `Math.log2(x)`
   计算 `㏑x`、`㏑(x+1)`、`lg(x)` 、`㏒2(x)` 的值；
-
 - `Math.exp(x)` / `Math.exmp1(x)`
   计算 `e` 的 `x` 次幂、`e` 的 `x` 次幂减 1。
 
@@ -936,10 +855,8 @@ JS 遵循 IEEE 754 规范的双精度 64 位浮点数标准，所有的数值会
 
 - `Math.trunc()`
   直接丢弃小数部分，可以认为是向数轴原点取整；
-
 - `Math.round()`
   四舍五入取整，注意它的舍入可能不准确，尤其是在负数场合；
-
 - `Math.ceil()` / `Math.floor()`
   向上/向下取整，可以认为是向数轴左侧/右侧取整。
 
@@ -951,7 +868,6 @@ JS 遵循 IEEE 754 规范的双精度 64 位浮点数标准，所有的数值会
   返回 `x` 在单精度 32 位浮点数中的值；
 - `Math.imul(a, b)`
   以 32 位整数计算 `a × b`，模拟 C 语言的 32 位乘法运算；
-
 - `Math.clz32(x)`
   返回 `x` 以 32 位无符号二进制表示时前导 `0` 的个数。
 
@@ -1006,25 +922,18 @@ Math.random() < 0.15
 
 - `date.getFullYear()` / `date.setFullYear()`
   获取/设置年份；设置时还可一并设置月、日；
-
 - `date.getMonth()` / `date.setMonth()`
   获取/设置月份，**月份从0开始，到11为止**；设置时还可一并设置日；
-
 - `date.getDate()` / `date.setDate()`
   获取/设置日，取值 1~31；
-
 - `date.getDay()` / `date.setDay()`
   获取/设置每周的第几天（周几），注意周日为 `0`；
-
 - `date.getHours()` / `date.setHours()`
   获取/设置小时数，取值 0~23，设置时还可一并设置分钟、秒、毫秒；
-
 - `date.getMinutes()` / `date.setMinutes()`
   获取/设置分钟数，取值 0~59，设置时还可一并设置秒、毫秒；
-
 - `date.getSeconds()` / `date.setSeconds()`
   获取/设置秒数，取值 0~59，设置时还可一并设置毫秒；
-
 - `date.getMilliseconds()` / `date.setMilliseconds()`
   获取/设置毫秒数，取值 0~999。
 
@@ -1073,12 +982,9 @@ Math.random() < 0.15
 `new Date()`：可以创建一个时间日期对象，它有多种重载：
 
 - `new Date()`：以当前时间创建；
-
 - `new Date(num)`：参数为一个数字，按照时间戳来创建；
-
 - `new Date(str)`：参数为一个字符串，格式化字符串创建时间日期对象，**注意用这种方式创建出的日期，如果不指定时间，它会加上时区偏移；**
   **例如在中国 GMT+8 时区执行代码 `new Date('2022-12-16')` 得到的时间是早上 8:00，但是 `new Date(2022, 11, 16)` 这样得到的就是 0:00 凌晨；**
-
 - `new Date(year, month, day, hour, minute, second, millisecond)`：按照给定的参数创建，`month` 后面的参数可选，不提供的参数默认为最小值。
 
 ---
@@ -1087,10 +993,8 @@ Math.random() < 0.15
 
 - `Date.now()`
   返回当前时间的时间戳；
-
 - `Date.parse(str)`
   基本用不到，解析一个时间日期字符串并返回时间戳，无法解析时返回 `NaN`；
-
 - `Date.UTC()`
   用法类似 `new Date()` 的最后一种重载，但是返回的是时间戳而不是 `Date` 对象。
 
@@ -1098,7 +1002,6 @@ Math.random() < 0.15
 
 - `new Boolean(val)`
   基本用不到；生成一个 `Boolean` 对象，它不是原始值；一般使用下面的 `Boolean()`；
-
 - `Boolean(val)`
   强制转换一个值到布尔类型；以下几个值会转换为 `false`：`0`、`-0`、`null`、`undefined`、`NaN`、`''`、`document.all`；
   其他值均会转为 `true`。
@@ -1111,11 +1014,9 @@ Math.random() < 0.15
 
 - `Symbol(name)`
   返回一个指定 `name` 的 `Symbol` 对象，此法创建的 `Symbol` 永远互不相等；
-
 - `Symbol.for(name)`
   尝试按指定的 `name` 来查找被此方法创建的 `Symbol` 对象并返回，如果找不到则创建一个并返回；
   只有通过此方法创建的 `Symbol` 才能被此方法找到；
-
 - `Symbol.keyFor(symbol)`
   如果一个 `Symbol` 是通过 `Symbol.for()` 方式创建的，则可以通过该方法反查它被创建时候的 `name` 值；如果传入的 `Symbol` 不是通过 `Symbol.for()` 创建的或是找不到它的 `name` 则返回 `undefined`；
   传入不是 `Symbol` 类型的参数会抛出错误。
@@ -1265,7 +1166,7 @@ new C().getNewSelf() instanceof A === true
 **`Symbol.iterator`**
 函数属性，表示迭代器，已实现（或已继承）此属性的对象是一个可迭代对象，即它可被 `for ... of` 遍历或者被 `...` 展开运算符展开。
 
-此函数属性，需要返回一个**迭代器对象**；生成器函数也会返回迭代器对象，所以，此属性也可以是一个生成器函数；
+此函数属性，需要返回一个**迭代器对象**；生成器函数也会返回迭代器对象，所以，它也可以是一个生成器函数；
 JS 引擎在对对象进行迭代操作时，就会调用此函数属性，通过它返回的迭代器对象来提取值。
 
 ---
@@ -1314,7 +1215,7 @@ const obj = {
 ---
 
 **`Symbol.unscopables`**
-对象属性，对一个对象使用 `with` 运算符时，JS 会访问这个属性，这个属性上值为真的键名会被 `with` 环境排除；
+对象属性，对一个对象使用 `with` 运算符时，JS 引擎会读取这个属性，这个属性上值为真的键名会被 `with` 环境排除；
 此属性的设计目的可以参考这篇 [知乎回答](https://www.zhihu.com/question/364970876/answer/965013908)，可以认为它是为向前兼容而诞生，开发者基本用不到。
 
 代码示例：
@@ -1366,16 +1267,12 @@ a.concat(b) // 结果：[1, 1, [2, 2]]
 - `Symbol.match`
   函数属性，对某字符串执行 `string.match()` 时如果传入某个对象作为参数，那么 JS 会自动则会调用对象上面的此函数，把 `string` 作为第一个参数传入运行，并使用返回值作结果；
   它可被设为 `false` 以标示此对象不具备正则表达式的行为；
-
 - `Symbol.matchAll`
   同上，适用于 `string.matchAll()` 行为；
-
 - `Symbol.replace`
   同上，适用于 `string.replace()` 行为；
-
 - `Symbol.search`
   同上，适用于 `string.search()` 行为；
-
 - `Symbol.split`
   同上，适用于 `string.split()` 行为。
 
@@ -1396,22 +1293,16 @@ a.concat(b) // 结果：[1, 1, [2, 2]]
 
 - `EvalError`
   使用 `eval()` 动态执行代码时出错；
-
 - `RangeError`
   变量或参数超出有效范围；
-
 - `ReferenceError`
   无效的引用；
-
 - `SyntaxError`
   语法解析错误；
-
 - `TypeError`
   变量或参数不属于有效类型；
-
 - `URIError`
   使用 `encodeURI()` 系列方法时参数无效；
-
 - `InternalError`
   这不是标准规范中的错误类型，它表示引擎内部错误，例如递归层数过多。
 
@@ -1465,16 +1356,12 @@ const regexp1 = /\d+/ig
   全局匹配，开启后将从头到尾多次匹配符合的内容，未开启此标志位则会在第一次匹配后停止；
 - `i`，`RegExp.prototype.ignoreCase`
   开启后忽略大小写；
-
 - `m`，`RegExp.prototype.multiline`
   开启后启用多行模式，`^ $` 将适用于每一行而不是整体；
-
 - `u`，`RegExp.prototype.unicode`
   开启 Unicode 支持，可以支持中文等字符；
-
 - `y`，`RegExp.prototype.sticky`
   开启粘连匹配，即后一个匹配位置必须紧邻前一个；
-
 - `s`，`RegExp.prototype.dotAll`
   开启后，点 `.` 可以表示任何单个字符，也包括行终止符；
 - `d`，`RegExp.prototype.hasIndices`
@@ -1511,19 +1398,14 @@ const regexp1 = /\d+/ig
 
 - `map.size()`
   获取元素个数；
-
 - `map.get(key)` / `map.set(key, value)`
   获取/设置键值；
-
 - `map.delete(key)` / `map.clear()`
   依键删除/全部删除；
-
 - `map.has(key)`
   依键判断是否存在；
-
 - `map.keys()` / `map.values()` / `map.entries()`
   返回所有键/值/键值对数组；
-
 - `map.forEach(fn, [thisArg])`
   依次对键值执行回调，回调签名 `fn(key, value, map)`。
 
@@ -1540,13 +1422,10 @@ const regexp1 = /\d+/ig
 
 - `set.size()`
   获取集合中元素的个数；
-
 - `set.add(item)` / `set.delete(item)` / `set.clear()`
   添加/删除/清空元素；
-
 - `set.keys()` / `set.values()` / `set.entries()`
   返回所有键/值/键值对的枚举器，键和值都是元素自身，是相等的；
-
 - `set.forEach(fn, [thisArg])`
   依次对元素执行回调，回调签名 `fn(item, set)`。
 
@@ -1583,19 +1462,14 @@ const regexp1 = /\d+/ig
 - `Promise.all(tasks)`
   返回一个新的 `Promise`，数组中所有的 `Promise` 完成后它才会完成，这些 `Promise` 的返回值会按照该调用时候的顺序组合成一个数组来作为它的返回值；
   如果任一 `Promise` 失败，它也将失败，失败值为首个失败的 `Promise` 的原因；
-
 - `Promise.allSettled(tasks)`
   同上，但在任一 `Promise` 失败时它不会失败，而是等到所有 `Promise` 都已完成或失败，再将结果组成数组返回；
-
 - `Promise.race(tasks)`
   返回一个新的 `Promise`，数组中任一的 `Promise` 完成或失败后，它直接变为相应的状态，值也变为相应的完成值或失败原因；
-
 - `Promise.any(tasks)`
   同上，但数组里所有 `Promise` 都已失败时它才会失败，失败值是一个数组
-
 - `Promise.resolve()`
   将一个值包装成 `Promise`，已经是 `Promise` 的值将直接返回，如果带有 `.then()` 方法还将调用之；
-
 - `Promise.reject()`
   行为类似 `Promise.resolve()`，但是将参数作为原因包装成已失败的 `Promise`。
 
@@ -1607,10 +1481,8 @@ const regexp1 = /\d+/ig
   接受的值或拒绝的值，会传入 `resFn()` 或 `rejFn()`；
   `.then()` 方法中的返回值，将继续传给下一个 `.then()`，但是，`new Promise()` 函数中的返回值不会传给 `.then()`，只有 `resolve()` 的参数会传给 `.then()`；
   下文有具体示例代码；
-
 - `promise.catch(rejFn)`
   处理错误的情况，类似于 `.then()` 的第二个参数；
-
 - `promise.finally(fn)`
   不论完成还是失败都将执行，**注意 `fn` 回调没有任何参数，上一步的结果不会传入**。
 
@@ -1648,7 +1520,6 @@ new Promise((res, rej) => {
 
 - `new Proxy(target, handler)`
   创建一个被代理的对象或方法，使用 `handler` 对象里的属性方法来代理行为；
-
 - `Proxy.revocable(target, handler)`
   同上，创建一个可撤销的代理，结果对象的 `.proxy` 属性与上面的方法返回值相同，但额外包含一个 `.revoke()` 方法，调用该方法可以永久撤掉代理。
 
@@ -1685,54 +1556,43 @@ new Proxy(target, {
 
 - `Reflect.apply(func, thisArg, args)`
   代理函数，在被调用时触发，可当做 `func.apply(thisArg, args)`；
-
 - `Reflect.construct(func, args, [newTarget])`
   代理构造函数，必须返回一个对象，被以 `new func(...args)` 形式调用时触发；
-
 - `Reflect.defineProperty(obj, propName, desc)`
   代理对象，在被 `Object.defineProperty()` 时触发；
-
 - `Reflect.deleteProperty(obj, propName)`
   代理对象，被删除属性时触发，类似于 `delete obj[propName]`；
-
 - `Reflect.get(obj, propName, proxy)`
   代理对象，访问属性时触发，类似于 `obj[propName]`；
-
 - `Reflect.set(obj, propName, newValue, proxy)`
   代理对象，设置属性时触发，类似于 `obj[propName] = newValue`；
-
 - `Reflect.has(obj, propName)`
   代理对象，检测属性时触发，类似于 `propName in obj`；
-
 - `Reflect.ownKeys(obj)`
   代理对象，可被多个行为触发，见下表；
   默认行为是返回对象自身（不含继承）所有的键名的数组，它包括 `Symbol` 键和不可枚举的键，可看做 `Object.getOwnPropertyNames(obj)` 和 `Object.getOwnPropertySymbols(obj)` 返回值的总和；
-
 - `Reflect.getOwnPropertyDescriptor(obj, propName)`
   代理对象，可被多个行为触发，见下表；默认行为是返回属性的属性描述符；需要注意返回值对象的 `configurable` 可枚举性，它决定了这个属性的一系列行为，具体见下表；
 
 注：`Reflect.ownKeys()` 和 `Reflect.getOwnPropertyDescriptor()` 一般需要同时代理，因为它们的行为关联度比较高。
 
-| 对 `obj` 对象执行的操作                                                  | `ownKeys`, | `getOwnPropertyDescriptor` |
-| ------------------------------------------------------------------------ | ---------- | -------------------------- |
-| `Object.keys(obj)` <br />`Object.valuse(obj)`<br />`Object.entries(obj)` | √          | √，检测可枚举性            |
-| `for ... in obj`                                                         | √          | √，检测可枚举性            |
-| `Object.getOwnPropertyNames(obj)`                                        | √          |                            |
-| `Object.getOwnPropertySymbols(obj)`                                      | √          |                            |
-| `Object.getOwnPropertyDescriptor(obj, propName)`                         |            | √                          |
-| `Object.getOwnPropertyDescriptors(obj)`                                  | √          | √                          |
+| 对 `obj` 对象执行的操作                                                  | `ownKeys` | `getOwnPropertyDescriptor` |
+| ------------------------------------------------------------------------ | --------- | -------------------------- |
+| `Object.keys(obj)` <br />`Object.valuse(obj)`<br />`Object.entries(obj)` | √         | √，检测可枚举性            |
+| `for ... in obj`                                                         | √         | √，检测可枚举性            |
+| `Object.getOwnPropertyNames(obj)`                                        | √         |                            |
+| `Object.getOwnPropertySymbols(obj)`                                      | √         |                            |
+| `Object.getOwnPropertyDescriptor(obj, propName)`                         |           | √                          |
+| `Object.getOwnPropertyDescriptors(obj)`                                  | √         | √                          |
 
 - `Reflect.getPrototypeOf(obj)`
   代理对象，获取其隐式原型（原型链）时触发；
   类似于 `obj.__proto__` 或是 `Object.getPrototypeOf(obj)`；
-
 - `Reflect.setPrototypeOf(obj, val)`
   代理对象，设置其隐式原型（原型链）时触发；
   类似于 `obj.__proto__ = val` 或是 `Object.setPrototypeOf(obj, val)`；
-
 - `Reflect.isExtensible(obj)`
   代理对象，被 `Object.isExtensible(obj)` 操作时会触发；
-
 - `Reflect.preventExtensions(obj)`
   代理对象，被 `Object.preventExtensions(obj)` 操作时会触发。
 
