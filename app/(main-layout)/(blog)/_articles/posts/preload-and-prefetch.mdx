@@ -141,7 +141,6 @@ GitHub 上同样有很多人对此有疑问：[链接1](https://github.com/webpa
 使用这两个 HTML 标签时，需要注意：
 
 - 浏览器对不同域名的缓存往往不能共通，所以 **不要** 给 prefetch 和 preload 提供跨域的资源；
-
 - 被预加载或预获取的资源如果响应头的 Cache-Control 被设为 `no-store` 或 `no-cache`，那么也是没有效果的；
 - 这个标签的 `as` 属性是必须的，它的值一般为 `"script"`，但也支持 `"style"`、`"font"`、`"image"` 等值；
   使用这个属性，会为浏览器的预加载或预获取请求添加 `Accept` 头。
