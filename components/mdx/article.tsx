@@ -1,6 +1,12 @@
 import type { MDXComponents } from 'mdx/types'
 import Link from 'next/link'
-import { cloneElement, isValidElement, type ComponentPropsWithoutRef } from 'react'
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from 'react'
 
 import { ArticleHR } from '@/components/mdx/article-hr'
 import { ArticlePreviewImage } from '@/components/mdx/article-preview-image'
@@ -10,6 +16,74 @@ import { MdxTab, MdxTabs } from '@/components/mdx/mdx-tabs'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
 import { cn } from '@/utils/style'
 import { Highlighter } from '../ui/highlighter'
+
+function ArticleUnorderedList({ className, ...props }: ComponentPropsWithoutRef<'ul'>) {
+  return (
+    <ul
+      {...props}
+      className={cn(
+        '-mt-1 mb-5 list-disc pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:pl-0 [&>li]:marker:text-[1.08em] [&>li]:marker:text-[#2f629d]',
+        className
+      )}
+    />
+  )
+}
+
+function ArticleOrderedList({ className, ...props }: ComponentPropsWithoutRef<'ol'>) {
+  return (
+    <ol
+      {...props}
+      className={cn(
+        '-mt-1 mb-5 list-decimal pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-[lower-alpha] [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:marker:text-[#2f629d]',
+        className
+      )}
+    />
+  )
+}
+
+function isArticleListElement(child: ReactNode) {
+  return (
+    isValidElement(child) &&
+    (child.type === ArticleUnorderedList || child.type === ArticleOrderedList)
+  )
+}
+
+function stripListBoundaryWhitespace(children: ReactNode) {
+  const childArray = Children.toArray(children)
+  let hasChanged = false
+
+  const nextChildren = childArray.filter((child, index) => {
+    if (typeof child !== 'string' || child.trim() !== '') {
+      return true
+    }
+
+    const isAroundNestedList =
+      isArticleListElement(childArray[index - 1]) || isArticleListElement(childArray[index + 1])
+
+    if (isAroundNestedList) {
+      hasChanged = true
+      return false
+    }
+
+    return true
+  })
+
+  return hasChanged ? nextChildren : children
+}
+
+function ArticleListItem({ children, className, ...props }: ComponentPropsWithoutRef<'li'>) {
+  return (
+    <li
+      {...props}
+      className={cn(
+        'marker:font-title-serif my-1 pl-1 whitespace-pre-line marker:font-semibold [&>ol]:whitespace-normal [&>ul]:whitespace-normal',
+        className
+      )}
+    >
+      {stripListBoundaryWhitespace(children)}
+    </li>
+  )
+}
 
 export default function articleMDX(): MDXComponents {
   return {
@@ -90,39 +164,9 @@ export default function articleMDX(): MDXComponents {
         </h3>
       )
     },
-    ul({ className, ...props }: ComponentPropsWithoutRef<'ul'>) {
-      return (
-        <ul
-          {...props}
-          className={cn(
-            '-mt-1 mb-5 list-disc pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:pl-0 [&>li]:marker:text-[1.08em] [&>li]:marker:text-[#2f629d]',
-            className
-          )}
-        />
-      )
-    },
-    ol({ className, ...props }: ComponentPropsWithoutRef<'ol'>) {
-      return (
-        <ol
-          {...props}
-          className={cn(
-            '-mt-1 mb-5 list-decimal pl-7 [&_li>p]:my-1 [&_ol]:my-1 [&_ol]:list-[lower-alpha] [&_ol]:pl-7 [&_ul]:my-2 [&_ul]:list-[circle] [&_ul]:pl-7 [&>li]:marker:text-[#2f629d]',
-            className
-          )}
-        />
-      )
-    },
-    li({ className, ...props }: ComponentPropsWithoutRef<'li'>) {
-      return (
-        <li
-          {...props}
-          className={cn(
-            'marker:font-title-serif my-1 pl-1 whitespace-pre-line marker:font-semibold [&>ol]:whitespace-normal [&>ul]:whitespace-normal',
-            className
-          )}
-        />
-      )
-    },
+    ul: ArticleUnorderedList,
+    ol: ArticleOrderedList,
+    li: ArticleListItem,
     pre({ children, className, ...props }: ComponentPropsWithoutRef<'pre'>) {
       const codeBlock = isValidElement(children)
         ? cloneElement<any>(children, {
