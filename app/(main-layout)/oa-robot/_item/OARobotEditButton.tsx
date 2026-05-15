@@ -155,10 +155,7 @@ function lockProfileImmutableFields(
     return value
   }
 
-  return {
-    ...value,
-    type: currentProfile.type,
-  }
+  return { ...value, type: currentProfile.type }
 }
 
 function createLocalProfilePayload(value: OARobotProfilePayload): OARobotLocalProfilePayload {
@@ -208,31 +205,6 @@ function resolveUpdater<TValue>(updater: Updater<TValue>, currentValue: TValue):
   return typeof updater === 'function'
     ? (updater as (value: TValue) => TValue)(currentValue)
     : updater
-}
-
-function getSuccessToastContent(
-  isEditMode: boolean,
-  isLocalProfileEdit: boolean,
-  storageSource: OARobotStorageSource
-) {
-  if (isEditMode) {
-    return {
-      title: '更新成功',
-      description: isLocalProfileEdit ? '本地 OA 机器人已更新' : 'OA 机器人已更新',
-    }
-  }
-
-  return {
-    title: '创建成功',
-    description: storageSource === 'local' ? '本地 OA 机器人已创建' : 'OA 机器人已创建',
-  }
-}
-
-function getSubmitButtonText(pending: boolean, isEditMode: boolean) {
-  if (pending) {
-    return isEditMode ? '保存中...' : '创建中...'
-  }
-  return isEditMode ? '保存编辑' : '完成创建'
 }
 
 const storageSourceOptions: Array<{ value: OARobotStorageSource; label: string }> = [
@@ -344,7 +316,16 @@ export function OARobotEditButton({
           await queryClient.invalidateQueries({ queryKey: trpc.oaRobot.profile.list.pathKey() })
         }
 
-        toast.success(getSuccessToastContent(isEditMode, isLocalProfileEdit, storageSource))
+        toast.success({
+          title: isEditMode ? '更新成功' : '创建成功',
+          description: isEditMode
+            ? isLocalProfileEdit
+              ? '本地 OA 机器人已更新'
+              : 'OA 机器人已更新'
+            : storageSource === 'local'
+              ? '本地 OA 机器人已创建'
+              : 'OA 机器人已创建',
+        })
         setOpen(false)
         onSuccess?.()
       } catch (error) {
@@ -591,7 +572,13 @@ export function OARobotEditButton({
               void form.handleSubmit()
             }}
           >
-            {getSubmitButtonText(pending, isEditMode)}
+            {pending
+              ? isEditMode
+                ? '保存中...'
+                : '创建中...'
+              : isEditMode
+                ? '保存编辑'
+                : '完成创建'}
           </Button>
         </DialogFooter>
       </DialogContent>
