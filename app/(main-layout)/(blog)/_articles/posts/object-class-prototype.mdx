@@ -32,13 +32,13 @@ const Jack = new Person('Jack', 18)
 
 最简单易懂的：
 
-```js
+```js {5-8}
 function Person(_name, _age) {
   this.name = _name
   this.age = _age
 
   // 直接在构造函数里给 this 加一个方法属性
-  this.halo = function() {
+  this.halo = function () {
     console.log(this.name)
   }
 }
@@ -48,7 +48,7 @@ function Person(_name, _age) {
 
 一般来说，类的方法应该是所有对象共享一个的，不应该是每个对象单独持有，因此这种方式不合理。让类的成员共享同一个方法、或是共享同一个属性，可以这样做：
 
-```js
+```js {1-4,10-11}
 // 将需要共享的属性抽离出来，放置在构造函数外：
 function halo() {
   console.log(this.name)
@@ -65,14 +65,14 @@ function Person(_name, _age) {
 
 还有一种方法，将共享的属性定义在构造函数的原型上，因为构造函数初始的 `this` 就是用的它的 `.prototype` 原型，所以所有构造出的对象都共享构造函数的 `.prototype` 原型上的属性。写法：
 
-```js
+```js {6-9}
 function Person(_name, _age) {
   this.name = _name
   this.age = _age
 }
 
 // 把方法放置在构造函数的 .prototype 原型上
-Person.prototype.halo = function() {
+Person.prototype.halo = function () {
   console.log(this.name)
 }
 ```
@@ -97,12 +97,10 @@ Student.prototype.constructor = Student
 
 这种使用构造函数来实现继承的方式，各个步骤的原理如下：
 
-1、首先调用把自身的 `this` 交给 `Person` 这个构造函数，这样来继承 `Person` 的属性；
-
-2、然后把 `Person` 的 `.prototype` 对象复制一份拿过来当做自己的 `.prototype`，这样来继承 `Person` 的方法；
-
-3、因为上一步操作的把 `.prototype` 上的 `.constructor` 也一起改了，这个属性表示该原型的构造函数是哪个；`Student` 类的构造器肯定是 `Student` 构造函数本身，因此将它设置为 `Student`；
-如果省略这一步，别人对 `Student` 对象使用 `Object.create()` 构造出来的对象会是一个 `Person` 对象。
+1. 首先调用把自身的 `this` 交给 `Person` 这个构造函数，这样来继承 `Person` 的属性；
+2. 然后把 `Person` 的 `.prototype` 对象复制一份拿来当做自己的 `.prototype`，这样就能继承 `Person` 上的静态方法；
+3. 因为上一步操作的把 `.prototype` 上的 `.constructor` 也一起改了，这个属性表示该原型的构造函数是哪个；`Student` 类的构造器肯定是 `Student` 构造函数本身，因此将它设置为 `Student`；
+   如果省略这一步，别人对 `Student` 对象使用 `Object.create()` 构造出来的对象会是一个 `Person` 对象。
 
 这些面向对象的实现方式都非常复杂，并不好理解，而且大多涉及到了 `.prototype`、`.constructor` 等概念。如果对 JS 面向对象和 JS 原型不甚了解，很容易被搞糊涂。
 
@@ -139,7 +137,7 @@ Person.prototype.constructor = function(_name, _age) {
   this.age = _age
 }
 
-Person.prototype.halo = function() {
+Person.prototype.halo = function () {
   console.log(this.name)
 }
 ```
@@ -169,7 +167,6 @@ class Student extends Person {
 显示原型具备以下特点：
 
 - 它是一个 JS 引擎自动实现的对象，只有函数（类也是函数）具备 `.prototype`，而 JS 值、对象均不具备这个属性；
-
 - 它一般用于实现属性的继承：当函数开始执行的时候，他会把自己的 `.prototype` 当做 `this` 的原型，所以说在一个函数的 `.prototype` 对象上添加新的属性、方法，所有由该函数通过 `new` 构造出的对象都会具备这些新添的属性或方法。
 
 例如，我们已经知道 ES6 类中所有方法均是定义在其类构造函数的原型上的，包括 `constructor` 也是，所以用 ES6 类构造出的对象也具备 `constructor` 方法：
@@ -194,9 +191,7 @@ a1.constructor === A.prototype.constructor
 隐式原型具备以下特点：
 
 - 它是几乎任何 JS 对象、方法、值都具有的属性，它表示变量被创建时的来源；
-
 - 因为原生对象 `Object`、`Function` 等是由 JS 引擎自动创建的，因此它们的 `.__proto__` 也是由 JS 自动创建的；
-
 - 它用于实现**原型链**，如果在一个对象上找不到某个属性，JS 引擎就会去它的原型链上依次向上寻找；同时 `instanceof` 关键字也会沿着原型链依次向上搜寻。
 
 ---
@@ -212,8 +207,9 @@ a.__proto__ === A.prototype
 // 字面量对象，由系统自动调用 Object.create 创建
 ({}).__proto__ === Object.prototype
 
-// 方法的来源
-(function() {}).__proto__ === Function.prototype
+// 函数的来源
+(function () {}).__proto__ === Function.prototype
+// 类本质上也是一个函数
 A.__proto__ === Function.prototype
 
 // 数值、字符串的来源
@@ -297,9 +293,7 @@ Object.prototype.__proto__ === null
 总结一下，对于类而言：
 
 - 如果一个类没有继承任何其它的类，那么它的 `.prototype` 原型上的 `.__proto__` 便是 `Object.prototype`，所以类派生出的实例都有 `.toString()` 等属性；
-
 - 如果一个类没有继承任何其它的类，那么它的构造函数（类名）的 `.__proto__` 便是 `Function.prototype`，这和 JS 中所有函数的行为相同；如果它继承了某一个类，它的 `.__proto__` 便是它继承的类的构造函数本身；
-
 - 如果某个类继承了另一个类，它的 `.prototype` 原型上的 `.__proto__` 便是它继承的类的 `.prototype`；因此子类派生的实例可以使用父类上的方法。
 
 上面这些话，用代码来描述就是这样：
@@ -339,7 +333,7 @@ ES6 的 `extends` 关键字只接受一个具备 `.prototype` 属性的对象（
 const obj = Object.create(null)
 
 // 使用 bind() 创建的函数没有 .prototype 对象
-const func = (function() {}).bind({})
+const func = (function () {}).bind({})
 ```
 
 # 在开发中使用原型
