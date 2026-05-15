@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { use, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, buttonVariants } from '@/components/animate-ui/components/buttons/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
@@ -78,10 +78,11 @@ export default function AwesomeDetailModalPage(props: PageProps<'/awesome/[id]'>
               <Link
                 href={`/awesome/${id}`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
+                data-size="sm"
                 className={cn(
-                  buttonVariants({ size: 'sm', variant: 'outline' }),
-                  'rounded-full border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                  buttonVariants({ variant: 'outline', size: 'sm', pill: true }),
+                  'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                 )}
               >
                 <IconExternalLink size={14} className="shrink-0" />
