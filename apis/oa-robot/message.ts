@@ -7,7 +7,7 @@ import { sendMessage } from './helper/sender'
 export const messages = router({
   sendById: loginProcedure.input(OARobotSendByIdZod).mutation(async ({ input, ctx }) => {
     const session = await ctx.getSession()
-    const { robotId: id, message } = input
+    const { robotId: id, ...message } = input
     const userId = session!.user.id
 
     const profile = await prisma.oARobotProfile.findFirstOrThrow({ where: { userId, id } })
@@ -17,8 +17,11 @@ export const messages = router({
   }),
 
   sendByConfig: publicProcedure.input(OARobotSendByConfigZod).mutation(async ({ input }) => {
-    const { message, ...profile } = input
-    const result = await sendMessage(profile as OARobotProfile, message)
+    const { type, accessToken, secret, extraAuthentication, ...message } = input
+    const result = await sendMessage(
+      { type, accessToken, secret, extraAuthentication } as OARobotProfile,
+      message
+    )
 
     return result
   }),

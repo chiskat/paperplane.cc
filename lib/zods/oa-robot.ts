@@ -10,7 +10,7 @@ export enum OARobotMessageType {
 }
 
 export interface OARobotMessageText {
-  type: OARobotMessageType.TEXT
+  message: OARobotMessageType.TEXT
   text: string
 
   atAll?: boolean
@@ -18,7 +18,7 @@ export interface OARobotMessageText {
 }
 
 export interface OARobotMessageMarkdown {
-  type: OARobotMessageType.MARKDOWN
+  message: OARobotMessageType.MARKDOWN
   markdown: string
 
   /** 标题，钉钉用于通知显示，飞书用于首行，企业微信不可用 */
@@ -30,7 +30,7 @@ export interface OARobotMessageMarkdown {
 }
 
 export interface OARobotMessageImage {
-  type: OARobotMessageType.IMAGE
+  message: OARobotMessageType.IMAGE
   image: File
 
   /** 标题，钉钉用于通知显示 */
@@ -50,7 +50,7 @@ export const OARobotProfileZod = z.object({
 })
 
 export const OARobotMessageTextZod = z.object({
-  type: z.literal(OARobotMessageType.TEXT),
+  message: z.literal(OARobotMessageType.TEXT),
 
   text: z.string().min(1, '消息文本不能为空'),
   atAll: z.boolean().optional(),
@@ -58,7 +58,7 @@ export const OARobotMessageTextZod = z.object({
 })
 
 export const OARobotMessageMarkdownZod = z.object({
-  type: z.literal(OARobotMessageType.MARKDOWN),
+  message: z.literal(OARobotMessageType.MARKDOWN),
 
   markdown: z.string().min(1, '消息正文不能为空'),
   title: z.string().optional(),
@@ -67,35 +67,29 @@ export const OARobotMessageMarkdownZod = z.object({
 })
 
 export const OARobotMessageImageZod = z.object({
-  type: z.literal(OARobotMessageType.IMAGE),
+  message: z.literal(OARobotMessageType.IMAGE),
 
   image: z.instanceof(File),
   title: z.string().optional(),
 })
 
-export const OARobotMessageZod = compatFormData(
-  z.discriminatedUnion('type', [
-    OARobotMessageTextZod,
-    OARobotMessageMarkdownZod,
-    OARobotMessageImageZod,
-  ])
-)
+export const OARobotMessageZod = z.discriminatedUnion('message', [
+  OARobotMessageTextZod,
+  OARobotMessageMarkdownZod,
+  OARobotMessageImageZod,
+])
 
 export const OARobotSendByIdZod = compatFormData(
-  z.object({
-    robotId: z.string().min(1),
-
-    message: OARobotMessageZod,
-  })
+  OARobotMessageZod.and(z.object({ robotId: z.string().min(1) }))
 )
 
 export const OARobotSendByConfigZod = compatFormData(
-  z.object({
-    type: OARobotProfileZod.shape.type,
-    accessToken: OARobotProfileZod.shape.accessToken,
-    secret: OARobotProfileZod.shape.secret,
-    extraAuthentication: OARobotProfileZod.shape.extraAuthentication,
-
-    message: OARobotMessageZod,
-  })
+  OARobotMessageZod.and(
+    OARobotProfileZod.pick({
+      type: true,
+      accessToken: true,
+      secret: true,
+      extraAuthentication: true,
+    })
+  )
 )

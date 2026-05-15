@@ -411,7 +411,7 @@ function buildMessagePayloadInput(value: SendMessageFormValue, robotType: OARobo
   switch (value.type) {
     case 'text':
       return {
-        type: OARobotMessageType.TEXT,
+        message: OARobotMessageType.TEXT,
         text: value.text.trim(),
         ...buildMentionInput(value, robotType),
       }
@@ -419,13 +419,13 @@ function buildMessagePayloadInput(value: SendMessageFormValue, robotType: OARobo
     case 'markdown':
       if (!isMarkdownMentionSupported(robotType)) {
         return {
-          type: OARobotMessageType.MARKDOWN,
+          message: OARobotMessageType.MARKDOWN,
           markdown: value.markdown.trim(),
         }
       }
 
       return {
-        type: OARobotMessageType.MARKDOWN,
+        message: OARobotMessageType.MARKDOWN,
         markdown: value.markdown.trim(),
         title: title || undefined,
         ...buildMentionInput(value, robotType),
@@ -433,7 +433,7 @@ function buildMessagePayloadInput(value: SendMessageFormValue, robotType: OARobo
 
     case 'image':
       return {
-        type: OARobotMessageType.IMAGE,
+        message: OARobotMessageType.IMAGE,
         image: value.image,
         title: robotType === OARobotType.DINGTALK ? title || undefined : undefined,
       }
@@ -495,7 +495,7 @@ function useSendMessageForm({
         if (selectedProfile.source === 'cloud') {
           await trpcClient.oaRobot.messages.sendById.mutate({
             robotId: selectedProfile.profile.id,
-            message,
+            ...message,
           })
         } else {
           const localProfile = selectedProfile.profile as OARobotLocalProfile
@@ -504,7 +504,7 @@ function useSendMessageForm({
             accessToken: localProfile.accessToken,
             secret: localProfile.secret,
             extraAuthentication: localProfile.extraAuthentication,
-            message,
+            ...message,
           })
         }
 

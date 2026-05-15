@@ -34,7 +34,7 @@ type OARobotMessage = z.infer<typeof OARobotMessageZod>
 
 export async function sendMessage(auth: OARobotProfile, message: OARobotMessage) {
   const { type, accessToken, secret } = auth
-  const { type: messageType } = message
+  const { message: messageType } = message
 
   const messageBody =
     messageType === OARobotMessageType.TEXT
