@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { ArticleTitleLink } from '../../../ArticleTitleLink'
+import { ArticleTitleLink } from '@/app/(main-layout)/ArticleTitleLink'
 import {
   formatMonthParam,
   getArchiveYears,

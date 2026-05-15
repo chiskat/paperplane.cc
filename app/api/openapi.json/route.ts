@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { generateOpenApiDocument } from 'trpc-to-openapi'
 
-import { appRouter } from '../../../apis/appRouter'
+import { appRouter } from '@/apis/appRouter'
 
 export function GET() {
   return NextResponse.json(

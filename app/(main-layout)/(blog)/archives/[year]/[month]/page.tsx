@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { ArticleTitleLink } from '../../../../ArticleTitleLink'
 import {
   formatMonthParam,
   getArchiveYearMonths,
@@ -9,7 +8,8 @@ import {
   getMonthArchivePosts,
   parseMonthParam,
   parseYearParam,
-} from '../../archive-data'
+} from '@/app/(main-layout)/(blog)/archives/archive-data'
+import { ArticleTitleLink } from '@/app/(main-layout)/ArticleTitleLink'
 
 export const dynamicParams = false
 

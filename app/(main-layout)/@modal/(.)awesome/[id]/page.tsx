@@ -6,11 +6,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { use, useCallback, useEffect, useRef, useState } from 'react'
 
+import {
+  AwesomeDetail,
+  AwesomeDetailSkeleton,
+} from '@/app/(main-layout)/awesome/_item/AwesomeDetail'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { AwesomeDetail, AwesomeDetailSkeleton } from '../../../awesome/_item/AwesomeDetail'
 
 const CLOSE_ANIMATION_MS = 160
 const AWESOME_LIST_ROUTE = '/awesome'

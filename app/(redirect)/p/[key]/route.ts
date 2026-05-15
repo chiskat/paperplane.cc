@@ -1,1 +1,1 @@
-export { GET } from '../../s/[key]/route'
+export { GET } from '@/app/(redirect)/s/[key]/route'
