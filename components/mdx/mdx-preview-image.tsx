@@ -7,7 +7,7 @@ import 'react-photo-view/dist/react-photo-view.css'
 
 import { cn } from '@/utils/style'
 
-type ArticlePreviewImageProps = Omit<ImageProps, 'alt'> & {
+export type MdxPreviewImageProps = Omit<ImageProps, 'alt'> & {
   alt?: string
 }
 
@@ -19,12 +19,7 @@ function resolvePreviewSrc(src: ImageProps['src']) {
   return 'src' in staticSrc ? staticSrc.src : staticSrc.default.src
 }
 
-export function ArticlePreviewImage({
-  alt = '',
-  className,
-  src,
-  ...props
-}: ArticlePreviewImageProps) {
+export function MdxPreviewImage({ alt = '', className, src, ...props }: MdxPreviewImageProps) {
   const previewSrc = resolvePreviewSrc(src)
 
   return (

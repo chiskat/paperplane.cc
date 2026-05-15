@@ -1,4 +1,4 @@
-export function ArticleHR() {
+export function MdxHr() {
   return (
     <div className="my-10 flex items-center gap-3" role="separator" aria-orientation="horizontal">
       {/* 左侧线 */}

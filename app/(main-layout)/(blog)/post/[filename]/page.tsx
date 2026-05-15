@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 
 import absurdityBg from '@/assets/article-page/absurdity.png'
 import postmarkImg from '@/assets/article-page/postmark.png'
-import articleMDX from '@/components/mdx/article'
+import baseMDX from '@/components/mdx/base-render'
 import Commet from './Commet'
 import History from './History'
 import { extractTocFromMdx, Toc } from './Toc'
@@ -18,7 +18,7 @@ export function generateStaticParams() {
   }))
 }
 
-const mdxComponent = articleMDX()
+const mdxComponent = baseMDX()
 
 export default async function ArticlePage({ params }: PageProps<'/post/[filename]'>) {
   const { filename } = await params

@@ -4,7 +4,7 @@ import { allKms } from 'content-collections'
 import type { MDXComponents } from 'mdx/types'
 import { useMemo, useState } from 'react'
 
-import kmsMDX from '@/components/mdx/kms'
+import kmsMDX from '@/app/(main-layout)/kms/mdx-render'
 import { Highlighter } from '@/components/ui/highlighter'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'

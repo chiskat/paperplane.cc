@@ -8,16 +8,16 @@ import {
   type ReactNode,
 } from 'react'
 
-import { ArticleHR } from '@/components/mdx/article-hr'
-import { ArticlePreviewImage } from '@/components/mdx/article-preview-image'
 import { MdxAlert } from '@/components/mdx/mdx-alert'
 import { MdxCollapse } from '@/components/mdx/mdx-collapse'
+import { MdxHr } from '@/components/mdx/mdx-hr'
+import { MdxPreviewImage } from '@/components/mdx/mdx-preview-image'
 import { MdxTab, MdxTabs } from '@/components/mdx/mdx-tabs'
 import { CodeGroup, CodeGroupItem } from '@/components/ui/code-group'
 import { cn } from '@/utils/style'
 import { Highlighter } from '../ui/highlighter'
 
-function ArticleUnorderedList({ className, ...props }: ComponentPropsWithoutRef<'ul'>) {
+function UnorderedList({ className, ...props }: ComponentPropsWithoutRef<'ul'>) {
   return (
     <ul
       {...props}
@@ -29,7 +29,7 @@ function ArticleUnorderedList({ className, ...props }: ComponentPropsWithoutRef<
   )
 }
 
-function ArticleOrderedList({ className, ...props }: ComponentPropsWithoutRef<'ol'>) {
+function OrderedList({ className, ...props }: ComponentPropsWithoutRef<'ol'>) {
   return (
     <ol
       {...props}
@@ -41,11 +41,8 @@ function ArticleOrderedList({ className, ...props }: ComponentPropsWithoutRef<'o
   )
 }
 
-function isArticleListElement(child: ReactNode) {
-  return (
-    isValidElement(child) &&
-    (child.type === ArticleUnorderedList || child.type === ArticleOrderedList)
-  )
+function isListElement(child: ReactNode) {
+  return isValidElement(child) && (child.type === UnorderedList || child.type === OrderedList)
 }
 
 function stripListBoundaryWhitespace(children: ReactNode) {
@@ -58,7 +55,7 @@ function stripListBoundaryWhitespace(children: ReactNode) {
     }
 
     const isAroundNestedList =
-      isArticleListElement(childArray[index - 1]) || isArticleListElement(childArray[index + 1])
+      isListElement(childArray[index - 1]) || isListElement(childArray[index + 1])
 
     if (isAroundNestedList) {
       hasChanged = true
@@ -71,7 +68,7 @@ function stripListBoundaryWhitespace(children: ReactNode) {
   return hasChanged ? nextChildren : children
 }
 
-function ArticleListItem({ children, className, ...props }: ComponentPropsWithoutRef<'li'>) {
+function ListItem({ children, className, ...props }: ComponentPropsWithoutRef<'li'>) {
   return (
     <li
       {...props}
@@ -85,7 +82,7 @@ function ArticleListItem({ children, className, ...props }: ComponentPropsWithou
   )
 }
 
-export default function articleMDX(): MDXComponents {
+export default function baseMDX(): MDXComponents {
   return {
     wrapper({ children }) {
       return <article className="font-content-serif text-[20px] leading-[1.7]">{children}</article>
@@ -96,7 +93,7 @@ export default function articleMDX(): MDXComponents {
     MdxTab,
     MdxAlert,
     MdxCollapse,
-    hr: ArticleHR,
+    hr: MdxHr,
     p({ children }: ComponentPropsWithoutRef<'p'>) {
       return <p className="my-4 whitespace-pre-line">{children}</p>
     },
@@ -164,9 +161,9 @@ export default function articleMDX(): MDXComponents {
         </h3>
       )
     },
-    ul: ArticleUnorderedList,
-    ol: ArticleOrderedList,
-    li: ArticleListItem,
+    ul: UnorderedList,
+    ol: OrderedList,
+    li: ListItem,
     pre({ children, className, ...props }: ComponentPropsWithoutRef<'pre'>) {
       const codeBlock = isValidElement(children)
         ? cloneElement<any>(children, {
@@ -217,7 +214,7 @@ export default function articleMDX(): MDXComponents {
       )
     },
     img(props) {
-      return <ArticlePreviewImage className="my-8" {...props} />
+      return <MdxPreviewImage className="my-8" {...props} />
     },
     table({ className, ...props }: ComponentPropsWithoutRef<'table'>) {
       return (

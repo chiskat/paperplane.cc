@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { allSnippets } from '@/.content-collections/generated'
-import snippetMDX from '@/components/mdx/snippet'
+import snippetMDX from '@/app/(main-layout)/snippet/mdx-render'
 
 interface SnippetRouteMeta {
   catelog: string

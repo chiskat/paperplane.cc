@@ -1,12 +1,12 @@
 import { MDXComponents } from 'mdx/types'
 import { type ComponentPropsWithoutRef } from 'react'
 
+import baseMDX from '@/components/mdx/base-render'
+import { Separator } from '@/components/ui/separator'
 import { cn } from '@/utils/style'
-import articleMDX from './article'
-import { Separator } from '../ui/separator'
 
-export default function openMDX(): MDXComponents {
-  const base = articleMDX()
+export default function registryMDX(): MDXComponents {
+  const base = baseMDX()
 
   const Pre = base.pre
   const Code = base.code

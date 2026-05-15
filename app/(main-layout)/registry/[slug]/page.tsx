@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import { allRegistries } from '@/.content-collections/generated'
-import registryMDX from '@/components/mdx/registry'
+import registryMDX from '@/app/(main-layout)/registry/mdx-render'
 
 export const dynamicParams = false
 
