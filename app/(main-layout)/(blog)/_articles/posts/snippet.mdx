@@ -233,7 +233,6 @@ canvas_binary_host_mirror=https://registry.npmmirror.com/-/binary/canvas
 具体而言：
 
 - 包名 `name`、版本号 `version`、入口 `main`、`module` 的重要性无需多言。
-
 - 作为 npm 包发布时，`package.json` 不应包含任何开发依赖，例如 `prettier`、`eslint` 等都不应该包含在其中，因为作为使用者而言是不需要安装这些东西的；这些工具的配置更不应出现在 `package.json` 中；
 - 如果是前端使用的包，通常会对代码进行打包编译，此时依赖项的代码都被编译进你的包了，此时也不需要 `dependencies` 了；例如你的代码用到了 `lodash`，发布时要打包编译，`lodash` 的代码已经编进你的包了，所以发布时 `dependencies` 就不需要写 `lodash` 了；
 - 如果是组件库，或者是基于某一个包二次开发，那么原始的依赖请放入 `peerDependencies` 字段，并给一个比较宽泛的版本号；例如如果你的包是 React 的组件库，那么应该把 `react` 放到 `peerDependencies` 里；
@@ -1441,7 +1440,6 @@ module.exports = {
 使用 `react-app-rewired` 的方法：
 
 - 安装 `react-app-rewired`；
-
 - 首先把 package.json 中 `scripts` 字段里面的 `react-scripts` 替换成 `react-app-rewired`；
 - 然后在项目根目录新建一个 `config-overrides.js`，这个文件的导出会用于对项目进行 webpack、babel 的定制。
 
