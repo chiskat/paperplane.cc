@@ -40,7 +40,7 @@ Docker Desktop 的设置页面，可以直接开启 Docker Engine API（在 macO
 默认情况，Docker 只在 `/var/run/docker.sock` 提供 `unix` 的 Socket，也就是我们常用的 `docker` 终端命令。
 
 **第一种方式：**
-Docker 支持 unix、tcp、fd 这三种协议的通讯，我们可以修改 dockerd 的启动指令，令其开放 tcp 协议的通讯。
+Docker 支持 unix、tcp、fd 这三种协议的通讯，但默认并不是全部可用的；我们可以修改 dockerd 的启动指令，令其开放 tcp 协议的通讯。
 阅读 [Docker Daemon CLI 文档](https://docs.docker.com/reference/cli/dockerd/#daemon-socket-option) 可以看到，使用 `-H ` 参数来配置 dockerd 监听 API 请求的方式。
 
 编辑 Docker 的服务配置文件（路径中的 `lib` 也可能是 `etc`）：
