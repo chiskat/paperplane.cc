@@ -1,6 +1,7 @@
 import { Client } from '@larksuiteoapi/node-sdk'
+import type z from 'zod'
 
-import { OARobotMessageMarkdown } from '@/lib/zods/oa-robot'
+import { OARobotMessageMarkdownZod } from '@/lib/zods/oa-robot'
 import { OARobotProfile, OARobotType } from '@/models/client'
 
 export function extractTitle(markdown: string): string {
@@ -14,7 +15,10 @@ export function extractTitle(markdown: string): string {
   return result
 }
 
-export function handleFeishuMarkdown(message: OARobotMessageMarkdown, auth: OARobotProfile) {
+export function handleFeishuMarkdown(
+  message: z.infer<typeof OARobotMessageMarkdownZod>,
+  auth: OARobotProfile
+) {
   let { markdown } = message
   const { type } = auth
 

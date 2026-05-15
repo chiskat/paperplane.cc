@@ -1,9 +1,9 @@
 import type z from 'zod'
 
 import {
-  OARobotMessageImage,
-  OARobotMessageMarkdown,
-  OARobotMessageText,
+  OARobotMessageImageZod,
+  OARobotMessageMarkdownZod,
+  OARobotMessageTextZod,
   OARobotMessageType,
   OARobotMessageZod,
 } from '@/lib/zods/oa-robot'
@@ -87,7 +87,7 @@ export async function sendMessage(auth: OARobotProfile, message: OARobotMessage)
   }
 }
 
-async function text(auth: OARobotProfile, message: OARobotMessageText) {
+async function text(auth: OARobotProfile, message: z.infer<typeof OARobotMessageTextZod>) {
   const { type: robotType } = auth
   const { text: rawText, atAll = false, atList = [] } = message
 
@@ -109,7 +109,7 @@ async function text(auth: OARobotProfile, message: OARobotMessageText) {
   }
 }
 
-async function markdown(auth: OARobotProfile, message: OARobotMessageMarkdown) {
+async function markdown(auth: OARobotProfile, message: z.infer<typeof OARobotMessageMarkdownZod>) {
   const { atAll = false, atList = [] } = message
   const { type: robotType } = auth
 
@@ -145,7 +145,7 @@ async function markdown(auth: OARobotProfile, message: OARobotMessageMarkdown) {
   }
 }
 
-async function image(auth: OARobotProfile, message: OARobotMessageImage) {
+async function image(auth: OARobotProfile, message: z.infer<typeof OARobotMessageImageZod>) {
   const { type } = auth
   const { feishuAppId, feishuAppSecret } = (auth.extraAuthentication || {}) as any
   const { title, image } = message
