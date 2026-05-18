@@ -2,6 +2,7 @@
 
 import { IconArrowsSort, IconCloud, IconDeviceLaptop, IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
+import { isEqual } from 'lodash-es'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -45,33 +46,9 @@ function findSelectedProfile(
   profileId: string | null,
   list: OARobotProfileListItem[]
 ): OARobotListSelectedProfile | null {
-  if (!profileId) {
-    return null
-  }
-
+  if (!profileId) return null
   const profile = list.find(item => item.id === profileId)
   return profile ? { source, profile } : null
-}
-
-function getSelectedProfileSignature(selectedProfile: OARobotListSelectedProfile | null) {
-  if (!selectedProfile) {
-    return 'none'
-  }
-
-  const { source, profile } = selectedProfile
-  const profileUpdatedAt =
-    'updatedAt' in profile && profile.updatedAt instanceof Date ? profile.updatedAt.getTime() : ''
-  return [
-    source,
-    profile.id,
-    profile.name,
-    profile.type,
-    'desc' in profile ? profile.desc : '',
-    'accessToken' in profile ? profile.accessToken : '',
-    'secret' in profile ? profile.secret : '',
-    'extraAuthentication' in profile ? JSON.stringify(profile.extraAuthentication ?? null) : '',
-    profileUpdatedAt,
-  ].join('|')
 }
 
 export default function OARobotList({ onSelectedProfileChange }: OARobotListProps) {
@@ -81,61 +58,36 @@ export default function OARobotList({ onSelectedProfileChange }: OARobotListProp
   const [selectedTab, setSelectedTab] = useState<OARobotProfileSource | null>(null)
   const [selectedProfileIds, setSelectedProfileIds] = useState(EMPTY_SELECTED_PROFILE_IDS)
   const [localProfiles] = useOARobotLocalProfiles()
-  const lastEmittedSignatureRef = useRef<string | null>(null)
+  const lastEmittedProfileRef = useRef<OARobotListSelectedProfile | null>(null)
 
   const { data: cloudProfiles, isPending: cloudProfilesPending } = useQuery({
     ...trpc.oaRobot.profile.list.queryOptions(),
     enabled: Boolean(user),
   })
 
-  const localList = localProfiles
   const cloudList = cloudProfiles ?? EMPTY_PROFILE_LIST
-
-  const defaultTab = userPending ? null : user ? 'cloud' : 'local'
-  const activeTab = selectedTab ?? defaultTab
+  const activeTab = selectedTab ?? (userPending ? null : user ? 'cloud' : 'local')
   const activeSource = activeTab ?? 'local'
-  const activeList = activeSource === 'cloud' ? cloudList : localList
-
+  const activeList = activeSource === 'cloud' ? cloudList : localProfiles
   const listPending = userPending || (Boolean(user) && cloudProfilesPending)
 
   const selectedProfile = useMemo(() => {
-    if (!activeTab) {
-      return null
-    }
-
-    return findSelectedProfile(
-      activeTab,
-      selectedProfileIds[activeTab],
-      activeTab === 'cloud' ? cloudList : localList
-    )
-  }, [activeTab, cloudList, localList, selectedProfileIds])
-
-  const selectedProfileSignature = useMemo(
-    () => getSelectedProfileSignature(selectedProfile),
-    [selectedProfile]
-  )
+    if (!activeTab) return null
+    return findSelectedProfile(activeTab, selectedProfileIds[activeTab], activeList)
+  }, [activeTab, activeList, selectedProfileIds])
 
   useEffect(() => {
-    if (!activeTab || !onSelectedProfileChange) {
-      return
-    }
+    if (!activeTab || !onSelectedProfileChange) return
+    if (isEqual(lastEmittedProfileRef.current, selectedProfile)) return
 
-    if (lastEmittedSignatureRef.current === selectedProfileSignature) {
-      return
-    }
-
-    lastEmittedSignatureRef.current = selectedProfileSignature
+    lastEmittedProfileRef.current = selectedProfile
     onSelectedProfileChange(selectedProfile)
-  }, [activeTab, onSelectedProfileChange, selectedProfile, selectedProfileSignature])
+  }, [activeTab, onSelectedProfileChange, selectedProfile])
 
-  const selectProfile = (source: OARobotProfileSource, profileId: string) => {
+  const updateSelectedProfile = (source: OARobotProfileSource, profileId: string | null) => {
     setSelectedProfileIds(prev =>
       prev[source] === profileId ? prev : { ...prev, [source]: profileId }
     )
-  }
-
-  const clearDeletedProfile = (source: OARobotProfileSource, profileId: string) => {
-    setSelectedProfileIds(prev => (prev[source] === profileId ? { ...prev, [source]: null } : prev))
   }
 
   return (
@@ -191,11 +143,11 @@ export default function OARobotList({ onSelectedProfileChange }: OARobotListProp
 
           <TabsContent value="local" className="mt-3 min-h-0">
             <ProfileItemsList
-              list={localList}
+              list={localProfiles}
               source="local"
               activeProfileId={selectedProfileIds.local}
-              onSelectProfile={profileId => selectProfile('local', profileId)}
-              onDeleteProfile={profileId => clearDeletedProfile('local', profileId)}
+              onSelectProfile={id => updateSelectedProfile('local', id)}
+              onDeleteProfile={() => updateSelectedProfile('local', null)}
             />
           </TabsContent>
 
@@ -204,8 +156,8 @@ export default function OARobotList({ onSelectedProfileChange }: OARobotListProp
               source="cloud"
               list={cloudList}
               activeProfileId={selectedProfileIds.cloud}
-              onSelectProfile={profileId => selectProfile('cloud', profileId)}
-              onDeleteProfile={profileId => clearDeletedProfile('cloud', profileId)}
+              onSelectProfile={id => updateSelectedProfile('cloud', id)}
+              onDeleteProfile={() => updateSelectedProfile('cloud', null)}
             />
           </TabsContent>
         </Tabs>

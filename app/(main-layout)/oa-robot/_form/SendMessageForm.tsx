@@ -50,12 +50,8 @@ type SendMessageFormValue = {
 }
 
 type SendMessageFieldName = keyof SendMessageFormValue
-type SendMessageFormApi = ReturnType<typeof useSendMessageForm>
-type SendMessageFormSectionProps = {
-  form: SendMessageFormApi
-  robotType: OARobotType
-  disabled: boolean
-}
+type FormApi = ReturnType<typeof useSendMessageForm>
+type FieldProps = { form: FormApi; robotType: OARobotType; disabled: boolean }
 
 const defaultMessageType: MessageTypeValue = 'text'
 
@@ -77,9 +73,9 @@ const messageTypeOptions: Array<{ value: MessageTypeValue; label: string }> = [
 
 const atAllDescriptions: Partial<Record<OARobotType, string>> = {
   [OARobotType.DINGTALK]:
-    '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾；开启后无法“@用户”',
-  [OARobotType.FEISHU]: '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾',
-  [OARobotType.WXBIZ]: '消息末尾会“@所有人”且无法调整位置',
+    '可通过消息中的"@all"来调整"@所有人"文本的位置，默认在消息的末尾；开启后无法"@用户"',
+  [OARobotType.FEISHU]: '可通过消息中的"@all"来调整"@所有人"文本的位置，默认在消息的末尾',
+  [OARobotType.WXBIZ]: '消息末尾会"@所有人"且无法调整位置',
 }
 
 function normalizeAtList(value: string[]) {
@@ -93,6 +89,25 @@ function buildMentionInput(value: SendMessageFormValue, robotType: OARobotType) 
   }
 }
 
+function isMarkdownMentionSupported(robotType: OARobotType) {
+  return robotType !== OARobotType.WXBIZ
+}
+
+const asField = <T,>(field: unknown) => field as TanstackFieldLike<T | null | undefined>
+
+function asMessageTypeField(field: unknown): TanstackFieldLike<string | null | undefined> {
+  const typed = asField<MessageTypeValue>(field)
+  return {
+    state: { value: typed.state.value ?? defaultMessageType, meta: typed.state.meta },
+    handleBlur: typed.handleBlur,
+    handleChange: updater => {
+      const current = typed.state.value ?? defaultMessageType
+      const next = typeof updater === 'function' ? updater(current) : updater
+      typed.handleChange(() => (next as MessageTypeValue) || defaultMessageType)
+    },
+  }
+}
+
 function getMessageFormIssueField(path: readonly unknown[] | undefined) {
   const fieldName = path?.[0]
   if (typeof fieldName === 'string' && fieldName in defaultValues) {
@@ -101,40 +116,7 @@ function getMessageFormIssueField(path: readonly unknown[] | undefined) {
   return undefined
 }
 
-const asStringField = (field: unknown) => field as TanstackFieldLike<string | null | undefined>
-const asBooleanField = (field: unknown) => field as TanstackFieldLike<boolean | null | undefined>
-const asStringListField = (field: unknown) =>
-  field as TanstackFieldLike<string[] | null | undefined>
-
-function asMessageTypeField(field: unknown) {
-  const typedField = field as TanstackFieldLike<MessageTypeValue | null | undefined>
-
-  const segmentField: TanstackFieldLike<string | null | undefined> = {
-    state: {
-      value: typedField.state.value ?? defaultMessageType,
-      meta: typedField.state.meta,
-    },
-    handleBlur: typedField.handleBlur,
-    handleChange: updater => {
-      const currentValue = typedField.state.value ?? defaultMessageType
-      const nextValue = typeof updater === 'function' ? updater(currentValue) : updater
-      typedField.handleChange(
-        () => (nextValue as MessageTypeValue | null | undefined) || defaultMessageType
-      )
-    },
-  }
-
-  return segmentField
-}
-
-function isMarkdownMentionSupported(robotType: OARobotType) {
-  return robotType !== OARobotType.WXBIZ
-}
-
-function SendMessageTypeField({
-  form,
-  disabled,
-}: Pick<SendMessageFormSectionProps, 'form' | 'disabled'>) {
+function SendMessageTypeField({ form, disabled }: Pick<FieldProps, 'form' | 'disabled'>) {
   return (
     <form.Field name="type">
       {field => (
@@ -154,17 +136,13 @@ function SendMessageTypeField({
   )
 }
 
-function SendMessageMentionFieldsContainer({
-  form,
-  robotType,
-  disabled,
-}: SendMessageFormSectionProps) {
+function MentionFields({ form, robotType, disabled }: FieldProps) {
   return (
     <div className="grid items-start gap-6 sm:grid-cols-2">
       <form.Field name="atAll">
-        {atAllField => (
+        {field => (
           <CheckboxField
-            field={asBooleanField(atAllField)}
+            field={asField<boolean>(field)}
             label="@所有人"
             description={atAllDescriptions[robotType]}
             disabled={disabled}
@@ -175,19 +153,18 @@ function SendMessageMentionFieldsContainer({
       <form.Subscribe selector={state => state.values.atAll}>
         {atAll => (
           <form.Field name="atList">
-            {atListField => {
-              const field = asStringListField(atListField)
-              const atListDisabled =
-                disabled || (robotType === OARobotType.DINGTALK && atAll === true)
-              const errorMessage = formatFieldErrors(field.state.meta.errors)
+            {field => {
+              const typedField = asField<string[]>(field)
+              const isDisabled = disabled || (robotType === OARobotType.DINGTALK && atAll === true)
+              const errorMessage = formatFieldErrors(typedField.state.meta.errors)
 
               return (
                 <SendMessageFieldAtList
-                  value={field.state.value ?? []}
-                  disabled={atListDisabled}
-                  onChange={nextValue => field.handleChange(() => nextValue)}
-                  onBlur={field.handleBlur}
-                  invalid={field.state.meta.isValid === false}
+                  value={typedField.state.value ?? []}
+                  disabled={isDisabled}
+                  onChange={nextValue => typedField.handleChange(() => nextValue)}
+                  onBlur={typedField.handleBlur}
+                  invalid={typedField.state.meta.isValid === false}
                   errorMessage={errorMessage}
                 />
               )
@@ -206,15 +183,13 @@ type SendMessageImageUploadProps = {
 }
 
 function SendMessageImageUpload({ value, disabled, onChange }: SendMessageImageUploadProps) {
-  const acceptedFiles = value ? [value] : []
-
   return (
     <FileUpload
       maxFiles={1}
       accept="image/*"
       disabled={disabled}
-      acceptedFiles={acceptedFiles}
-      onFileChange={details => onChange(details.acceptedFiles[0] || undefined)}
+      acceptedFiles={value ? [value] : []}
+      onFileChange={details => onChange(details.acceptedFiles[0])}
     >
       {value ? (
         <FileUploadItemGroup className="m-0 list-none p-0">
@@ -254,13 +229,13 @@ function SendMessageImageUpload({ value, disabled, onChange }: SendMessageImageU
   )
 }
 
-function SendMessageTextFields({ form, robotType, disabled }: SendMessageFormSectionProps) {
+function SendMessageTextFields({ form, robotType, disabled }: FieldProps) {
   return (
     <>
       <form.Field name="text">
         {field => (
           <TextareaField
-            field={asStringField(field)}
+            field={asField<string>(field)}
             label="文本内容"
             required
             disabled={disabled}
@@ -270,12 +245,12 @@ function SendMessageTextFields({ form, robotType, disabled }: SendMessageFormSec
         )}
       </form.Field>
 
-      <SendMessageMentionFieldsContainer form={form} robotType={robotType} disabled={disabled} />
+      <MentionFields form={form} robotType={robotType} disabled={disabled} />
     </>
   )
 }
 
-function SendMessageMarkdownFields({ form, robotType, disabled }: SendMessageFormSectionProps) {
+function SendMessageMarkdownFields({ form, robotType, disabled }: FieldProps) {
   const supportsMention = isMarkdownMentionSupported(robotType)
 
   return (
@@ -283,7 +258,7 @@ function SendMessageMarkdownFields({ form, robotType, disabled }: SendMessageFor
       <form.Field name="markdown">
         {field => (
           <TextareaField
-            field={asStringField(field)}
+            field={asField<string>(field)}
             label="Markdown 内容"
             required
             disabled={disabled}
@@ -295,27 +270,25 @@ function SendMessageMarkdownFields({ form, robotType, disabled }: SendMessageFor
 
       {SendMessageTipsMarkdown(robotType)}
 
-      {supportsMention ? (
+      {supportsMention && (
         <form.Field name="title">
           {field => (
             <InputField
-              field={asStringField(field)}
+              field={asField<string>(field)}
               label={robotType === OARobotType.DINGTALK ? '钉钉推送标题' : '飞书富文本标题'}
               disabled={disabled}
               placeholder="留空则会从 Markdown 自动提取"
             />
           )}
         </form.Field>
-      ) : null}
+      )}
 
-      {supportsMention ? (
-        <SendMessageMentionFieldsContainer form={form} robotType={robotType} disabled={disabled} />
-      ) : null}
+      {supportsMention && <MentionFields form={form} robotType={robotType} disabled={disabled} />}
     </>
   )
 }
 
-function SendMessageImageFields({ form, robotType, disabled }: SendMessageFormSectionProps) {
+function SendMessageImageFields({ form, robotType, disabled }: FieldProps) {
   return (
     <>
       <form.Field name="image">
@@ -335,43 +308,38 @@ function SendMessageImageFields({ form, robotType, disabled }: SendMessageFormSe
                 onChange={file => field.handleChange(() => file)}
               />
 
-              {!field.state.meta.isValid && errorMessage ? (
-                <FieldError>{errorMessage}</FieldError>
-              ) : null}
+              {!field.state.meta.isValid && errorMessage && <FieldError>{errorMessage}</FieldError>}
             </Field>
           )
         }}
       </form.Field>
 
-      {robotType === OARobotType.DINGTALK ? (
+      {robotType === OARobotType.DINGTALK && (
         <form.Field name="title">
           {field => (
             <InputField
-              field={asStringField(field)}
+              field={asField<string>(field)}
               label="钉钉通知标题"
               disabled={disabled}
-              placeholder="可留空，将显示为“[图片]”"
+              placeholder='可留空，将显示为"[图片]"'
             />
           )}
         </form.Field>
-      ) : null}
+      )}
 
       {SendMessageTipsImage(robotType)}
     </>
   )
 }
 
-function SendMessageFields({ form, robotType, disabled }: SendMessageFormSectionProps) {
+function SendMessageFields({ form, robotType, disabled }: FieldProps) {
   return (
     <form.Subscribe selector={state => state.values.type}>
       {type => {
-        if (type === 'text') {
-          return <SendMessageTextFields form={form} robotType={robotType} disabled={disabled} />
-        } else if (type === 'markdown') {
-          return <SendMessageMarkdownFields form={form} robotType={robotType} disabled={disabled} />
-        } else {
-          return <SendMessageImageFields form={form} robotType={robotType} disabled={disabled} />
-        }
+        const props = { form, robotType, disabled }
+        if (type === 'text') return <SendMessageTextFields {...props} />
+        if (type === 'markdown') return <SendMessageMarkdownFields {...props} />
+        return <SendMessageImageFields {...props} />
       }}
     </form.Subscribe>
   )
@@ -407,36 +375,22 @@ function SendMessageProfileHeader({
 
 function buildMessagePayloadInput(value: SendMessageFormValue, robotType: OARobotType) {
   const title = value.title.trim()
+  const mention = buildMentionInput(value, robotType)
 
-  switch (value.type) {
-    case 'text':
-      return {
-        message: OARobotMessageType.TEXT,
-        text: value.text.trim(),
-        ...buildMentionInput(value, robotType),
-      }
+  if (value.type === 'text') {
+    return { message: OARobotMessageType.TEXT, text: value.text.trim(), ...mention }
+  }
 
-    case 'markdown':
-      if (!isMarkdownMentionSupported(robotType)) {
-        return {
-          message: OARobotMessageType.MARKDOWN,
-          markdown: value.markdown.trim(),
-        }
-      }
+  if (value.type === 'markdown') {
+    const base = { message: OARobotMessageType.MARKDOWN, markdown: value.markdown.trim() }
+    if (!isMarkdownMentionSupported(robotType)) return base
+    return { ...base, title: title || undefined, ...mention }
+  }
 
-      return {
-        message: OARobotMessageType.MARKDOWN,
-        markdown: value.markdown.trim(),
-        title: title || undefined,
-        ...buildMentionInput(value, robotType),
-      }
-
-    case 'image':
-      return {
-        message: OARobotMessageType.IMAGE,
-        image: value.image,
-        title: robotType === OARobotType.DINGTALK ? title || undefined : undefined,
-      }
+  return {
+    message: OARobotMessageType.IMAGE,
+    image: value.image,
+    title: robotType === OARobotType.DINGTALK ? title || undefined : undefined,
   }
 }
 
@@ -446,16 +400,13 @@ function buildMessagePayload(value: SendMessageFormValue, robotType: OARobotType
 
 function validateMessageFormValue(value: SendMessageFormValue, robotType: OARobotType) {
   const result = OARobotMessageZod.safeParse(buildMessagePayloadInput(value, robotType))
-
   if (result.success) return undefined
 
   const fields: Partial<Record<SendMessageFieldName, unknown[]>> = {}
   for (const issue of result.error.issues) {
     const fieldName = getMessageFormIssueField(issue.path)
-    if (!fieldName) continue
-    fields[fieldName] = [...(fields[fieldName] ?? []), issue]
+    if (fieldName) fields[fieldName] = [...(fields[fieldName] ?? []), issue]
   }
-
   return { fields }
 }
 
@@ -474,12 +425,12 @@ function useSendMessageForm({
   setPending,
   setSubmitError,
 }: UseSendMessageFormOptions) {
-  const form = useForm({
+  return useForm({
     defaultValues,
     validators: {
       onSubmit: ({ value }) => (robotType ? validateMessageFormValue(value, robotType) : undefined),
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       if (!selectedProfile) {
         setSubmitError('请先在左侧列表中选择一个 OA 机器人')
         return
@@ -489,27 +440,24 @@ function useSendMessageForm({
       setSubmitError(null)
 
       try {
-        const robotType = selectedProfile.profile.type
-        const message = buildMessagePayload(value, robotType)
+        const { profile, source } = selectedProfile
+        const message = buildMessagePayload(value, profile.type)
 
-        if (selectedProfile.source === 'cloud') {
-          await trpcClient.oaRobot.messages.sendById.mutate({
-            robotId: selectedProfile.profile.id,
-            ...message,
-          })
+        if (source === 'cloud') {
+          await trpcClient.oaRobot.messages.sendById.mutate({ robotId: profile.id, ...message })
         } else {
-          const localProfile = selectedProfile.profile as OARobotLocalProfile
+          const local = profile as OARobotLocalProfile
           await trpcClient.oaRobot.messages.sendByConfig.mutate({
-            type: localProfile.type,
-            accessToken: localProfile.accessToken,
-            secret: localProfile.secret,
-            extraAuthentication: localProfile.extraAuthentication,
+            type: local.type,
+            accessToken: local.accessToken,
+            secret: local.secret,
+            extraAuthentication: local.extraAuthentication,
             ...message,
           })
         }
 
         toast.success({ title: '发送成功', description: '消息已提交给机器人' })
-        form.reset({ ...defaultValues, type: value.type })
+        formApi.reset({ ...defaultValues, type: value.type })
       } catch (error) {
         const message = formatFieldErrors([error]) || '发送失败，请稍后重试'
         setSubmitError(message)
@@ -519,31 +467,25 @@ function useSendMessageForm({
       }
     },
   })
-
-  return form
 }
 
 export default function SendMessageForm({ selectedProfile }: SendMessageFormProps) {
   const trpcClient = useTRPCClient()
   const [pending, setPending] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
-  const robotType = selectedProfile?.profile.type
 
   const form = useSendMessageForm({
     selectedProfile,
-    robotType,
+    robotType: selectedProfile?.profile.type,
     trpcClient,
     setPending,
     setSubmitError,
   })
 
-  const formDisabled = pending || !selectedProfile
+  if (!selectedProfile) return <SendMessagePlaceholder />
 
-  if (!selectedProfile) {
-    return <SendMessagePlaceholder />
-  }
-
-  const selectedRobotType = selectedProfile.profile.type
+  const disabled = pending || !selectedProfile
+  const robotType = selectedProfile.profile.type
 
   return (
     <div className="bg-white">
@@ -559,17 +501,17 @@ export default function SendMessageForm({ selectedProfile }: SendMessageFormProp
           void form.handleSubmit()
         }}
       >
-        <SendMessageTypeField form={form} disabled={formDisabled} />
-        <SendMessageFields form={form} robotType={selectedRobotType} disabled={formDisabled} />
+        <SendMessageTypeField form={form} disabled={disabled} />
+        <SendMessageFields form={form} robotType={robotType} disabled={disabled} />
 
-        {submitError ? (
+        {submitError && (
           <p className="rounded-md border border-rose-300 bg-rose-50 px-3 py-2 text-base text-rose-700">
             {submitError}
           </p>
-        ) : null}
+        )}
 
         <div className="flex justify-end">
-          <Button type="submit" size="lg" disabled={formDisabled}>
+          <Button type="submit" size="lg" disabled={disabled}>
             {pending ? '发送中...' : '发送消息'}
           </Button>
         </div>

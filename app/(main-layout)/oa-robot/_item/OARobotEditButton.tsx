@@ -1,16 +1,9 @@
 'use client'
 
-import { useForm, type Updater } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from 'react'
+import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from 'react'
 import z, { type input } from 'zod'
 
 import { InputField } from '@/components/field/input'
@@ -46,21 +39,12 @@ import {
 import { oaRobotTypeOptions } from '../robot-icon'
 
 type OARobotStorageSource = 'local' | 'cloud'
-type FeishuCredentials = {
-  feishuAppId: string
-  feishuAppSecret: string
-}
 
 const OARobotFormZod = OARobotProfileZod.extend({
   storage: z.enum(['local', 'cloud']),
 })
 
 export type OARobotFormValue = input<typeof OARobotFormZod>
-type OARobotProfilePayload = Pick<
-  OARobotFormValue,
-  'id' | 'name' | 'desc' | 'type' | 'accessToken' | 'secret' | 'extraAuthentication'
->
-type OARobotEditSourceProfile = Partial<OARobotProfilePayload> | undefined
 
 export interface OARobotEditButtonProps extends Omit<ComponentProps<typeof Button>, 'onSubmit'> {
   children: ReactNode
@@ -70,10 +54,12 @@ export interface OARobotEditButtonProps extends Omit<ComponentProps<typeof Butto
   onSuccess?: () => void
 }
 
-const tokenGuideMap: Record<OARobotType, { title: string; description: string }> = {
+const DEFAULT_ROBOT_TYPE = OARobotType.DINGTALK
+
+const TOKEN_GUIDE_MAP: Record<OARobotType, { title: string; description: string }> = {
   [OARobotType.DINGTALK]: {
     title: '钉钉机器人配置说明',
-    description: '群管理 → 添加机器人 → 自定义；安全设置仅支持“加签”。',
+    description: '群管理 → 添加机器人 → 自定义；安全设置仅支持"加签"。',
   },
   [OARobotType.WXBIZ]: {
     title: '企业微信机器人配置说明',
@@ -81,17 +67,14 @@ const tokenGuideMap: Record<OARobotType, { title: string; description: string }>
   },
   [OARobotType.FEISHU]: {
     title: '飞书机器人配置说明',
-    description: '群机器人 → 添加 → 自定义机器人；安全设置仅支持“签名校验”。',
+    description: '群机器人 → 添加 → 自定义机器人；安全设置仅支持"签名校验"。',
   },
 }
 
-const DEFAULT_ROBOT_TYPE = OARobotType.DINGTALK
+const FEISHU_AUTH_TIP =
+  '飞书发送图片和"@用户"需要点此链接创建平台应用，并在下方填入平台应用的 AppId 和 AppSecret。在"开发配置"→"权限管理"中开通"获取与上传图片或文件资源"权限，才可以发送图片；开通"通过手机号或邮箱获取用户 ID"和"获取用户 userID"权限，才能"@用户"。'
 
-const feishuAuthenticationTip = `飞书发送图片和“@用户”需要点此链接创建平台应用，并在下方填入平台应用的 AppId 和 AppSecret。
-在“开发配置”→“权限管理”中开通“获取与上传图片或文件资源”权限，才可以发送图片；
-开通“通过手机号或邮箱获取用户 ID”和“获取用户 userID”权限，才能“@用户”。`
-
-const robotTypeSegmentOptions = oaRobotTypeOptions.map(option => ({
+const ROBOT_TYPE_OPTIONS = oaRobotTypeOptions.map(option => ({
   value: option.value,
   label: (
     <>
@@ -101,116 +84,41 @@ const robotTypeSegmentOptions = oaRobotTypeOptions.map(option => ({
   ),
 }))
 
-function getExtraAuthenticationObject(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return {}
-  }
-  return { ...(value as Record<string, unknown>) }
-}
+const STORAGE_OPTIONS: Array<{ value: OARobotStorageSource; label: string }> = [
+  { value: 'cloud', label: '云端' },
+  { value: 'local', label: '浏览器本地' },
+]
 
-function getFeishuExtraAuthentication(value: unknown): FeishuCredentials {
-  const data = getExtraAuthenticationObject(value)
+function getFeishuCredentials(extraAuth: unknown) {
+  const data =
+    extraAuth && typeof extraAuth === 'object' && !Array.isArray(extraAuth)
+      ? (extraAuth as Record<string, unknown>)
+      : {}
   return {
     feishuAppId: typeof data.feishuAppId === 'string' ? data.feishuAppId : '',
     feishuAppSecret: typeof data.feishuAppSecret === 'string' ? data.feishuAppSecret : '',
   }
 }
 
-function resolveSubmitError(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message
-  }
-  if (typeof error === 'string' && error.trim()) {
-    return error
-  }
-  return '提交失败，请稍后重试'
-}
-
-function createProfilePayload(
+function createLocalPayload(
   value: OARobotFormValue,
-  feishuCredentials: FeishuCredentials
-): OARobotProfilePayload {
-  return {
-    id: value.id,
-    name: value.name,
-    desc: value.desc,
-    type: value.type,
-    accessToken: value.accessToken,
-    secret: value.type === OARobotType.WXBIZ ? null : value.secret,
-    extraAuthentication:
-      value.type === OARobotType.FEISHU
-        ? {
-            ...getExtraAuthenticationObject(value.extraAuthentication),
-            ...feishuCredentials,
-          }
-        : value.extraAuthentication,
-  }
-}
+  feishuCreds: { feishuAppId: string; feishuAppSecret: string }
+): OARobotLocalProfilePayload {
+  const hasFeishuCreds = feishuCreds.feishuAppId || feishuCreds.feishuAppSecret
+  const extraAuth =
+    value.type === OARobotType.FEISHU && hasFeishuCreds
+      ? { ...((value.extraAuthentication as object) || {}), ...feishuCreds }
+      : value.extraAuthentication
 
-function lockProfileImmutableFields(
-  value: OARobotFormValue,
-  currentProfile?: Pick<OARobotProfilePayload, 'type'>
-): OARobotFormValue {
-  if (!currentProfile) {
-    return value
-  }
-
-  return { ...value, type: currentProfile.type }
-}
-
-function createLocalProfilePayload(value: OARobotProfilePayload): OARobotLocalProfilePayload {
   return {
     name: value.name,
-    desc: value.desc ?? null,
+    desc: value.desc || null,
     type: value.type,
-    accessToken: value.accessToken ?? null,
-    secret: value.type === OARobotType.WXBIZ ? null : (value.secret ?? null),
-    extraAuthentication: (value.extraAuthentication ??
-      null) as OARobotLocalProfilePayload['extraAuthentication'],
+    accessToken: value.accessToken || null,
+    secret: value.type === OARobotType.WXBIZ ? null : value.secret || null,
+    extraAuthentication: extraAuth as OARobotLocalProfilePayload['extraAuthentication'],
   }
 }
-
-function createDefaultFormValue({
-  isEditMode,
-  editSourceProfile,
-  profileId,
-  source,
-  preferredSource,
-}: {
-  isEditMode: boolean
-  editSourceProfile: OARobotEditSourceProfile
-  profileId?: string
-  source: OARobotStorageSource
-  preferredSource: OARobotStorageSource
-}): OARobotFormValue {
-  const type = editSourceProfile?.type ?? DEFAULT_ROBOT_TYPE
-
-  return {
-    ...(isEditMode ? { id: editSourceProfile?.id ?? profileId } : {}),
-    name: editSourceProfile?.name ?? '',
-    desc: editSourceProfile?.desc ?? '',
-    type,
-    accessToken: editSourceProfile?.accessToken ?? '',
-    secret: editSourceProfile?.secret ?? (type === OARobotType.WXBIZ ? null : ''),
-    extraAuthentication: editSourceProfile?.extraAuthentication ?? undefined,
-    storage: isEditMode ? source : preferredSource,
-  }
-}
-
-function normalizeStorageSource(value: unknown, fallback: OARobotStorageSource) {
-  return value === 'cloud' || value === 'local' ? value : fallback
-}
-
-function resolveUpdater<TValue>(updater: Updater<TValue>, currentValue: TValue): TValue {
-  return typeof updater === 'function'
-    ? (updater as (value: TValue) => TValue)(currentValue)
-    : updater
-}
-
-const storageSourceOptions: Array<{ value: OARobotStorageSource; label: string }> = [
-  { value: 'cloud', label: '云端' },
-  { value: 'local', label: '浏览器本地' },
-]
 
 export function OARobotEditButton({
   children,
@@ -225,127 +133,123 @@ export function OARobotEditButton({
   const queryClient = useQueryClient()
 
   const isEditMode = Boolean(profileId)
-  const isLocalProfileEdit = isEditMode && source === 'local'
+  const isLocalEdit = isEditMode && source === 'local'
 
   const { user } = useSession()
   const preferredSource: OARobotStorageSource = !user && source === 'cloud' ? 'local' : source
 
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-
   const [feishuAppId, setFeishuAppId] = useState('')
   const [feishuAppSecret, setFeishuAppSecret] = useState('')
 
   const [localProfiles, setLocalProfiles] = useOARobotLocalProfiles()
 
   const currentLocalProfile = useMemo(() => {
-    if (!isLocalProfileEdit) {
-      return undefined
-    }
+    if (!isLocalEdit) return undefined
     return findOARobotLocalProfileById(localProfiles, profileId, localProfile)
-  }, [isLocalProfileEdit, localProfile, localProfiles, profileId])
+  }, [isLocalEdit, localProfile, localProfiles, profileId])
 
   const {
     data: currentProfile,
-    isPending: currentProfileLoading,
-    refetch: refetchCurrentProfile,
+    isPending: isLoadingProfile,
+    refetch: refetchProfile,
   } = useQuery({
     ...trpc.oaRobot.profile.get.queryOptions({ id: profileId ?? '' }),
-    enabled: open && isEditMode && !isLocalProfileEdit,
+    enabled: open && isEditMode && !isLocalEdit,
   })
 
-  const editSourceProfile = isLocalProfileEdit ? currentLocalProfile : currentProfile
-  const isProfileLoading = isEditMode && !isLocalProfileEdit && currentProfileLoading
+  const editSourceProfile = isLocalEdit ? currentLocalProfile : currentProfile
+  const isLoading = isEditMode && !isLocalEdit && isLoadingProfile
 
   const defaultValues = useMemo((): OARobotFormValue => {
-    return createDefaultFormValue({
-      isEditMode,
-      editSourceProfile,
-      profileId,
-      source,
-      preferredSource,
-    })
-  }, [editSourceProfile, isEditMode, preferredSource, profileId, source])
+    const type = editSourceProfile?.type ?? DEFAULT_ROBOT_TYPE
+    return {
+      ...(isEditMode && editSourceProfile?.id ? { id: editSourceProfile.id } : {}),
+      name: editSourceProfile?.name ?? '',
+      desc: editSourceProfile?.desc ?? '',
+      type,
+      accessToken: editSourceProfile?.accessToken ?? '',
+      secret: editSourceProfile?.secret ?? (type === OARobotType.WXBIZ ? null : ''),
+      extraAuthentication: editSourceProfile?.extraAuthentication,
+      storage: isEditMode ? source : preferredSource,
+    }
+  }, [editSourceProfile, isEditMode, preferredSource, source])
 
   const form = useForm({
     defaultValues,
     validators: { onSubmit: OARobotFormZod },
     onSubmit: async ({ value }) => {
       setPending(true)
-      setSubmitError(null)
 
-      const submitValue = isEditMode ? lockProfileImmutableFields(value, editSourceProfile) : value
+      const submitValue =
+        isEditMode && editSourceProfile ? { ...value, type: editSourceProfile.type } : value
       const storageSource = isEditMode ? source : submitValue.storage
-      const payload = createProfilePayload(submitValue, { feishuAppId, feishuAppSecret })
+      const payload = createLocalPayload(submitValue, { feishuAppId, feishuAppSecret })
 
       try {
         if (!user && storageSource === 'cloud') {
-          setSubmitError('未登录状态下仅支持保存到浏览器本地')
-          return
+          throw new Error('未登录状态下仅支持保存到浏览器本地')
         }
 
-        const localPayload = createLocalProfilePayload(payload)
-        if (isLocalProfileEdit && profileId) {
-          setLocalProfiles(prev => {
-            const prevList = prev ?? []
-            return updateOARobotLocalProfile(prevList, profileId, localPayload)
-          })
+        if (isLocalEdit && profileId) {
+          setLocalProfiles(prev => updateOARobotLocalProfile(prev ?? [], profileId, payload))
         } else if (!profileId && storageSource === 'local') {
-          setLocalProfiles(prev => {
-            const prevList = prev ?? []
-            return createOARobotLocalProfile(prevList, localPayload)
-          })
+          setLocalProfiles(prev => createOARobotLocalProfile(prev ?? [], payload))
         } else if (profileId) {
           await trpcClient.oaRobot.profile.update.mutate({
-            ...payload,
-            id: payload.id ?? profileId,
+            id: profileId,
+            name: payload.name,
+            desc: payload.desc ?? undefined,
             type: payload.type as OARobotType,
+            accessToken: payload.accessToken ?? undefined,
+            secret: payload.secret ?? undefined,
+            extraAuthentication: payload.extraAuthentication ?? undefined,
           })
         } else {
           await trpcClient.oaRobot.profile.add.mutate({
-            ...payload,
+            name: payload.name,
+            desc: payload.desc ?? undefined,
             type: payload.type as OARobotType,
+            accessToken: payload.accessToken ?? undefined,
+            secret: payload.secret ?? undefined,
+            extraAuthentication: payload.extraAuthentication ?? undefined,
           })
         }
 
-        const shouldInvalidateCloudList = profileId
-          ? !isLocalProfileEdit
-          : storageSource === 'cloud'
-        if (shouldInvalidateCloudList) {
+        const shouldInvalidate = profileId ? !isLocalEdit : storageSource === 'cloud'
+        if (shouldInvalidate) {
           await queryClient.invalidateQueries({ queryKey: trpc.oaRobot.profile.list.pathKey() })
         }
 
+        const storageLabel = storageSource === 'local' ? '本地' : ''
         toast.success({
           title: isEditMode ? '更新成功' : '创建成功',
-          description: isEditMode
-            ? isLocalProfileEdit
-              ? '本地 OA 机器人已更新'
-              : 'OA 机器人已更新'
-            : storageSource === 'local'
-              ? '本地 OA 机器人已创建'
-              : 'OA 机器人已创建',
+          description: `${storageLabel}OA 机器人已${isEditMode ? '更新' : '创建'}`,
         })
         setOpen(false)
         onSuccess?.()
       } catch (error) {
-        setSubmitError(resolveSubmitError(error))
+        const message =
+          error instanceof Error && error.message ? error.message : '提交失败，请稍后重试'
+        toast.error({ title: '操作失败', description: message })
       } finally {
         setPending(false)
       }
     },
   })
 
-  const resetForm = useCallback(() => {
+  const resetForm = () => {
     form.reset(defaultValues)
-    const extraAuthentication = getFeishuExtraAuthentication(defaultValues.extraAuthentication)
-    setFeishuAppId(extraAuthentication.feishuAppId)
-    setFeishuAppSecret(extraAuthentication.feishuAppSecret)
-  }, [defaultValues, form])
+    const creds = getFeishuCredentials(defaultValues.extraAuthentication)
+    setFeishuAppId(creds.feishuAppId)
+    setFeishuAppSecret(creds.feishuAppSecret)
+  }
 
   useEffect(() => {
     resetForm()
-  }, [resetForm])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues])
 
   return (
     <Dialog
@@ -354,11 +258,8 @@ export function OARobotEditButton({
       onOpenChange={({ open: nextOpen }) => {
         setOpen(nextOpen)
         if (nextOpen) {
-          setSubmitError(null)
           resetForm()
-          if (isEditMode && !isLocalProfileEdit) {
-            refetchCurrentProfile()
-          }
+          if (isEditMode && !isLocalEdit) refetchProfile()
         }
       }}
     >
@@ -395,12 +296,17 @@ export function OARobotEditButton({
                       handleBlur: field.handleBlur,
                       handleChange: updater => {
                         const currentValue = field.state.value ?? preferredSource
-                        const nextValue = resolveUpdater(updater, currentValue)
-                        field.handleChange(normalizeStorageSource(nextValue, preferredSource))
+                        const nextValue =
+                          typeof updater === 'function' ? updater(currentValue) : updater
+                        const safeValue =
+                          nextValue === 'cloud' || nextValue === 'local'
+                            ? nextValue
+                            : preferredSource
+                        field.handleChange(safeValue)
                       },
                     }}
                     label="存储位置"
-                    options={storageSourceOptions.map(option => ({
+                    options={STORAGE_OPTIONS.map(option => ({
                       value: option.value,
                       label: option.label,
                       itemProps: { disabled: isEditMode || (!user && option.value === 'cloud') },
@@ -423,10 +329,11 @@ export function OARobotEditButton({
                       handleBlur: field.handleBlur,
                       handleChange: updater => {
                         const currentValue = field.state.value ?? DEFAULT_ROBOT_TYPE
-                        const nextValue = resolveUpdater(updater, currentValue)
-                        const safeNextValue = (nextValue ?? DEFAULT_ROBOT_TYPE) as OARobotType
-                        field.handleChange(safeNextValue)
-                        if (safeNextValue === OARobotType.WXBIZ) {
+                        const nextValue =
+                          typeof updater === 'function' ? updater(currentValue) : updater
+                        const safeValue = (nextValue ?? DEFAULT_ROBOT_TYPE) as OARobotType
+                        field.handleChange(safeValue)
+                        if (safeValue === OARobotType.WXBIZ) {
                           form.setFieldValue('secret', () => null)
                         }
                       },
@@ -445,7 +352,7 @@ export function OARobotEditButton({
                     )}
                     itemTextClassName="flex items-center gap-2 text-sm font-medium"
                     indicatorClassName="bg-background rounded-lg"
-                    options={robotTypeSegmentOptions}
+                    options={ROBOT_TYPE_OPTIONS}
                   />
                 )}
               </form.Field>
@@ -458,7 +365,7 @@ export function OARobotEditButton({
                   label="名称"
                   required
                   placeholder="给机器人取个名称"
-                  disabled={isProfileLoading}
+                  disabled={isLoading}
                 />
               )}
             </form.Field>
@@ -470,14 +377,14 @@ export function OARobotEditButton({
                   label="描述"
                   placeholder="作为补充说明"
                   className="min-h-14"
-                  disabled={isProfileLoading}
+                  disabled={isLoading}
                 />
               )}
             </form.Field>
 
             <form.Subscribe selector={state => state.values.type ?? DEFAULT_ROBOT_TYPE}>
               {type => {
-                const guide = tokenGuideMap[type]
+                const guide = TOKEN_GUIDE_MAP[type]
                 return <Tips title={guide.title} content={guide.description} />
               }}
             </form.Subscribe>
@@ -495,25 +402,25 @@ export function OARobotEditButton({
                           label="Webhook 令牌"
                           placeholder="请输入 Webhook 令牌"
                           fieldClassName={isWxBiz ? 'sm:col-span-2' : undefined}
-                          disabled={isProfileLoading}
+                          disabled={isLoading}
                         />
                       )}
                     </form.Field>
 
-                    {!isWxBiz ? (
+                    {!isWxBiz && (
                       <form.Field name="secret">
                         {field => (
                           <InputField
                             field={field}
                             label="密钥"
                             placeholder="请输入密钥"
-                            disabled={isProfileLoading}
+                            disabled={isLoading}
                           />
                         )}
                       </form.Field>
-                    ) : null}
+                    )}
 
-                    {isFeishu ? (
+                    {isFeishu && (
                       <>
                         <Field>
                           <FieldLabel>飞书 AppId</FieldLabel>
@@ -521,7 +428,7 @@ export function OARobotEditButton({
                             value={feishuAppId}
                             onChange={event => setFeishuAppId(event.target.value)}
                             placeholder="请输入飞书 AppId"
-                            disabled={isProfileLoading}
+                            disabled={isLoading}
                           />
                         </Field>
 
@@ -531,23 +438,17 @@ export function OARobotEditButton({
                             value={feishuAppSecret}
                             onChange={event => setFeishuAppSecret(event.target.value)}
                             placeholder="请输入飞书 AppSecret"
-                            disabled={isProfileLoading}
+                            disabled={isLoading}
                           />
                         </Field>
 
-                        <Tips title="关于 AppId 和 AppSecret" content={feishuAuthenticationTip} />
+                        <Tips title="关于 AppId 和 AppSecret" content={FEISHU_AUTH_TIP} />
                       </>
-                    ) : null}
+                    )}
                   </div>
                 )
               }}
             </form.Subscribe>
-
-            {submitError ? (
-              <p className="rounded-md border border-rose-300 bg-rose-50 px-2 py-1 text-base text-rose-700">
-                {submitError}
-              </p>
-            ) : null}
           </form>
         </DialogBody>
 
@@ -557,9 +458,7 @@ export function OARobotEditButton({
             variant="outline"
             size="lg"
             disabled={pending}
-            onClick={() => {
-              setOpen(false)
-            }}
+            onClick={() => setOpen(false)}
           >
             取消
           </Button>
@@ -568,9 +467,7 @@ export function OARobotEditButton({
             type="button"
             size="lg"
             disabled={pending}
-            onClick={() => {
-              void form.handleSubmit()
-            }}
+            onClick={() => void form.handleSubmit()}
           >
             {pending
               ? isEditMode
