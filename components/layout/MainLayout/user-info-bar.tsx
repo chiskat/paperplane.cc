@@ -4,7 +4,7 @@ import { IconMenu2, IconUser, IconX } from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
-import LoginButton from '@/components/helper/LoginButton'
+import LoginButton from '@/components/helper/login-button'
 import { Button } from '@/components/ui/button'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Skeleton } from '@/components/ui/skeleton'

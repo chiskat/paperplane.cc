@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
 import { useState } from 'react'
 
-import { isLinkActive, MainNavigation, moreLinks, NavItem, navLinks } from './MainNavigation'
-import UserInfoBar from './UserInfoBar'
+import { isLinkActive, MainNavigation, moreLinks, NavItem, navLinks } from './main-navigation'
+import UserInfoBar from './user-info-bar'
 
 export default function MainLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()

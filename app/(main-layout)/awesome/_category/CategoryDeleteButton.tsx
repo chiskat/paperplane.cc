@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, type ComponentProps, type ReactNode } from 'react'
 
 import type { AwesomeTreeResult } from '@/apis/awesome/items'
-import { ConfirmButton } from '@/components/button/ConfirmButton'
+import { ConfirmButton } from '@/components/button/confirm-button'
 import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 

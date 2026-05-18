@@ -1,4 +1,4 @@
-import { Tips } from '@/components/text/Tips'
+import { Tips } from '@/components/text/tips'
 import { OARobotType } from '@/models/enums'
 
 export function SendMessageTipsMarkdown(type: OARobotType) {

@@ -24,7 +24,7 @@ import {
 import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { Highlight } from '../text/Highlight'
+import { Highlight } from '../text/highlight'
 import { CopyButton } from '../ui/copy-button'
 
 export type ApiMethod =

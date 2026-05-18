@@ -2,9 +2,9 @@ import { IconCpu, IconLink } from '@tabler/icons-react'
 import Link from 'next/link'
 import { cloneElement, ReactNode } from 'react'
 
-import { BlurPopupCard } from '@/components/effect/BlurPopupCard'
+import { BlurPopupCard } from '@/components/effect/blur-popup-card'
 import { getTechTagByName } from '@/components/tag/tech-tags'
-import { Highlight } from '@/components/text/Highlight'
+import { Highlight } from '@/components/text/highlight'
 import { Separator } from '@/components/ui/separator'
 
 export interface WebsiteProps {

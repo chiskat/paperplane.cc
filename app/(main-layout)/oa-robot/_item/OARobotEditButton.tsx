@@ -10,7 +10,7 @@ import { InputField } from '@/components/field/input'
 import { RadioGroupField } from '@/components/field/radio-group'
 import { SegmentGroupField } from '@/components/field/segment-group'
 import { TextareaField } from '@/components/field/textarea'
-import { Tips } from '@/components/text/Tips'
+import { Tips } from '@/components/text/tips'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
