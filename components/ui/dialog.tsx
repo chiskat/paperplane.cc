@@ -259,7 +259,10 @@ export const DialogTitle = (props: React.ComponentProps<typeof ArkDialog.Title>)
 
   return (
     <ArkDialog.Title
-      className={cn('text-lg leading-none font-semibold', className)}
+      className={cn(
+        'font-title-serif text-[24px] leading-none font-semibold text-gray-700',
+        className
+      )}
       data-slot="dialog-title"
       {...rest}
     />
@@ -271,7 +274,7 @@ export const DialogDescription = (props: React.ComponentProps<typeof ArkDialog.D
 
   return (
     <ArkDialog.Description
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn('text-muted-foreground text-base', className)}
       data-slot="dialog-description"
       {...rest}
     />

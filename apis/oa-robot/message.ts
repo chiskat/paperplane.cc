@@ -1,28 +1,35 @@
+import z from 'zod'
+
 import { prisma } from '@/lib/prisma'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
-import { OARobotSendByConfigZod, OARobotSendByIdZod } from '@/lib/zods/oa-robot'
+import {
+  OARobotSendByConfigZod,
+  OARobotSendByIdOpenAPIZod,
+  OARobotSendByIdZod,
+} from '@/lib/zods/oa-robot'
 import { OARobotProfile } from '@/models/client'
 import { sendMessage } from './helper/sender'
 
 export const messages = router({
-  sendById: loginProcedure.input(OARobotSendByIdZod).mutation(async ({ input, ctx }) => {
-    const session = await ctx.getSession()
-    const { robotId: id, ...message } = input
-    const userId = session!.user.id
+  sendById: loginProcedure
+    .meta({ openapi: { method: 'POST', path: '/oa-robot/{robotId}/send', protect: true } })
+    .input(OARobotSendByIdOpenAPIZod)
+    .output(z.object({ ok: z.literal(true) }))
+    .mutation(async ({ input, ctx }) => {
+      const data = OARobotSendByIdZod.parse(input)
+      const session = await ctx.getSession()
 
-    const profile = await prisma.oARobotProfile.findFirstOrThrow({ where: { userId, id } })
-    const result = await sendMessage(profile, message)
+      const { robotId: id, ...message } = data
+      const userId = session!.user.id
 
-    return result
-  }),
+      const profile = await prisma.oARobotProfile.findFirstOrThrow({ where: { userId, id } })
+      await sendMessage(profile, message)
+
+      return { ok: true }
+    }),
 
   sendByConfig: publicProcedure.input(OARobotSendByConfigZod).mutation(async ({ input }) => {
     const { type, accessToken, secret, extraAuthentication, ...message } = input
-    const result = await sendMessage(
-      { type, accessToken, secret, extraAuthentication } as OARobotProfile,
-      message
-    )
-
-    return result
+    await sendMessage({ type, accessToken, secret, extraAuthentication } as OARobotProfile, message)
   }),
 })

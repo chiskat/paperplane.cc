@@ -167,13 +167,17 @@ export function ApiDoc({
 
             <KVPairsItem label="请求方法">{metadata.method}</KVPairsItem>
 
-            <KVPairsItem label="Content-Type">{metadata.contentType}</KVPairsItem>
+            <KVPairsItem label="Content-Type">
+              <code className="select-all">{metadata.contentType}</code>
+            </KVPairsItem>
 
             <KVPairsItem label="是否需鉴权">{metadata.requireAuth ? '是' : '否'}</KVPairsItem>
 
             {metadata.requireAuth ? (
               <>
-                <KVPairsItem label="鉴权 Header 键">X-API-KEY</KVPairsItem>
+                <KVPairsItem label="鉴权 Header 键">
+                  <code className="select-all">X-API-KEY</code>
+                </KVPairsItem>
 
                 <KVPairsItem label="鉴权 Header 值">
                   <ApiKeyDisplay user={user} apiKey={apiKey} />
@@ -212,13 +216,15 @@ export function ApiDoc({
                               *
                             </span>
                           ) : null}
-                          <code className="col-start-2">{formatCellValue(field.name)}</code>
+                          <code className="col-start-2 select-all">
+                            {formatCellValue(field.name)}
+                          </code>
                         </span>
                       </TableCell>
                       <TableCell className={cn(DOC_TABLE_CELL_CLASS, 'font-mono')}>
                         {formatCellValue(field.type)}
                       </TableCell>
-                      <TableCell className={DOC_TABLE_CELL_CLASS}>
+                      <TableCell className={cn(DOC_TABLE_CELL_CLASS)}>
                         {formatCellValue(field.defaultValue ?? '-')}
                       </TableCell>
                       <TableCell className={DOC_TABLE_CELL_CLASS}>
@@ -256,7 +262,7 @@ export function ApiDoc({
                   {responseFields.map(field => (
                     <TableRow key={field.name}>
                       <TableCell className={DOC_TABLE_CELL_CLASS}>
-                        <code>{formatCellValue(field.name)}</code>
+                        <code className="select-all">{formatCellValue(field.name)}</code>
                       </TableCell>
                       <TableCell className={cn(DOC_TABLE_CELL_CLASS, 'font-mono')}>
                         {formatCellValue(field.type)}

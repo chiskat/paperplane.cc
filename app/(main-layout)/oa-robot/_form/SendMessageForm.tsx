@@ -1,5 +1,6 @@
 'use client'
 
+import { IconApi } from '@tabler/icons-react'
 import { useForm } from '@tanstack/react-form'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -10,23 +11,13 @@ import { SegmentGroupField } from '@/components/field/segment-group'
 import { TextareaField } from '@/components/field/textarea'
 import { formatFieldErrors, type TanstackFieldLike } from '@/components/field/utils'
 import { Button } from '@/components/ui/button'
-import { Field, FieldError, FieldLabel, FieldRequiredIndicator } from '@/components/ui/field'
-import {
-  FileUpload,
-  FileUploadDropzone,
-  FileUploadDropzoneIcon,
-  FileUploadItem,
-  FileUploadItemGroup,
-  FileUploadItemPreview,
-  FileUploadItemPreviewImage,
-  FileUploadTitle,
-  FileUploadTrigger,
-} from '@/components/ui/file-upload'
 import { toast } from '@/components/ui/toast'
 import { useTRPCClient } from '@/lib/trpc-client'
 import { OARobotMessageType, OARobotMessageZod } from '@/lib/zods/oa-robot'
 import { OARobotType } from '@/models/enums'
+import { SendMessageAPIDocButton } from './SendMessageAPIDocButton'
 import { SendMessageFieldAtList } from './SendMessageFieldAtList'
+import { SendMessageImageUpload } from './SendMessageFieldUpload'
 import { SendMessagePlaceholder } from './SendMessagePlaceholder'
 import { SendMessageTipsImage, SendMessageTipsMarkdown } from './SendMessageTips'
 import type { OARobotListSelectedProfile } from '../_list/List'
@@ -46,7 +37,7 @@ type SendMessageFormValue = {
   title: string
   atAll: boolean
   atList: string[]
-  image: File | undefined
+  imageURL: string | undefined
 }
 
 type SendMessageFieldName = keyof SendMessageFormValue
@@ -62,7 +53,7 @@ const defaultValues: SendMessageFormValue = {
   title: '',
   atAll: false,
   atList: [],
-  image: undefined,
+  imageURL: undefined,
 }
 
 const messageTypeOptions: Array<{ value: MessageTypeValue; label: string }> = [
@@ -73,9 +64,9 @@ const messageTypeOptions: Array<{ value: MessageTypeValue; label: string }> = [
 
 const atAllDescriptions: Partial<Record<OARobotType, string>> = {
   [OARobotType.DINGTALK]:
-    '可通过消息中的"@all"来调整"@所有人"文本的位置，默认在消息的末尾；开启后无法"@用户"',
-  [OARobotType.FEISHU]: '可通过消息中的"@all"来调整"@所有人"文本的位置，默认在消息的末尾',
-  [OARobotType.WXBIZ]: '消息末尾会"@所有人"且无法调整位置',
+    '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾；开启后无法“@用户”',
+  [OARobotType.FEISHU]: '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾',
+  [OARobotType.WXBIZ]: '消息末尾会“@所有人”且无法调整位置',
 }
 
 function normalizeAtList(value: string[]) {
@@ -176,59 +167,6 @@ function MentionFields({ form, robotType, disabled }: FieldProps) {
   )
 }
 
-type SendMessageImageUploadProps = {
-  value: File | undefined
-  disabled: boolean
-  onChange: (file: File | undefined) => void
-}
-
-function SendMessageImageUpload({ value, disabled, onChange }: SendMessageImageUploadProps) {
-  return (
-    <FileUpload
-      maxFiles={1}
-      accept="image/*"
-      disabled={disabled}
-      acceptedFiles={value ? [value] : []}
-      onFileChange={details => onChange(details.acceptedFiles[0])}
-    >
-      {value ? (
-        <FileUploadItemGroup className="m-0 list-none p-0">
-          <FileUploadItem file={value} className="bg-card block overflow-hidden rounded-2xl border">
-            <div className="bg-muted relative aspect-video">
-              <FileUploadItemPreview
-                className="size-full rounded-none bg-transparent"
-                type="image/*"
-              >
-                <FileUploadItemPreviewImage className="rounded-none object-contain" />
-              </FileUploadItemPreview>
-            </div>
-
-            <div className="flex items-center justify-between gap-3 px-4 py-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{value.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {(value.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
-
-              <FileUploadTrigger asChild>
-                <Button type="button" size="sm" variant="outline" disabled={disabled}>
-                  重新选择
-                </Button>
-              </FileUploadTrigger>
-            </div>
-          </FileUploadItem>
-        </FileUploadItemGroup>
-      ) : (
-        <FileUploadDropzone>
-          <FileUploadDropzoneIcon />
-          <FileUploadTitle>点击或拖拽上传图片</FileUploadTitle>
-        </FileUploadDropzone>
-      )}
-    </FileUpload>
-  )
-}
-
 function SendMessageTextFields({ form, robotType, disabled }: FieldProps) {
   return (
     <>
@@ -291,25 +229,18 @@ function SendMessageMarkdownFields({ form, robotType, disabled }: FieldProps) {
 function SendMessageImageFields({ form, robotType, disabled }: FieldProps) {
   return (
     <>
-      <form.Field name="image">
+      <form.Field name="imageURL">
         {field => {
           const errorMessage = formatFieldErrors(field.state.meta.errors)
 
           return (
-            <Field required invalid={field.state.meta.isValid === false}>
-              <FieldLabel>
-                上传图片
-                <FieldRequiredIndicator />
-              </FieldLabel>
-
-              <SendMessageImageUpload
-                value={field.state.value}
-                disabled={disabled}
-                onChange={file => field.handleChange(() => file)}
-              />
-
-              {!field.state.meta.isValid && errorMessage && <FieldError>{errorMessage}</FieldError>}
-            </Field>
+            <SendMessageImageUpload
+              value={field.state.value}
+              disabled={disabled}
+              invalid={field.state.meta.isValid === false}
+              errorMessage={errorMessage}
+              onChange={imageURL => field.handleChange(() => imageURL)}
+            />
           )
         }}
       </form.Field>
@@ -321,7 +252,7 @@ function SendMessageImageFields({ form, robotType, disabled }: FieldProps) {
               field={asField<string>(field)}
               label="钉钉通知标题"
               disabled={disabled}
-              placeholder='可留空，将显示为"[图片]"'
+              placeholder="可留空，将显示为“[图片]”"
             />
           )}
         </form.Field>
@@ -352,6 +283,7 @@ function SendMessageProfileHeader({
 }) {
   const robotTypeMeta = oaRobotTypeIconMap[selectedProfile.profile.type]
   const profileSourceText = selectedProfile.source === 'local' ? '本地' : '云端'
+  const robotId = selectedProfile.source === 'cloud' ? selectedProfile.profile.id : null
 
   return (
     <div className="flex items-stretch gap-3">
@@ -365,8 +297,15 @@ function SendMessageProfileHeader({
         <p className="truncate text-lg font-semibold text-slate-900">
           {selectedProfile.profile.name}
         </p>
-        <p className="text-sm text-slate-600">
-          {robotTypeMeta.label}机器人 · {profileSourceText}
+
+        <p className="mt-0.5 text-sm text-slate-600 [&>span:not(:first-child)]:before:mx-1 [&>span:not(:first-child)]:before:content-['·'] [&>span:not(:first-child)]:before:select-none">
+          <span>{robotTypeMeta.label}机器人</span>
+          <span>{profileSourceText}</span>
+          {selectedProfile.source === 'cloud' && (
+            <span>
+              <code className="select-all">{robotId}</code>
+            </span>
+          )}
         </p>
       </div>
     </div>
@@ -389,7 +328,7 @@ function buildMessagePayloadInput(value: SendMessageFormValue, robotType: OARobo
 
   return {
     message: OARobotMessageType.IMAGE,
-    image: value.image,
+    imageURL: value.imageURL,
     title: robotType === OARobotType.DINGTALK ? title || undefined : undefined,
   }
 }
@@ -510,7 +449,18 @@ export default function SendMessageForm({ selectedProfile }: SendMessageFormProp
           </p>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-3">
+          {selectedProfile.source === 'cloud' ? (
+            <SendMessageAPIDocButton
+              variant="outline"
+              size="lg"
+              robotId={selectedProfile.profile.id}
+            >
+              <IconApi />
+              通过 API 发送消息
+            </SendMessageAPIDocButton>
+          ) : null}
+
           <Button type="submit" size="lg" disabled={disabled}>
             {pending ? '发送中...' : '发送消息'}
           </Button>

@@ -3,7 +3,7 @@ import 'server-only'
 import { createId } from '@paralleldrive/cuid2'
 
 import { prisma } from '@/lib/prisma'
-import { publicUpload } from '@/lib/s3-public'
+import { publicUpload } from '@/lib/s3'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
 import { awesomeTagZod } from '@/lib/zods/awesome'
 import { deleteZod, resortZod } from '@/lib/zods/common'

@@ -381,6 +381,7 @@ export const ModelName = {
   AwesomeItem: 'AwesomeItem',
   OARobotProfile: 'OARobotProfile',
   Short: 'Short',
+  UserContent: 'UserContent',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -411,6 +412,7 @@ export type TypeMap<
       | 'awesomeItem'
       | 'oARobotProfile'
       | 'short'
+      | 'userContent'
       | 'user'
       | 'session'
       | 'account'
@@ -790,6 +792,80 @@ export type TypeMap<
         count: {
           args: Prisma.ShortCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ShortCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserContent: {
+      payload: Prisma.$UserContentPayload<ExtArgs>
+      fields: Prisma.UserContentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        findFirst: {
+          args: Prisma.UserContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        findMany: {
+          args: Prisma.UserContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>[]
+        }
+        create: {
+          args: Prisma.UserContentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        createMany: {
+          args: Prisma.UserContentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserContentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>[]
+        }
+        delete: {
+          args: Prisma.UserContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        update: {
+          args: Prisma.UserContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserContentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserContentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserContentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserContentPayload>
+        }
+        aggregate: {
+          args: Prisma.UserContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserContent>
+        }
+        groupBy: {
+          args: Prisma.UserContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserContentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserContentCountAggregateOutputType> | number
         }
       }
     }
@@ -1278,6 +1354,22 @@ export const ShortScalarFieldEnum = {
 
 export type ShortScalarFieldEnum = (typeof ShortScalarFieldEnum)[keyof typeof ShortScalarFieldEnum]
 
+export const UserContentScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  filePath: 'filePath',
+  uploadURL: 'uploadURL',
+  ready: 'ready',
+  expiredAt: 'expiredAt',
+  usage: 'usage',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type UserContentScalarFieldEnum =
+  (typeof UserContentScalarFieldEnum)[keyof typeof UserContentScalarFieldEnum]
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1599,6 +1691,7 @@ export type GlobalOmitConfig = {
   awesomeItem?: Prisma.AwesomeItemOmit
   oARobotProfile?: Prisma.OARobotProfileOmit
   short?: Prisma.ShortOmit
+  userContent?: Prisma.UserContentOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit

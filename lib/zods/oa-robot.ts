@@ -1,13 +1,16 @@
 import z from 'zod'
 
 import { OARobotType } from '@/models/enums'
-import { compatFormData } from './common'
 
 export enum OARobotMessageType {
   TEXT = 'TEXT',
   MARKDOWN = 'MARKDOWN',
   IMAGE = 'IMAGE',
 }
+
+export const OARobotMessageUploadPathPrefix = '/usercontent/oarobot'
+
+export const OARobotMessageUploadURLPrefix = `https://${process.env.NEXT_PUBLIC_S3_CNAME}${OARobotMessageUploadPathPrefix}`
 
 export const OARobotProfileZod = z.object({
   id: z.string().optional(),
@@ -41,8 +44,18 @@ export const OARobotMessageMarkdownZod = z.object({
 export const OARobotMessageImageZod = z.object({
   message: z.literal(OARobotMessageType.IMAGE),
 
-  image: z.instanceof(File),
+  imageURL: z.url().startsWith(OARobotMessageUploadURLPrefix),
   title: z.string().optional(),
+})
+
+export const OARobotMessgeOpenAPIZod = z.object({
+  message: z.enum([OARobotMessageType.TEXT, OARobotMessageType.MARKDOWN, OARobotMessageType.IMAGE]),
+  text: z.string().optional(),
+  markdown: z.string().optional(),
+  title: z.string().optional(),
+  imageURL: z.string().startsWith(OARobotMessageUploadURLPrefix).optional(),
+  atAll: z.boolean().optional(),
+  atList: z.array(z.string()).optional(),
 })
 
 export const OARobotMessageZod = z.discriminatedUnion('message', [
@@ -51,17 +64,17 @@ export const OARobotMessageZod = z.discriminatedUnion('message', [
   OARobotMessageImageZod,
 ])
 
-export const OARobotSendByIdZod = compatFormData(
-  OARobotMessageZod.and(z.object({ robotId: z.string().min(1) }))
-)
+export const OARobotSendByIdZod = OARobotMessageZod.and(z.object({ robotId: z.string().min(1) }))
 
-export const OARobotSendByConfigZod = compatFormData(
-  OARobotMessageZod.and(
-    OARobotProfileZod.pick({
-      type: true,
-      accessToken: true,
-      secret: true,
-      extraAuthentication: true,
-    })
-  )
+export const OARobotSendByIdOpenAPIZod = OARobotMessgeOpenAPIZod.extend({
+  robotId: z.string().min(1),
+})
+
+export const OARobotSendByConfigZod = OARobotMessageZod.and(
+  OARobotProfileZod.pick({
+    type: true,
+    accessToken: true,
+    secret: true,
+    extraAuthentication: true,
+  })
 )

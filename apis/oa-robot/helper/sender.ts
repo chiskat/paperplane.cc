@@ -10,7 +10,7 @@ import {
 import { OARobotProfile, OARobotType } from '@/models/client'
 import { extractTitle, handleFeishuAt, handleFeishuMarkdown } from './format'
 import { dingtalkRobotSign, feishuRobotSign } from './sign'
-import { dingtalkUpload, feishuUpload, wxBizUpload } from './upload'
+import { feishuUpload, wxBizUpload } from './upload'
 
 const wxbizRobotUrl = `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=`
 const dintalkRobotUrl = `https://oapi.dingtalk.com/robot/send?access_token=`
@@ -148,15 +148,20 @@ async function markdown(auth: OARobotProfile, message: z.infer<typeof OARobotMes
 async function image(auth: OARobotProfile, message: z.infer<typeof OARobotMessageImageZod>) {
   const { type } = auth
   const { feishuAppId, feishuAppSecret } = (auth.extraAuthentication || {}) as any
-  const { title, image } = message
+  const { title, imageURL } = message
 
   if (type === OARobotType.FEISHU && (!feishuAppId || !feishuAppSecret)) {
     throw new Error('飞书机器人发送图片消息，需提供 AppId 与 AppSecret')
   }
 
-  if (type === OARobotType.DINGTALK) {
-    const imageURL = await dingtalkUpload(image)
+  const imageRes = await fetch(imageURL)
+  if (!imageRes.ok) {
+    throw new Error(`图片下载失败 [${imageRes.status} ${imageRes.statusText}]`)
+  }
 
+  const image = Buffer.from(await imageRes.arrayBuffer())
+
+  if (type === OARobotType.DINGTALK) {
     return { msgtype: 'markdown', markdown: { title: title || '[图片]', text: `![](${imageURL})` } }
   } else if (type === OARobotType.FEISHU) {
     const feishuImageKey = await feishuUpload(image, feishuAppId!, feishuAppSecret!)

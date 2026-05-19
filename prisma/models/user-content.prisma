@@ -1,0 +1,18 @@
+/// 用户生成内容
+model UserContent {
+  id        String    @id @default(cuid())
+  key       String
+  filePath  String    @map("file_path")
+  uploadURL String    @map("upload_url")
+  ready     Boolean   @default(false)
+  expiredAt DateTime? @map("expired_at")
+  usage     String
+
+  userId String? @map("user_id")
+  author User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_content")
+}

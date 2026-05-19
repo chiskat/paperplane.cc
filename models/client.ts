@@ -71,6 +71,11 @@ export type OARobotProfile = Prisma.OARobotProfileModel
  */
 export type Short = Prisma.ShortModel
 /**
+ * Model UserContent
+ * 用户生成内容
+ */
+export type UserContent = Prisma.UserContentModel
+/**
  * Model User
  * 用户（由 btter-auth 创建）
  */

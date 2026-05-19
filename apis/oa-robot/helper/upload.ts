@@ -1,26 +1,15 @@
 import crypto from 'crypto'
 import { Client } from '@larksuiteoapi/node-sdk'
-import { createId } from '@paralleldrive/cuid2'
 import sharp from 'sharp'
 
-import { publicUpload } from '@/lib/s3-public'
-
-export async function dingtalkUpload(file: File): Promise<string> {
-  const ext = file.name.match(/\.[A-Za-z0-9]+$/)?.[0] || ''
-
-  return publicUpload(
-    `/usercontent/oarobot/${createId()}${ext}`,
-    Buffer.from(await file.arrayBuffer()),
-    { mime: file.type }
-  ).then(res => res.fileUrl)
-}
-
-export async function feishuUpload(image: File, appId: string, appSecret: string): Promise<string> {
+export async function feishuUpload(
+  image: Buffer,
+  appId: string,
+  appSecret: string
+): Promise<string> {
   const client = new Client({ appId, appSecret, disableTokenCache: false })
-  const imageBuffer = Buffer.from(await image.arrayBuffer())
-
   const uploadResult = await client.im.image.create({
-    data: { image_type: 'message', image: imageBuffer },
+    data: { image_type: 'message', image },
   })
 
   if (!uploadResult?.image_key) {
@@ -49,7 +38,7 @@ export interface IHandleWXBizImageOption {
 
 /** 微信机器人发送图片需要 base64 和 md5，且文件不能大于 2M，可用此方法处理 */
 export async function wxBizUpload(
-  image: File,
+  image: Buffer,
   options?: IHandleWXBizImageOption
 ): Promise<{ base64: string; md5: string }> {
   const { overrideReduceSizeByFileFn: reduceSizeFn } = {
@@ -57,7 +46,7 @@ export async function wxBizUpload(
     ...options,
   }
 
-  const file = await reduceSizeFn(Buffer.from(await image.arrayBuffer()))
+  const file = await reduceSizeFn(image)
 
   const hash = crypto.createHash('md5')
   hash.update(file)

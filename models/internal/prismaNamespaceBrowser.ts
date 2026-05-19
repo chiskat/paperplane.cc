@@ -53,6 +53,7 @@ export const ModelName = {
   AwesomeItem: 'AwesomeItem',
   OARobotProfile: 'OARobotProfile',
   Short: 'Short',
+  UserContent: 'UserContent',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -151,6 +152,22 @@ export const ShortScalarFieldEnum = {
 } as const
 
 export type ShortScalarFieldEnum = (typeof ShortScalarFieldEnum)[keyof typeof ShortScalarFieldEnum]
+
+export const UserContentScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  filePath: 'filePath',
+  uploadURL: 'uploadURL',
+  ready: 'ready',
+  expiredAt: 'expiredAt',
+  usage: 'usage',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type UserContentScalarFieldEnum =
+  (typeof UserContentScalarFieldEnum)[keyof typeof UserContentScalarFieldEnum]
 
 export const UserScalarFieldEnum = {
   id: 'id',

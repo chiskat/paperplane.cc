@@ -211,7 +211,7 @@ export function MainNavigation({ pathname }: MainNavigationProps) {
                   {title}
                 </h3>
 
-                <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-3.75">
                   {links.map(({ label, href }) => (
                     <PopoverNavItem
                       key={href}
