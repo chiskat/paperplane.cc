@@ -8,7 +8,10 @@ export const shortURLPrefix =
 export const shortItemZod = z.object({
   id: z.string().optional(),
 
-  url: z.httpUrl('请提供一个合法的 URL，注意它需要以 https:// 开头'),
+  url:
+    process.env.NODE_ENV === 'development'
+      ? z.url('请提供一个合法的 URL')
+      : z.httpUrl('请提供一个合法的 URL，注意它需要以 https:// 开头'),
   key: z
     .string('请输入短链接码')
     .regex(/[a-zA-Z0-9]{2,10}/, '此短链接码不合法，它只能由 2~10 位由大小写英文字母以及数字所组成')
