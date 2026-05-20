@@ -63,7 +63,7 @@ export const catelogs = router({
   }),
 
   update: loginProcedure
-    .input(awesomeCatelogZod.extend({ id: awesomeCatelogZod.shape.id.unwrap() }))
+    .input(awesomeCatelogZod)
     .mutation(({ input }) =>
       prisma.awesomeCatelog.update({ where: { id: input.id }, data: omit(input, 'children') })
     ),

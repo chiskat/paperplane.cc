@@ -81,25 +81,23 @@ export const items = router({
     })
   }),
 
-  update: loginProcedure
-    .input(awesomeItemZod.extend({ id: awesomeItemZod.shape.id.unwrap() }))
-    .mutation(async ({ input }) => {
-      const origin = await prisma.awesomeItem.findFirstOrThrow({ where: { id: input.id } })
-      const data = input as AwesomeItem
+  update: loginProcedure.input(awesomeItemZod).mutation(async ({ input }) => {
+    const origin = await prisma.awesomeItem.findFirstOrThrow({ where: { id: input.id } })
+    const data = input as AwesomeItem
 
-      if (origin.catelogId !== input.catelogId) {
-        data.index = await prisma.awesomeItem.count({ where: { catelogId: input.catelogId } })
-        await prisma.awesomeItem.updateMany({
-          where: { catelogId: origin.catelogId, index: { gt: origin.index! } },
-          data: { index: { decrement: 1 } },
-        })
-      }
-
-      return prisma.awesomeItem.update({
-        where: { id: input.id },
-        data: { ...data, tags: { set: input.tags?.map(id => ({ id })) } },
+    if (origin.catelogId !== input.catelogId) {
+      data.index = await prisma.awesomeItem.count({ where: { catelogId: input.catelogId } })
+      await prisma.awesomeItem.updateMany({
+        where: { catelogId: origin.catelogId, index: { gt: origin.index! } },
+        data: { index: { decrement: 1 } },
       })
-    }),
+    }
+
+    return prisma.awesomeItem.update({
+      where: { id: input.id },
+      data: { ...data, tags: { set: input.tags?.map(id => ({ id })) } },
+    })
+  }),
 
   delete: loginProcedure.input(deleteZod).mutation(async ({ input }) => {
     const item = await prisma.awesomeItem.findFirstOrThrow({ where: { id: input.id } })
