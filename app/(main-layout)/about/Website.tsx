@@ -4,7 +4,7 @@ import { cloneElement, ReactNode } from 'react'
 
 import { BlurPopupCard } from '@/components/effect/blur-popup-card'
 import { getTechTagByName } from '@/components/tag/tech-tags'
-import { Highlight } from '@/components/text/highlight'
+import { Highlight } from '@/components/text/high-light'
 import { Separator } from '@/components/ui/separator'
 
 export interface WebsiteProps {

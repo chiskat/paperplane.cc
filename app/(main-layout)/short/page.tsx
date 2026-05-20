@@ -4,7 +4,7 @@ import { IconApi, IconPlus } from '@tabler/icons-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-import { Highlight } from '@/components/text/highlight'
+import { Highlight } from '@/components/text/high-light'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
