@@ -29,16 +29,14 @@ export const tags = router({
     })
   }),
 
-  update: loginProcedure
-    .input(awesomeTagZod.extend({ id: awesomeTagZod.shape.id.unwrap() }))
-    .mutation(async ({ input }) => {
-      if (input.iconFile) {
-        input.icon = await uploadTagIcon(input.iconFile as File)
-        delete input.iconFile
-      }
+  update: loginProcedure.input(awesomeTagZod).mutation(async ({ input }) => {
+    if (input.iconFile) {
+      input.icon = await uploadTagIcon(input.iconFile as File)
+      delete input.iconFile
+    }
 
-      return prisma.awesomeTag.update({ where: { id: input.id }, data: input })
-    }),
+    return prisma.awesomeTag.update({ where: { id: input.id }, data: input })
+  }),
 
   delete: loginProcedure.input(deleteZod).mutation(async ({ input }) => {
     const item = await prisma.awesomeTag.findFirstOrThrow({ where: { id: input.id } })
