@@ -1,12 +1,10 @@
-import { IconMessageCircle } from '@tabler/icons-react'
+import { IconRobotFace } from '@tabler/icons-react'
 
 export function SendMessagePlaceholder() {
   return (
     <div className="flex min-h-112 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-12">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <div className="relative flex size-20 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-          <IconMessageCircle className="size-9 text-sky-600" stroke={1.8} />
-        </div>
+        <IconRobotFace className="size-16 text-sky-600" stroke={1.5} />
 
         <h2 className="mt-6 text-xl font-semibold text-slate-900">未选择 OA 机器人</h2>
         <p className="mt-2 text-sm leading-6 text-slate-500">
