@@ -27,7 +27,6 @@ import { useSession } from '@/lib/auth-client'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { OARobotProfileZod } from '@/lib/zods/oa-robot'
 import { OARobotType } from '@/models/enums'
-import { cn } from '@/utils/style'
 import {
   createOARobotLocalProfile,
   findOARobotLocalProfileById,
@@ -321,37 +320,18 @@ export function OARobotEditButton({
               <form.Field name="type">
                 {field => (
                   <SegmentGroupField
-                    field={{
-                      state: {
-                        value: field.state.value ?? DEFAULT_ROBOT_TYPE,
-                        meta: field.state.meta,
-                      },
-                      handleBlur: field.handleBlur,
-                      handleChange: updater => {
-                        const currentValue = field.state.value ?? DEFAULT_ROBOT_TYPE
-                        const nextValue =
-                          typeof updater === 'function' ? updater(currentValue) : updater
-                        const safeValue = (nextValue ?? DEFAULT_ROBOT_TYPE) as OARobotType
-                        field.handleChange(safeValue)
-                        if (safeValue === OARobotType.WXBIZ) {
-                          form.setFieldValue('secret', () => null)
-                        }
-                      },
-                    }}
+                    field={field}
                     label="OA 机器人类型"
                     required
+                    defaultValue={DEFAULT_ROBOT_TYPE}
+                    onValueChange={value => {
+                      if (value === OARobotType.WXBIZ) {
+                        form.setFieldValue('secret', () => null)
+                      }
+                    }}
                     disabled={isEditMode}
-                    groupClassName={cn(
-                      'w-full rounded-xl bg-zinc-200 p-1 dark:bg-zinc-800',
-                      'has-data-invalid:border-destructive'
-                    )}
-                    itemClassName={cn(
-                      'flex flex-1 items-center justify-center rounded-lg px-1 py-1',
-                      'text-muted-foreground data-[state=checked]:text-foreground transition-colors',
-                      'data-focus-visible:border-transparent data-focus-visible:ring-0'
-                    )}
+                    itemClassName="px-1 py-1"
                     itemTextClassName="flex items-center gap-2 text-sm font-medium"
-                    indicatorClassName="bg-background rounded-lg"
                     options={ROBOT_TYPE_OPTIONS}
                   />
                 )}

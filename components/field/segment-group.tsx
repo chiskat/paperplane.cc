@@ -18,21 +18,43 @@ import {
 import { cn } from '@/utils/style'
 import { formatFieldErrors, type TanstackFieldLike } from './utils'
 
-export interface SegmentOption {
-  value: string
+export interface SegmentOption<TValue extends string = string> {
+  value: TValue
   label: React.ReactNode
   itemProps?: Omit<React.ComponentProps<typeof SegmentGroupItem>, 'value' | 'children'>
   itemTextProps?: React.ComponentProps<typeof SegmentGroupItemText>
 }
 
-export interface SegmentGroupFieldProps extends Omit<
+type SegmentGroupFieldSize = 'sm' | 'md'
+
+const segmentGroupSizeClassNames: Record<
+  SegmentGroupFieldSize,
+  { item: string; itemText: string }
+> = {
+  sm: {
+    item: 'rounded-md px-2.5 py-1',
+    itemText: 'text-xs font-medium',
+  },
+  md: {
+    item: 'rounded-lg px-3 py-1.5',
+    itemText: 'text-sm font-medium',
+  },
+}
+
+export interface SegmentGroupFieldProps<
+  TValue extends string = string,
+  TFieldValue extends TValue | null | undefined = TValue | null | undefined,
+> extends Omit<
   React.ComponentProps<typeof SegmentGroup>,
   'value' | 'onValueChange' | 'onBlur' | 'children'
 > {
-  field: TanstackFieldLike<string | null | undefined>
+  field: TanstackFieldLike<TFieldValue>
   label: React.ReactNode
-  options: SegmentOption[]
+  options: Array<SegmentOption<TValue>>
+  defaultValue?: TValue
+  onValueChange?: (value: TValue) => void
   required?: boolean
+  size?: SegmentGroupFieldSize
   fieldClassName?: string
   labelClassName?: string
   groupClassName?: string
@@ -44,12 +66,18 @@ export interface SegmentGroupFieldProps extends Omit<
   showIndicator?: boolean
 }
 
-export function SegmentGroupField(props: SegmentGroupFieldProps) {
+export function SegmentGroupField<
+  TValue extends string = string,
+  TFieldValue extends TValue | null | undefined = TValue | null | undefined,
+>(props: SegmentGroupFieldProps<TValue, TFieldValue>) {
   const {
     field,
     label,
     options,
+    defaultValue,
+    onValueChange,
     required = false,
+    size = 'md',
     fieldClassName,
     labelClassName,
     groupClassName,
@@ -63,9 +91,12 @@ export function SegmentGroupField(props: SegmentGroupFieldProps) {
   } = props
 
   const errorMessage = formatFieldErrors(field.state.meta.errors)
+  const invalid = field.state.meta.isValid === false
+  const value = field.state.value ?? defaultValue ?? ''
+  const sizeClassNames = segmentGroupSizeClassNames[size]
 
   return (
-    <FieldSet className={fieldClassName} invalid={field.state.meta.isValid === false}>
+    <FieldSet className={fieldClassName} invalid={invalid}>
       <FieldLegend variant="label" className={labelClassName}>
         {label}
         {required ? <FieldRequiredIndicator className="ml-1" /> : null}
@@ -73,23 +104,45 @@ export function SegmentGroupField(props: SegmentGroupFieldProps) {
 
       <SegmentGroup
         {...segmentGroupProps}
-        value={field.state.value ?? ''}
-        onValueChange={details => field.handleChange(() => details.value || undefined)}
+        value={value}
+        onValueChange={details => {
+          const nextValue = (details.value || defaultValue || undefined) as TValue | undefined
+          field.handleChange(() => nextValue as TFieldValue)
+
+          if (nextValue !== undefined) {
+            onValueChange?.(nextValue)
+          }
+        }}
         onBlur={field.handleBlur ?? undefined}
-        className={cn(segmentGroupProps.className, groupClassName)}
-        invalid={field.state.meta.isValid === false}
+        className={cn(
+          'has-data-invalid:border-destructive w-full rounded-xl bg-zinc-200 p-1',
+          segmentGroupProps.className,
+          groupClassName
+        )}
+        invalid={invalid}
       >
-        {showIndicator ? <SegmentGroupIndicator className={indicatorClassName} /> : null}
+        {showIndicator ? (
+          <SegmentGroupIndicator className={cn('bg-background rounded-lg', indicatorClassName)} />
+        ) : null}
         {options.map(option => (
           <SegmentGroupItem
             key={option.value}
             value={option.value}
             {...option.itemProps}
-            className={cn(itemClassName, option.itemProps?.className)}
+            className={cn(
+              'text-muted-foreground data-[state=checked]:text-foreground flex flex-1 items-center justify-center transition-colors',
+              sizeClassNames.item,
+              itemClassName,
+              option.itemProps?.className
+            )}
           >
             <SegmentGroupItemText
               {...option.itemTextProps}
-              className={cn(itemTextClassName, option.itemTextProps?.className)}
+              className={cn(
+                sizeClassNames.itemText,
+                itemTextClassName,
+                option.itemTextProps?.className
+              )}
             >
               {option.label}
             </SegmentGroupItemText>
@@ -101,7 +154,7 @@ export function SegmentGroupField(props: SegmentGroupFieldProps) {
         <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
       ) : null}
 
-      {!field.state.meta.isValid && errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      {invalid && errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </FieldSet>
   )
 }

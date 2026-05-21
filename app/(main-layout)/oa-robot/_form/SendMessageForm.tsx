@@ -86,19 +86,6 @@ function isMarkdownMentionSupported(robotType: OARobotType) {
 
 const asField = <T,>(field: unknown) => field as TanstackFieldLike<T | null | undefined>
 
-function asMessageTypeField(field: unknown): TanstackFieldLike<string | null | undefined> {
-  const typed = asField<MessageTypeValue>(field)
-  return {
-    state: { value: typed.state.value ?? defaultMessageType, meta: typed.state.meta },
-    handleBlur: typed.handleBlur,
-    handleChange: updater => {
-      const current = typed.state.value ?? defaultMessageType
-      const next = typeof updater === 'function' ? updater(current) : updater
-      typed.handleChange(() => (next as MessageTypeValue) || defaultMessageType)
-    },
-  }
-}
-
 function getMessageFormIssueField(path: readonly unknown[] | undefined) {
   const fieldName = path?.[0]
   if (typeof fieldName === 'string' && fieldName in defaultValues) {
@@ -112,15 +99,12 @@ function SendMessageTypeField({ form, disabled }: Pick<FieldProps, 'form' | 'dis
     <form.Field name="type">
       {field => (
         <SegmentGroupField
-          field={asMessageTypeField(field)}
+          field={asField<MessageTypeValue>(field)}
           label="消息类型"
           options={messageTypeOptions}
+          defaultValue={defaultMessageType}
           disabled={disabled}
           fieldClassName="w-full sm:w-1/2"
-          groupClassName="w-full rounded-xl bg-zinc-200 p-1 dark:bg-zinc-800"
-          itemClassName="text-muted-foreground data-[state=checked]:text-foreground flex flex-1 items-center justify-center rounded-lg px-3 py-1.5 transition-colors"
-          itemTextClassName="text-sm font-medium"
-          indicatorClassName="bg-background rounded-lg"
         />
       )}
     </form.Field>
