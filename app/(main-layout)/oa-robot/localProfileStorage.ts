@@ -72,7 +72,7 @@ export function updateOARobotLocalProfile(
   )
 }
 
-export function createOARobotLocalProfile(
+export function createOARobotLocalProfileItem(
   localProfiles: OARobotLocalProfile[],
   payload: OARobotLocalProfilePayload
 ) {
@@ -87,6 +87,14 @@ export function createOARobotLocalProfile(
     createdAt: now,
     updatedAt: now,
   }
+  return newItem
+}
+
+export function createOARobotLocalProfile(
+  localProfiles: OARobotLocalProfile[],
+  payload: OARobotLocalProfilePayload
+) {
+  const newItem = createOARobotLocalProfileItem(localProfiles, payload)
   return [...localProfiles, newItem]
 }
 

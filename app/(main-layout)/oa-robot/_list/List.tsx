@@ -135,6 +135,11 @@ export default function OARobotList({ onSelectedProfileChange }: OARobotListProp
             <OARobotEditButton
               className="inline-flex shrink-0 items-center gap-1.5"
               source={activeSource}
+              onSuccess={profile => {
+                if (!profile) return
+                setSelectedTab(profile.source)
+                updateSelectedProfile(profile.source, profile.id)
+              }}
             >
               <IconPlus size={15} />
               添加
@@ -210,18 +215,18 @@ function ProfileListSkeleton() {
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`oa-profile-skeleton-${index}`}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+            className="border-input bg-background rounded-lg border px-3 py-2.5"
           >
-            <div className="flex min-w-0 items-start gap-2">
-              <Skeleton className="size-12 shrink-0 rounded" />
+            <div className="flex min-w-0 items-center gap-3">
+              <Skeleton className="size-8 shrink-0 rounded" />
 
-              <div className="min-w-0 flex-1 space-y-2">
+              <div className="min-w-0 flex-1">
                 <Skeleton className="h-4 w-3/5 rounded-full" />
+              </div>
 
-                <div className="flex items-center gap-1">
-                  <Skeleton className="h-6 w-14 rounded-md" />
-                  <Skeleton className="h-6 w-14 rounded-md" />
-                </div>
+              <div className="flex shrink-0 items-center gap-1">
+                <Skeleton className="size-7 rounded-md" />
+                <Skeleton className="size-7 rounded-md" />
               </div>
             </div>
           </div>

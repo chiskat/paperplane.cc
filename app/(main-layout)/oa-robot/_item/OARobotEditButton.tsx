@@ -28,7 +28,7 @@ import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { OARobotProfileZod } from '@/lib/zods/oa-robot'
 import { OARobotType } from '@/models/enums'
 import {
-  createOARobotLocalProfile,
+  createOARobotLocalProfileItem,
   findOARobotLocalProfileById,
   updateOARobotLocalProfile,
   useOARobotLocalProfiles,
@@ -50,7 +50,7 @@ export interface OARobotEditButtonProps extends Omit<ComponentProps<typeof Butto
   profileId?: string
   source?: OARobotStorageSource
   localProfile?: OARobotLocalProfile
-  onSuccess?: () => void
+  onSuccess?: (profile?: { id: string; source: OARobotStorageSource }) => void
 }
 
 const DEFAULT_ROBOT_TYPE = OARobotType.DINGTALK
@@ -185,6 +185,7 @@ export function OARobotEditButton({
         isEditMode && editSourceProfile ? { ...value, type: editSourceProfile.type } : value
       const storageSource = isEditMode ? source : submitValue.storage
       const payload = createLocalPayload(submitValue, { feishuAppId, feishuAppSecret })
+      let successProfile: { id: string; source: OARobotStorageSource } | undefined
 
       try {
         if (!user && storageSource === 'cloud') {
@@ -193,8 +194,11 @@ export function OARobotEditButton({
 
         if (isLocalEdit && profileId) {
           setLocalProfiles(prev => updateOARobotLocalProfile(prev ?? [], profileId, payload))
+          successProfile = { id: profileId, source: 'local' }
         } else if (!profileId && storageSource === 'local') {
-          setLocalProfiles(prev => createOARobotLocalProfile(prev ?? [], payload))
+          const nextProfile = createOARobotLocalProfileItem(localProfiles, payload)
+          setLocalProfiles(prev => [...(prev ?? []), nextProfile])
+          successProfile = { id: nextProfile.id, source: 'local' }
         } else if (profileId) {
           await trpcClient.oaRobot.profile.update.mutate({
             id: profileId,
@@ -205,8 +209,9 @@ export function OARobotEditButton({
             secret: payload.secret ?? undefined,
             extraAuthentication: payload.extraAuthentication ?? undefined,
           })
+          successProfile = { id: profileId, source: 'cloud' }
         } else {
-          await trpcClient.oaRobot.profile.add.mutate({
+          const nextProfile = await trpcClient.oaRobot.profile.add.mutate({
             name: payload.name,
             desc: payload.desc ?? undefined,
             type: payload.type as OARobotType,
@@ -214,6 +219,7 @@ export function OARobotEditButton({
             secret: payload.secret ?? undefined,
             extraAuthentication: payload.extraAuthentication ?? undefined,
           })
+          successProfile = { id: nextProfile.id, source: 'cloud' }
         }
 
         const shouldInvalidate = profileId ? !isLocalEdit : storageSource === 'cloud'
@@ -227,7 +233,7 @@ export function OARobotEditButton({
           description: `${storageLabel}OA 机器人已${isEditMode ? '更新' : '创建'}`,
         })
         setOpen(false)
-        onSuccess?.()
+        onSuccess?.(successProfile)
       } catch (error) {
         const message =
           error instanceof Error && error.message ? error.message : '提交失败，请稍后重试'

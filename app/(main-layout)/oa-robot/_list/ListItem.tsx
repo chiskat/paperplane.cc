@@ -38,55 +38,55 @@ export default function ListItem({
         }
       }}
       className={cn(
-        'rounded-lg border bg-white px-3 py-2 transition-all',
-        'cursor-pointer',
-        'focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:outline-none',
+        'group flex min-w-0 cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-all',
+        'focus-visible:ring-ring/32 focus-visible:ring-[3px] focus-visible:outline-none',
         active
-          ? 'border-sky-500 bg-sky-50 shadow-sm shadow-sky-100 hover:bg-sky-100/80'
-          : 'border-slate-200 hover:bg-slate-50'
+          ? 'border-primary/50 bg-primary/8 shadow-sm'
+          : 'border-input bg-background hover:bg-muted/48'
       )}
     >
-      <div className="flex min-w-0 items-start gap-2">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded">
-          <Image src={typeIcon.icon} alt={typeIcon.alt} className="size-12" />
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded">
+          <Image src={typeIcon.icon} alt={typeIcon.alt} className="size-8" />
         </div>
 
-        <div className="min-w-0 flex-1 space-y-1">
-          <p className="truncate text-sm font-medium text-slate-900" title={item.name}>
-            {item.name}
-          </p>
+        <p
+          className="text-foreground min-w-0 flex-1 truncate text-sm font-medium"
+          title={item.name}
+        >
+          {item.name}
+        </p>
+      </div>
 
-          <div className="flex min-w-0 items-end justify-start gap-2">
-            <div className="flex shrink-0 items-end gap-1">
-              <OARobotEditButton
-                profileId={item.id}
-                source={source}
-                localProfile={source === 'local' ? item : undefined}
-                variant="ghost"
-                size="sm"
-                className="h-6 gap-1 px-2 text-slate-500 hover:bg-sky-100 hover:text-sky-700 dark:hover:bg-sky-950/40 dark:hover:text-sky-200"
-                onClick={event => event.stopPropagation()}
-              >
-                <IconEdit size={14} />
-                编辑
-              </OARobotEditButton>
+      <div className="flex shrink-0 items-center gap-1" onClick={event => event.stopPropagation()}>
+        <OARobotEditButton
+          profileId={item.id}
+          source={source}
+          localProfile={source === 'local' ? item : undefined}
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground hover:bg-primary/10 hover:text-primary data-[state=open]:bg-primary/10 data-[state=open]:text-primary"
+          aria-label={`编辑 ${item.name}`}
+          title={`编辑 ${item.name}`}
+          onClick={event => event.stopPropagation()}
+        >
+          <IconEdit aria-hidden />
+        </OARobotEditButton>
 
-              <OARobotDeleteButton
-                profileId={item.id}
-                profileName={item.name}
-                source={source}
-                variant="ghost"
-                size="sm"
-                className="h-6 gap-1 px-2 text-slate-500 hover:bg-rose-100 hover:text-rose-700 dark:hover:bg-rose-950/40 dark:hover:text-rose-200"
-                onClick={event => event.stopPropagation()}
-                onSuccess={() => onDeleteSuccess?.(item.id)}
-              >
-                <IconTrash size={14} />
-                删除
-              </OARobotDeleteButton>
-            </div>
-          </div>
-        </div>
+        <OARobotDeleteButton
+          profileId={item.id}
+          profileName={item.name}
+          source={source}
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive data-[state=open]:bg-destructive/10 data-[state=open]:text-destructive"
+          aria-label={`删除 ${item.name}`}
+          title={`删除 ${item.name}`}
+          onClick={event => event.stopPropagation()}
+          onSuccess={() => onDeleteSuccess?.(item.id)}
+        >
+          <IconTrash aria-hidden />
+        </OARobotDeleteButton>
       </div>
     </div>
   )
