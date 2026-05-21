@@ -8,7 +8,7 @@ import demoMDX from '@/app/(main-layout)/demos/mdx-render'
 import { KVPairs, KVPairsItem } from '@/components/data/kv-pairs'
 import { GiteaIcon, GithubIcon } from '@/components/icon/tech-icons'
 import { getTechTagByName } from '@/components/tag/tech-tags'
-import { Highlight } from '@/components/text/high-light'
+import { Highlight } from '@/components/text/highlight'
 import { cn } from '@/utils/style'
 import { filterAndSortByDemoOrder } from '../sort'
 
