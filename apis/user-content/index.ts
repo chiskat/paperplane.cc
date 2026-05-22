@@ -12,7 +12,7 @@ import {
   presignZod,
   UserContentPresetType,
 } from '@/lib/zods/user-content'
-import { generateShortKey } from '../short/generateShortKey'
+import { generateShortKey } from '../short/helper/generate-short-key'
 
 const pathMap: Record<UserContentPresetType, string> = {
   [UserContentPresetType.OA_ROBOT_MESSAGE]: OARobotMessageUploadPathPrefix,
