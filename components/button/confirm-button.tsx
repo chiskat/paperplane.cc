@@ -11,6 +11,7 @@ import {
   PopoverFooter,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { cn } from '@/utils/style'
 
 type ConfirmActionButtonProps = Omit<ComponentProps<typeof Button>, 'children'>
 
@@ -75,7 +76,12 @@ export function ConfirmButton(props: ConfirmButtonProps) {
       </PopoverTrigger>
 
       <PopoverContent {...popoverContentProps}>
-        <PopoverBody {...popoverBodyProps}>{confirm}</PopoverBody>
+        <PopoverBody
+          {...popoverBodyProps}
+          className={cn('whitespace-pre-line', popoverBodyProps?.className)}
+        >
+          {confirm}
+        </PopoverBody>
 
         <PopoverFooter {...popoverFooterProps}>
           <PopoverClose asChild>
