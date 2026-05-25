@@ -40,9 +40,7 @@ export interface WLBOilpriceInfo {
 export async function fetchOilpriceByProvince({ province }: AreaInfo): Promise<WLBOilpriceInfo> {
   return withRedisCache(
     async () => {
-      const response = await fetch(
-        `https://apis.juhe.cn/gnyj/query?key=${process.env.JUHE_OIL_PRICE_API_KEY}`
-      )
+      const response = await fetch(`${process.env.JUHE_OIL_PRICE_API_URL}`)
       const res = await response.json()
       const result = get(res, 'result', [])
       const cityResult = result.find((t: any) => province.includes(t.city))
@@ -80,7 +78,7 @@ export async function fetchWeatherByCity({ province, city }: AreaInfo): Promise<
   return withRedisCache(
     async () => {
       const response = await fetch(
-        `https://apis.juhe.cn/simpleWeather/query?city=${encodeURIComponent(cityName)}&key=${process.env.JUHE_WEATHER_API_KEY}`
+        `${process.env.JUHE_WEATHER_API_URL}&city=${encodeURIComponent(cityName)}`
       )
       const res = await response.json()
       const weatherInfo = get(res, 'result')
@@ -103,9 +101,7 @@ export async function fetchWeatherByCity({ province, city }: AreaInfo): Promise<
 export async function fetchMonthHolidayInfo(yyyym: string = dayjs().format('YYYY-M')) {
   return withRedisCache(
     () =>
-      fetch(
-        `https://v.juhe.cn/calendar/month?key=${process.env.JUHE_HOLIDAY_API_KEY}&year-month=${yyyym}`
-      )
+      fetch(`${process.env.JUHE_HOLIDAY_API_URL}&year-month=${yyyym}`)
         .then(response => response.json())
         .then(res => get(res, 'result.data.holiday_array', [])),
     { cacheKey: `holiday:${yyyym}`, ttl: 60 * 24 * 3600 }
@@ -119,9 +115,7 @@ export async function fetchWorkdayInfo(yyyymmdd: string = dayjs().format('YYYY-M
 }> {
   return withRedisCache(
     async () => {
-      const response = await fetch(
-        `https://apis.juhe.cn/fapig/calendar/day?key=${process.env.JUHE_WORKDAY_API_KEY}&date=${yyyymmdd}`
-      )
+      const response = await fetch(`${process.env.JUHE_WORKDAY_API_URL}&date=${yyyymmdd}`)
       const res = await response.json()
       const workdayApiResult = get(res, 'result')
 
