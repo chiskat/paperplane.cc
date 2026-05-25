@@ -13,11 +13,6 @@ export const useSegmentGroup = useSegmentGroupContext
 type SegmentGroupVariant = 'default' | 'underline'
 
 interface SegmentGroupProps extends React.ComponentProps<typeof ArkSegmentGroup.Root> {
-  /**
-   * The visual variant of the segment group.
-   *
-   * @default "default"
-   */
   variant?: SegmentGroupVariant
 }
 
@@ -55,7 +50,8 @@ export const SegmentGroupItem = (props: React.ComponentProps<typeof ArkSegmentGr
         'cursor-pointer',
         'data-[orientation=vertical]:w-full data-[orientation=vertical]:justify-start',
         'rounded-[inherit] border border-transparent',
-        'data-focus-visible:border-primary data-focus-visible:ring-ring/32 outline-none data-focus-visible:ring-[3px]',
+        'data-focus:border-primary data-focus:ring-ring/32 outline-none data-focus:z-10 data-focus:ring-[3px]',
+        'data-focus-visible:border-primary data-focus-visible:ring-ring/32 data-focus-visible:ring-[3px]',
         'data-disabled:pointer-events-none data-disabled:opacity-64',
         className
       )}

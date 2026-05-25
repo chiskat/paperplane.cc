@@ -387,6 +387,10 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Apikey: 'Apikey',
+  WLBProfile: 'WLBProfile',
+  WLBDailyRecord: 'WLBDailyRecord',
+  WLBSubscription: 'WLBSubscription',
+  WLBNotificationRecord: 'WLBNotificationRecord',
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,6 +422,10 @@ export type TypeMap<
       | 'account'
       | 'verification'
       | 'apikey'
+      | 'wLBProfile'
+      | 'wLBDailyRecord'
+      | 'wLBSubscription'
+      | 'wLBNotificationRecord'
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1239,6 +1247,308 @@ export type TypeMap<
         }
       }
     }
+    WLBProfile: {
+      payload: Prisma.$WLBProfilePayload<ExtArgs>
+      fields: Prisma.WLBProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WLBProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WLBProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.WLBProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WLBProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        findMany: {
+          args: Prisma.WLBProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>[]
+        }
+        create: {
+          args: Prisma.WLBProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        createMany: {
+          args: Prisma.WLBProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WLBProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.WLBProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        update: {
+          args: Prisma.WLBProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.WLBProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WLBProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WLBProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.WLBProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.WLBProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWLBProfile>
+        }
+        groupBy: {
+          args: Prisma.WLBProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WLBProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WLBProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WLBProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    WLBDailyRecord: {
+      payload: Prisma.$WLBDailyRecordPayload<ExtArgs>
+      fields: Prisma.WLBDailyRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WLBDailyRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WLBDailyRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.WLBDailyRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WLBDailyRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        findMany: {
+          args: Prisma.WLBDailyRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>[]
+        }
+        create: {
+          args: Prisma.WLBDailyRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        createMany: {
+          args: Prisma.WLBDailyRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WLBDailyRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.WLBDailyRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        update: {
+          args: Prisma.WLBDailyRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.WLBDailyRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WLBDailyRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WLBDailyRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.WLBDailyRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBDailyRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.WLBDailyRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWLBDailyRecord>
+        }
+        groupBy: {
+          args: Prisma.WLBDailyRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WLBDailyRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WLBDailyRecordCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.WLBDailyRecordCountAggregateOutputType>
+            | number
+        }
+      }
+    }
+    WLBSubscription: {
+      payload: Prisma.$WLBSubscriptionPayload<ExtArgs>
+      fields: Prisma.WLBSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WLBSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WLBSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.WLBSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WLBSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.WLBSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.WLBSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.WLBSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WLBSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.WLBSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.WLBSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WLBSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WLBSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WLBSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WLBSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.WLBSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWLBSubscription>
+        }
+        groupBy: {
+          args: Prisma.WLBSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WLBSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WLBSubscriptionCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.WLBSubscriptionCountAggregateOutputType>
+            | number
+        }
+      }
+    }
+    WLBNotificationRecord: {
+      payload: Prisma.$WLBNotificationRecordPayload<ExtArgs>
+      fields: Prisma.WLBNotificationRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WLBNotificationRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WLBNotificationRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.WLBNotificationRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WLBNotificationRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        findMany: {
+          args: Prisma.WLBNotificationRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>[]
+        }
+        create: {
+          args: Prisma.WLBNotificationRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        createMany: {
+          args: Prisma.WLBNotificationRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WLBNotificationRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.WLBNotificationRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        update: {
+          args: Prisma.WLBNotificationRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.WLBNotificationRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WLBNotificationRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WLBNotificationRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.WLBNotificationRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WLBNotificationRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.WLBNotificationRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWLBNotificationRecord>
+        }
+        groupBy: {
+          args: Prisma.WLBNotificationRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WLBNotificationRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WLBNotificationRecordCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.WLBNotificationRecordCountAggregateOutputType>
+            | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1455,6 +1765,87 @@ export const ApikeyScalarFieldEnum = {
 export type ApikeyScalarFieldEnum =
   (typeof ApikeyScalarFieldEnum)[keyof typeof ApikeyScalarFieldEnum]
 
+export const WLBProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  company: 'company',
+  stockCode: 'stockCode',
+  salaryDate: 'salaryDate',
+  offworkTime: 'offworkTime',
+  weekendOption: 'weekendOption',
+  salaryDayOption: 'salaryDayOption',
+  province: 'province',
+  city: 'city',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBProfileScalarFieldEnum =
+  (typeof WLBProfileScalarFieldEnum)[keyof typeof WLBProfileScalarFieldEnum]
+
+export const WLBDailyRecordScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  workday: 'workday',
+  url: 'url',
+  shortURL: 'shortURL',
+  imageURL: 'imageURL',
+  nextSalaryDate: 'nextSalaryDate',
+  daysToSalaryDate: 'daysToSalaryDate',
+  todayWeather: 'todayWeather',
+  todayTemperature: 'todayTemperature',
+  todayWid: 'todayWid',
+  tomorrowWeather: 'tomorrowWeather',
+  tomorrowTemperature: 'tomorrowTemperature',
+  tomorrowWid: 'tomorrowWid',
+  h92: 'h92',
+  h95: 'h95',
+  h98: 'h98',
+  traffic: 'traffic',
+  trafficImageURL: 'trafficImageURL',
+  todayStock: 'todayStock',
+  yesterdayStock: 'yesterdayStock',
+  stockDelta: 'stockDelta',
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBDailyRecordScalarFieldEnum =
+  (typeof WLBDailyRecordScalarFieldEnum)[keyof typeof WLBDailyRecordScalarFieldEnum]
+
+export const WLBSubscriptionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  enable: 'enable',
+  type: 'type',
+  message: 'message',
+  config: 'config',
+  timeOffset: 'timeOffset',
+  profileId: 'profileId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBSubscriptionScalarFieldEnum =
+  (typeof WLBSubscriptionScalarFieldEnum)[keyof typeof WLBSubscriptionScalarFieldEnum]
+
+export const WLBNotificationRecordScalarFieldEnum = {
+  id: 'id',
+  ok: 'ok',
+  dailyRecordId: 'dailyRecordId',
+  wlbSubscriptionId: 'wlbSubscriptionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBNotificationRecordScalarFieldEnum =
+  (typeof WLBNotificationRecordScalarFieldEnum)[keyof typeof WLBNotificationRecordScalarFieldEnum]
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
@@ -1469,6 +1860,12 @@ export const NullableJsonNullValueInput = {
 
 export type NullableJsonNullValueInput =
   (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull,
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 export const QueryMode = {
   default: 'default',
@@ -1574,6 +1971,38 @@ export type ListEnumShortRedirectTypeFieldRefInput<$PrismaModel> = FieldRefInput
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
 
 /**
+ * Reference to a field of type 'WLBWeekendOffworkType'
+ */
+export type EnumWLBWeekendOffworkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBWeekendOffworkType'
+>
+
+/**
+ * Reference to a field of type 'WLBWeekendOffworkType[]'
+ */
+export type ListEnumWLBWeekendOffworkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBWeekendOffworkType[]'
+>
+
+/**
+ * Reference to a field of type 'SalaryDayType'
+ */
+export type EnumSalaryDayTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'SalaryDayType'
+>
+
+/**
+ * Reference to a field of type 'SalaryDayType[]'
+ */
+export type ListEnumSalaryDayTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'SalaryDayType[]'
+>
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1582,6 +2011,38 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+
+/**
+ * Reference to a field of type 'WLBSubscriptionType'
+ */
+export type EnumWLBSubscriptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBSubscriptionType'
+>
+
+/**
+ * Reference to a field of type 'WLBSubscriptionType[]'
+ */
+export type ListEnumWLBSubscriptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBSubscriptionType[]'
+>
+
+/**
+ * Reference to a field of type 'WLBSubscriptionMessage'
+ */
+export type EnumWLBSubscriptionMessageFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBSubscriptionMessage'
+>
+
+/**
+ * Reference to a field of type 'WLBSubscriptionMessage[]'
+ */
+export type ListEnumWLBSubscriptionMessageFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'WLBSubscriptionMessage[]'
+>
 
 /**
  * Batch Payload for updateMany & deleteMany & createMany
@@ -1697,6 +2158,10 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   apikey?: Prisma.ApikeyOmit
+  wLBProfile?: Prisma.WLBProfileOmit
+  wLBDailyRecord?: Prisma.WLBDailyRecordOmit
+  wLBSubscription?: Prisma.WLBSubscriptionOmit
+  wLBNotificationRecord?: Prisma.WLBNotificationRecordOmit
 }
 
 /* Types for Logging */

@@ -59,6 +59,10 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Apikey: 'Apikey',
+  WLBProfile: 'WLBProfile',
+  WLBDailyRecord: 'WLBDailyRecord',
+  WLBSubscription: 'WLBSubscription',
+  WLBNotificationRecord: 'WLBNotificationRecord',
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -254,6 +258,87 @@ export const ApikeyScalarFieldEnum = {
 export type ApikeyScalarFieldEnum =
   (typeof ApikeyScalarFieldEnum)[keyof typeof ApikeyScalarFieldEnum]
 
+export const WLBProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  company: 'company',
+  stockCode: 'stockCode',
+  salaryDate: 'salaryDate',
+  offworkTime: 'offworkTime',
+  weekendOption: 'weekendOption',
+  salaryDayOption: 'salaryDayOption',
+  province: 'province',
+  city: 'city',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBProfileScalarFieldEnum =
+  (typeof WLBProfileScalarFieldEnum)[keyof typeof WLBProfileScalarFieldEnum]
+
+export const WLBDailyRecordScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  workday: 'workday',
+  url: 'url',
+  shortURL: 'shortURL',
+  imageURL: 'imageURL',
+  nextSalaryDate: 'nextSalaryDate',
+  daysToSalaryDate: 'daysToSalaryDate',
+  todayWeather: 'todayWeather',
+  todayTemperature: 'todayTemperature',
+  todayWid: 'todayWid',
+  tomorrowWeather: 'tomorrowWeather',
+  tomorrowTemperature: 'tomorrowTemperature',
+  tomorrowWid: 'tomorrowWid',
+  h92: 'h92',
+  h95: 'h95',
+  h98: 'h98',
+  traffic: 'traffic',
+  trafficImageURL: 'trafficImageURL',
+  todayStock: 'todayStock',
+  yesterdayStock: 'yesterdayStock',
+  stockDelta: 'stockDelta',
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBDailyRecordScalarFieldEnum =
+  (typeof WLBDailyRecordScalarFieldEnum)[keyof typeof WLBDailyRecordScalarFieldEnum]
+
+export const WLBSubscriptionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  enable: 'enable',
+  type: 'type',
+  message: 'message',
+  config: 'config',
+  timeOffset: 'timeOffset',
+  profileId: 'profileId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBSubscriptionScalarFieldEnum =
+  (typeof WLBSubscriptionScalarFieldEnum)[keyof typeof WLBSubscriptionScalarFieldEnum]
+
+export const WLBNotificationRecordScalarFieldEnum = {
+  id: 'id',
+  ok: 'ok',
+  dailyRecordId: 'dailyRecordId',
+  wlbSubscriptionId: 'wlbSubscriptionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type WLBNotificationRecordScalarFieldEnum =
+  (typeof WLBNotificationRecordScalarFieldEnum)[keyof typeof WLBNotificationRecordScalarFieldEnum]
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
@@ -268,6 +353,12 @@ export const NullableJsonNullValueInput = {
 
 export type NullableJsonNullValueInput =
   (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull,
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 export const QueryMode = {
   default: 'default',

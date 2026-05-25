@@ -40,6 +40,7 @@ export const moreLinkGroups: NavLinkGroup[] = [
       { label: '短链接', href: '/short' },
       { label: 'KMS 激活服务', href: '/kms' },
       { label: 'OA 机器人', href: '/oa-robot' },
+      { label: 'WLB', href: '/wlb' },
     ],
   },
   {

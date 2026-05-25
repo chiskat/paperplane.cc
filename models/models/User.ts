@@ -200,6 +200,8 @@ export type UserWhereInput = {
   short?: Prisma.ShortListRelationFilter
   oarobotProfiles?: Prisma.OARobotProfileListRelationFilter
   userContents?: Prisma.UserContentListRelationFilter
+  wlbprofiles?: Prisma.WLBProfileListRelationFilter
+  wlbsubscriptions?: Prisma.WLBSubscriptionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -215,6 +217,8 @@ export type UserOrderByWithRelationInput = {
   short?: Prisma.ShortOrderByRelationAggregateInput
   oarobotProfiles?: Prisma.OARobotProfileOrderByRelationAggregateInput
   userContents?: Prisma.UserContentOrderByRelationAggregateInput
+  wlbprofiles?: Prisma.WLBProfileOrderByRelationAggregateInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -234,6 +238,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     short?: Prisma.ShortListRelationFilter
     oarobotProfiles?: Prisma.OARobotProfileListRelationFilter
     userContents?: Prisma.UserContentListRelationFilter
+    wlbprofiles?: Prisma.WLBProfileListRelationFilter
+    wlbsubscriptions?: Prisma.WLBSubscriptionListRelationFilter
   },
   'id' | 'email'
 >
@@ -277,6 +283,8 @@ export type UserCreateInput = {
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -292,6 +300,8 @@ export type UserUncheckedCreateInput = {
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -307,6 +317,8 @@ export type UserUpdateInput = {
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -322,6 +334,8 @@ export type UserUncheckedUpdateInput = {
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -530,6 +544,62 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
   >
 }
 
+export type UserCreateNestedOneWithoutWlbprofilesInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedCreateWithoutWlbprofilesInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWlbprofilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutWlbprofilesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedCreateWithoutWlbprofilesInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWlbprofilesInput
+  upsert?: Prisma.UserUpsertWithoutWlbprofilesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutWlbprofilesInput,
+      Prisma.UserUpdateWithoutWlbprofilesInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutWlbprofilesInput
+  >
+}
+
+export type UserCreateNestedOneWithoutWlbsubscriptionsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedCreateWithoutWlbsubscriptionsInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWlbsubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutWlbsubscriptionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedCreateWithoutWlbsubscriptionsInput
+  >
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWlbsubscriptionsInput
+  upsert?: Prisma.UserUpsertWithoutWlbsubscriptionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutWlbsubscriptionsInput,
+      Prisma.UserUpdateWithoutWlbsubscriptionsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutWlbsubscriptionsInput
+  >
+}
+
 export type UserCreateWithoutOarobotProfilesInput = {
   id: string
   name: string
@@ -542,6 +612,8 @@ export type UserCreateWithoutOarobotProfilesInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutOarobotProfilesInput = {
@@ -556,6 +628,8 @@ export type UserUncheckedCreateWithoutOarobotProfilesInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutOarobotProfilesInput = {
@@ -598,6 +672,8 @@ export type UserUpdateWithoutOarobotProfilesInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOarobotProfilesInput = {
@@ -612,6 +688,8 @@ export type UserUncheckedUpdateWithoutOarobotProfilesInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutShortInput = {
@@ -626,6 +704,8 @@ export type UserCreateWithoutShortInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutShortInput = {
@@ -640,6 +720,8 @@ export type UserUncheckedCreateWithoutShortInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutShortInput = {
@@ -679,6 +761,8 @@ export type UserUpdateWithoutShortInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutShortInput = {
@@ -693,6 +777,8 @@ export type UserUncheckedUpdateWithoutShortInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutUserContentsInput = {
@@ -707,6 +793,8 @@ export type UserCreateWithoutUserContentsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutUserContentsInput = {
@@ -721,6 +809,8 @@ export type UserUncheckedCreateWithoutUserContentsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutUserContentsInput = {
@@ -763,6 +853,8 @@ export type UserUpdateWithoutUserContentsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserContentsInput = {
@@ -777,6 +869,8 @@ export type UserUncheckedUpdateWithoutUserContentsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -791,6 +885,8 @@ export type UserCreateWithoutSessionsInput = {
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -805,6 +901,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -847,6 +945,8 @@ export type UserUpdateWithoutSessionsInput = {
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -861,6 +961,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -875,6 +977,8 @@ export type UserCreateWithoutAccountsInput = {
   short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -889,6 +993,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
   userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -931,6 +1037,8 @@ export type UserUpdateWithoutAccountsInput = {
   short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -945,6 +1053,192 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
   oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
   userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutWlbprofilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
+  userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutWlbprofilesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
+  userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutWlbprofilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedCreateWithoutWlbprofilesInput
+  >
+}
+
+export type UserUpsertWithoutWlbprofilesInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedUpdateWithoutWlbprofilesInput
+  >
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedCreateWithoutWlbprofilesInput
+  >
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWlbprofilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutWlbprofilesInput,
+    Prisma.UserUncheckedUpdateWithoutWlbprofilesInput
+  >
+}
+
+export type UserUpdateWithoutWlbprofilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
+  userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWlbprofilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbsubscriptions?: Prisma.WLBSubscriptionUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutWlbsubscriptionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileCreateNestedManyWithoutAuthorInput
+  userContents?: Prisma.UserContentCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutWlbsubscriptionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  short?: Prisma.ShortUncheckedCreateNestedManyWithoutAuthorInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedCreateNestedManyWithoutAuthorInput
+  userContents?: Prisma.UserContentUncheckedCreateNestedManyWithoutAuthorInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutWlbsubscriptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedCreateWithoutWlbsubscriptionsInput
+  >
+}
+
+export type UserUpsertWithoutWlbsubscriptionsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedUpdateWithoutWlbsubscriptionsInput
+  >
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedCreateWithoutWlbsubscriptionsInput
+  >
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWlbsubscriptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutWlbsubscriptionsInput,
+    Prisma.UserUncheckedUpdateWithoutWlbsubscriptionsInput
+  >
+}
+
+export type UserUpdateWithoutWlbsubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUpdateManyWithoutAuthorNestedInput
+  userContents?: Prisma.UserContentUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWlbsubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  short?: Prisma.ShortUncheckedUpdateManyWithoutAuthorNestedInput
+  oarobotProfiles?: Prisma.OARobotProfileUncheckedUpdateManyWithoutAuthorNestedInput
+  userContents?: Prisma.UserContentUncheckedUpdateManyWithoutAuthorNestedInput
+  wlbprofiles?: Prisma.WLBProfileUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 /**
@@ -957,6 +1251,8 @@ export type UserCountOutputType = {
   short: number
   oarobotProfiles: number
   userContents: number
+  wlbprofiles: number
+  wlbsubscriptions: number
 }
 
 export type UserCountOutputTypeSelect<
@@ -967,6 +1263,8 @@ export type UserCountOutputTypeSelect<
   short?: boolean | UserCountOutputTypeCountShortArgs
   oarobotProfiles?: boolean | UserCountOutputTypeCountOarobotProfilesArgs
   userContents?: boolean | UserCountOutputTypeCountUserContentsArgs
+  wlbprofiles?: boolean | UserCountOutputTypeCountWlbprofilesArgs
+  wlbsubscriptions?: boolean | UserCountOutputTypeCountWlbsubscriptionsArgs
 }
 
 /**
@@ -1026,6 +1324,24 @@ export type UserCountOutputTypeCountUserContentsArgs<
   where?: Prisma.UserContentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWlbprofilesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.WLBProfileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWlbsubscriptionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.WLBSubscriptionWhereInput
+}
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1042,6 +1358,8 @@ export type UserSelect<
     short?: boolean | Prisma.User$shortArgs<ExtArgs>
     oarobotProfiles?: boolean | Prisma.User$oarobotProfilesArgs<ExtArgs>
     userContents?: boolean | Prisma.User$userContentsArgs<ExtArgs>
+    wlbprofiles?: boolean | Prisma.User$wlbprofilesArgs<ExtArgs>
+    wlbsubscriptions?: boolean | Prisma.User$wlbsubscriptionsArgs<ExtArgs>
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['user']
@@ -1101,6 +1419,8 @@ export type UserInclude<
   short?: boolean | Prisma.User$shortArgs<ExtArgs>
   oarobotProfiles?: boolean | Prisma.User$oarobotProfilesArgs<ExtArgs>
   userContents?: boolean | Prisma.User$userContentsArgs<ExtArgs>
+  wlbprofiles?: boolean | Prisma.User$wlbprofilesArgs<ExtArgs>
+  wlbsubscriptions?: boolean | Prisma.User$wlbsubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<
@@ -1120,6 +1440,8 @@ export type $UserPayload<
     short: Prisma.$ShortPayload<ExtArgs>[]
     oarobotProfiles: Prisma.$OARobotProfilePayload<ExtArgs>[]
     userContents: Prisma.$UserContentPayload<ExtArgs>[]
+    wlbprofiles: Prisma.$WLBProfilePayload<ExtArgs>[]
+    wlbsubscriptions: Prisma.$WLBSubscriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1689,6 +2011,28 @@ export interface Prisma__UserClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$UserContentPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
+  wlbprofiles<T extends Prisma.User$wlbprofilesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$wlbprofilesArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$WLBProfilePayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
+  wlbsubscriptions<T extends Prisma.User$wlbsubscriptionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$wlbsubscriptionsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$WLBSubscriptionPayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -2284,6 +2628,60 @@ export type User$userContentsArgs<
   take?: number
   skip?: number
   distinct?: Prisma.UserContentScalarFieldEnum | Prisma.UserContentScalarFieldEnum[]
+}
+
+/**
+ * User.wlbprofiles
+ */
+export type User$wlbprofilesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the WLBProfile
+   */
+  select?: Prisma.WLBProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WLBProfile
+   */
+  omit?: Prisma.WLBProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WLBProfileInclude<ExtArgs> | null
+  where?: Prisma.WLBProfileWhereInput
+  orderBy?: Prisma.WLBProfileOrderByWithRelationInput | Prisma.WLBProfileOrderByWithRelationInput[]
+  cursor?: Prisma.WLBProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WLBProfileScalarFieldEnum | Prisma.WLBProfileScalarFieldEnum[]
+}
+
+/**
+ * User.wlbsubscriptions
+ */
+export type User$wlbsubscriptionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the WLBSubscription
+   */
+  select?: Prisma.WLBSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WLBSubscription
+   */
+  omit?: Prisma.WLBSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WLBSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.WLBSubscriptionWhereInput
+  orderBy?:
+    | Prisma.WLBSubscriptionOrderByWithRelationInput
+    | Prisma.WLBSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.WLBSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WLBSubscriptionScalarFieldEnum | Prisma.WLBSubscriptionScalarFieldEnum[]
 }
 
 /**

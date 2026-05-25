@@ -72,3 +72,23 @@ export type Verification = Prisma.VerificationModel
  * 账号 API（由 btter-auth 创建）
  */
 export type Apikey = Prisma.ApikeyModel
+/**
+ * Model WLBProfile
+ * WLB 档案
+ */
+export type WLBProfile = Prisma.WLBProfileModel
+/**
+ * Model WLBDailyRecord
+ * WLB 记录
+ */
+export type WLBDailyRecord = Prisma.WLBDailyRecordModel
+/**
+ * Model WLBSubscription
+ * WLB 订阅配置
+ */
+export type WLBSubscription = Prisma.WLBSubscriptionModel
+/**
+ * Model WLBNotificationRecord
+ * WLB 通知发送记录
+ */
+export type WLBNotificationRecord = Prisma.WLBNotificationRecordModel

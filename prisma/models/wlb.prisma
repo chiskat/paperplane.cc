@@ -1,0 +1,150 @@
+/// 周末休息特殊配置
+enum WLBWeekendOffworkType {
+  /// 默认，即双休
+  DEFAULT
+  /// 将周六添加为工作日
+  WORKDAY_SAT
+  /// 将周日添加为工作日
+  WORKDAY_SUN
+  /// 将周末两天均添加为工作日
+  WORKDAY_WEEKEND
+}
+
+/// 发薪日特殊配置
+enum SalaryDayType {
+  /// 提早到工作日
+  EARLY_TO_WORKDAY
+  /// 延后到工作日
+  LATER_TO_WORKDAY
+  /// 无关工作日
+  ANYDAY
+}
+
+/// WLB 档案
+model WLBProfile {
+  id              String                @id @default(cuid())
+  name            String
+  company         String
+  /// 新浪股价 API 股票代码
+  stockCode       String?               @map("stock_code")
+  /// 发薪日，是每月几号就为几，如果是从月末开始算则为负数，例如每月最后一天为 -1
+  salaryDate      Int                   @map("salary_date")
+  /// 每日下班时刻，从当日 00:00 起的毫秒数
+  offworkTime     Int                   @map("offwork_time")
+  /// 周末单双休配置
+  weekendOption   WLBWeekendOffworkType @default(DEFAULT) @map("weekend_option")
+  /// 发薪日配置
+  salaryDayOption SalaryDayType         @default(EARLY_TO_WORKDAY) @map("salary_day_option")
+  province        String
+  city            String
+  latitude        String
+  longitude       String
+
+  userId String? @map("user_id")
+  author User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  wlbsubscriptions WLBSubscription[]
+  wlbdailyRecords  WLBDailyRecord[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("wlb_profile")
+}
+
+/// WLB 记录
+model WLBDailyRecord {
+  id                  String  @id @default(cuid())
+  date                String
+  workday             Boolean
+  url                 String
+  shortURL            String  @map("short_url")
+  imageURL            String  @map("image_url")
+  nextSalaryDate      String  @map("next_salary_date")
+  daysToSalaryDate    Int     @map("days_to_salary_date")
+  todayWeather        String  @map("today_weather")
+  todayTemperature    String  @map("today_temperature")
+  todayWid            String  @map("today_wid")
+  tomorrowWeather     String  @map("tomorrow_weather")
+  tomorrowTemperature String  @map("tomorrow_temperature")
+  tomorrowWid         String  @map("tomorrow_wid")
+  h92                 Float
+  h95                 Float
+  h98                 Float
+  traffic             String
+  trafficImageURL     String  @map("traffic_image_url")
+  todayStock          Float?  @map("today_stock")
+  yesterdayStock      Float?  @map("yesterday_stock")
+  stockDelta          Float?  @map("stock_delta")
+
+  profileId String     @map("profile_id")
+  profile   WLBProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  wlbNotificationRecords WLBNotificationRecord[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("wlb_daily_record")
+}
+
+/// WLB 订阅类型
+enum WLBSubscriptionType {
+  /// 邮件
+  EMAIL
+  /// OA 机器人
+  OAROBOT
+}
+
+/// 订阅消息
+enum WLBSubscriptionMessage {
+  /// 图片
+  IMAGE
+  /// 文本
+  TEXT
+  /// 图文
+  ALL
+}
+
+/// WLB 订阅配置
+model WLBSubscription {
+  id         String                 @id @default(cuid())
+  name       String
+  enable     Boolean                @default(true)
+  type       WLBSubscriptionType
+  message    WLBSubscriptionMessage @default(IMAGE)
+  /// 配置详情
+  config     Json
+  /// 时间偏移，从下班时间开始的偏移毫秒数，通常为负数，因为要提前通知
+  timeOffset Int                    @default(0) @map("time_offset")
+
+  profileId String     @map("profile_id")
+  profile   WLBProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  userId String? @map("user_id")
+  author User?   @relation(fields: [userId], references: [id])
+
+  wlbNotificationRecords WLBNotificationRecord[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("wlb_subscription")
+}
+
+/// WLB 通知发送记录
+model WLBNotificationRecord {
+  id String  @id @default(cuid())
+  ok Boolean @default(true)
+
+  dailyRecordId String?         @map("daily_record_id")
+  dailyRecord   WLBDailyRecord? @relation(fields: [dailyRecordId], references: [id], onDelete: Cascade)
+
+  wlbSubscriptionId String?          @map("wlb_subscription_id")
+  subscription      WLBSubscription? @relation(fields: [wlbSubscriptionId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("wlb_notification_record")
+}

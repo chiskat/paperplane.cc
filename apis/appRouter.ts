@@ -6,6 +6,7 @@ import { oaRobot } from './oa-robot'
 import { short } from './short'
 import { user } from './user'
 import { userContent } from './user-content'
+import { wlb } from './wlb'
 
 export type AppRouter = typeof appRouter
 
@@ -15,4 +16,5 @@ export const appRouter = router({
   short,
   oaRobot,
   userContent,
+  wlb,
 })

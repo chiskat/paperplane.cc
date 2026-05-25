@@ -12,9 +12,11 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  short           Short[]
-  oarobotProfiles OARobotProfile[]
-  userContents    UserContent[]
+  short            Short[]
+  oarobotProfiles  OARobotProfile[]
+  userContents     UserContent[]
+  wlbprofiles      WLBProfile[]
+  wlbsubscriptions WLBSubscription[]
 
   @@unique([email])
   @@map("user")

@@ -23,3 +23,37 @@ export const ShortRedirectType = {
 } as const
 
 export type ShortRedirectType = (typeof ShortRedirectType)[keyof typeof ShortRedirectType]
+
+export const WLBWeekendOffworkType = {
+  DEFAULT: 'DEFAULT',
+  WORKDAY_SAT: 'WORKDAY_SAT',
+  WORKDAY_SUN: 'WORKDAY_SUN',
+  WORKDAY_WEEKEND: 'WORKDAY_WEEKEND',
+} as const
+
+export type WLBWeekendOffworkType =
+  (typeof WLBWeekendOffworkType)[keyof typeof WLBWeekendOffworkType]
+
+export const SalaryDayType = {
+  EARLY_TO_WORKDAY: 'EARLY_TO_WORKDAY',
+  LATER_TO_WORKDAY: 'LATER_TO_WORKDAY',
+  ANYDAY: 'ANYDAY',
+} as const
+
+export type SalaryDayType = (typeof SalaryDayType)[keyof typeof SalaryDayType]
+
+export const WLBSubscriptionType = {
+  EMAIL: 'EMAIL',
+  OAROBOT: 'OAROBOT',
+} as const
+
+export type WLBSubscriptionType = (typeof WLBSubscriptionType)[keyof typeof WLBSubscriptionType]
+
+export const WLBSubscriptionMessage = {
+  IMAGE: 'IMAGE',
+  TEXT: 'TEXT',
+  ALL: 'ALL',
+} as const
+
+export type WLBSubscriptionMessage =
+  (typeof WLBSubscriptionMessage)[keyof typeof WLBSubscriptionMessage]
