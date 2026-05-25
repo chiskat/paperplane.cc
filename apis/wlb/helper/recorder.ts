@@ -52,7 +52,7 @@ export async function wlbRecord(wlbProfile: WLBProfile) {
     const trafficPage = await browser.newPage()
     await trafficPage.setViewport({ width: 650 + 100, height: 650 + 100, deviceScaleFactor: 2 })
     await trafficPage.goto(`http://localhost:3000/wlb/traffic/${profileId}`, {
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle2',
     })
     const trafficSnapshot = Buffer.from(
       await trafficPage.screenshot({ clip: { x: 0, y: 0, width: 650, height: 650 } })
@@ -101,7 +101,7 @@ export async function wlbRecord(wlbProfile: WLBProfile) {
     const viewPage = await browser.newPage()
     await viewPage.setViewport({ width: 1500 + 100, height: 800 + 100, deviceScaleFactor: 2 })
     await viewPage.goto(`http://localhost:3000/wlb/record/${id}`, {
-      waitUntil: 'networkidle2',
+      waitUntil: 'networkidle0',
     })
     const viewSnapshot = Buffer.from(
       await viewPage.screenshot({ clip: { x: 0, y: 0, width: 1500, height: 800 } })
