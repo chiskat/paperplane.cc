@@ -51,11 +51,27 @@ export async function wlbRecord(wlbProfile: WLBProfile) {
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] })
   try {
     const trafficPage = await browser.newPage()
+
+    const trafficPageErrors: string[] = []
+    trafficPage.on('console', message => {
+      if (message.type() === 'error') {
+        trafficPageErrors.push(`[console] ${message.text()}`)
+      }
+    })
+    trafficPage.on('pageerror', (error: any) => {
+      trafficPageErrors.push(`[pageerror] ${error.stack ?? error.message}`)
+    })
+
     await trafficPage.setViewport({ width: 650 + 100, height: 650 + 100, deviceScaleFactor: 2 })
     await trafficPage.goto(`http://localhost:3000/wlb/traffic/${profileId}`, {
       waitUntil: 'networkidle2',
     })
-    await sleep(5000)
+    await sleep(10000)
+
+    if (trafficPageErrors.length > 0) {
+      console.error(['[wlb traffic errors]', ...trafficPageErrors].join('\n'))
+    }
+
     const trafficSnapshot = Buffer.from(
       await trafficPage.screenshot({ clip: { x: 0, y: 0, width: 650, height: 650 } })
     )
