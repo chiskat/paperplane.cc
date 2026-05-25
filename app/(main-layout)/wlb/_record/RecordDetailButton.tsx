@@ -8,10 +8,12 @@ import {
   IconCloud,
   IconExternalLink,
   IconEye,
+  IconFileText,
   IconGasStation,
   IconInfoCircle,
   IconMapPin,
   IconPhoto,
+  IconTrafficLights,
 } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
@@ -19,7 +21,13 @@ import type { ComponentProps, ReactNode } from 'react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton, SkeletonText } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -93,7 +101,17 @@ export function WLBRecordDetailButton({
         size="3xl"
         className="max-h-[min(92svh,760px)] max-w-[min(94vw,920px)] overflow-hidden sm:max-w-[min(94vw,920px)]"
       >
-        <DialogHeader title="WLB 记录" />
+        <DialogHeader>
+          <div className="flex min-w-0 items-center gap-3 pr-8">
+            <DialogTitle className="shrink-0">WLB 记录</DialogTitle>
+            <code
+              className="bg-background/70 text-foreground max-w-[min(20rem,45%)] min-w-0 truncate rounded border px-1.5 py-0.5 font-mono text-[14px] select-all"
+              title={id}
+            >
+              {id}
+            </code>
+          </div>
+        </DialogHeader>
 
         <div
           className="flex min-h-0 flex-1 flex-col overflow-hidden p-(--space) pt-0"
@@ -115,10 +133,18 @@ export function WLBRecordDetailButton({
               >
                 <TabsTrigger value="fields">
                   <IconInfoCircle aria-hidden />
-                  每日生活资讯
+                  工作信息与资讯
+                </TabsTrigger>
+                <TabsTrigger value="image-message">
+                  <IconPhoto aria-hidden />
+                  预览图片消息
+                </TabsTrigger>
+                <TabsTrigger value="text-message">
+                  <IconFileText aria-hidden />
+                  预览文本消息
                 </TabsTrigger>
                 <TabsTrigger value="traffic">
-                  <IconPhoto aria-hidden />
+                  <IconTrafficLights aria-hidden />
                   交通状况（快照）
                 </TabsTrigger>
                 <TabsTrigger value="notification-records">
@@ -133,6 +159,14 @@ export function WLBRecordDetailButton({
 
               <ScrollableTabsContent value="traffic">
                 <TrafficSnapshot record={record} />
+              </ScrollableTabsContent>
+
+              <ScrollableTabsContent value="image-message">
+                <ImageMessagePreview record={record} />
+              </ScrollableTabsContent>
+
+              <ScrollableTabsContent value="text-message">
+                <TextMessagePreview record={record} />
               </ScrollableTabsContent>
 
               <ScrollableTabsContent value="notification-records">
@@ -261,21 +295,49 @@ function DetailSection({ section }: { section: DetailSection }) {
 
 function TrafficSnapshot({ record }: { record: WLBRecordDetail }) {
   if (!record.trafficImageURL) {
-    return (
-      <div className="border-input bg-muted text-muted-foreground flex min-h-64 items-center justify-center rounded-lg border border-dashed text-sm">
-        暂无交通状况快照
-      </div>
-    )
+    return <ImageEmptyState>暂无交通状况快照</ImageEmptyState>
   }
 
   return (
-    <a href={record.trafficImageURL} target="_blank" rel="noreferrer" className="block">
+    <ImagePreview src={record.trafficImageURL} alt={`${formatDate(record.date)} 交通状况快照`} />
+  )
+}
+
+function ImageMessagePreview({ record }: { record: WLBRecordDetail }) {
+  if (!record.imageURL) {
+    return <ImageEmptyState>暂无图片消息</ImageEmptyState>
+  }
+
+  return <ImagePreview src={record.imageURL} alt={`${formatDate(record.date)} WLB 图片消息`} />
+}
+
+function ImagePreview({ src, alt }: { src: string; alt: string }) {
+  return (
+    <a href={src} target="_blank" rel="noreferrer" className="flex justify-center">
       <img
-        src={record.trafficImageURL}
-        alt={`${formatDate(record.date)} 交通状况快照`}
-        className="bg-muted max-h-[70vh] w-full rounded-lg object-contain"
+        src={src}
+        alt={alt}
+        className="bg-muted max-h-[min(52svh,480px)] max-w-full rounded-lg object-contain"
       />
     </a>
+  )
+}
+
+function ImageEmptyState({ children }: { children: ReactNode }) {
+  return (
+    <div className="border-input bg-muted text-muted-foreground flex min-h-64 items-center justify-center rounded-lg border border-dashed text-sm">
+      {children}
+    </div>
+  )
+}
+
+function TextMessagePreview({ record }: { record: WLBRecordDetail }) {
+  return (
+    <div className="border-input bg-background rounded-lg border p-4">
+      <pre className="text-foreground font-sans text-sm leading-7 wrap-break-word whitespace-pre-wrap">
+        {formatTextMessage(record)}
+      </pre>
+    </div>
   )
 }
 
@@ -320,6 +382,32 @@ function formatStockDelta(value?: number | null) {
   }
 
   return value > 0 ? `+${value}` : value
+}
+
+function formatTextMessage(record: WLBRecordDetail) {
+  const lines = [
+    '下班时间到了，磨刀不误砍柴工，劳逸结合，不要太辛苦~',
+    '',
+    `※ 天气：${record.todayWeather} ${record.todayTemperature}；明天：${record.tomorrowWeather} ${record.tomorrowTemperature}`,
+    `※ 油价：￥${record.h92}/92#，￥${record.h95}/95#，￥${record.h98}/98#`,
+  ]
+
+  if (record.todayStock) {
+    const signText = record.stockDelta ? (record.stockDelta > 0 ? '+' : '') : ''
+    const stockText =
+      record.todayStock && record.stockDelta ? ` (${signText}${record.stockDelta})` : ''
+    lines.push(`※ 公司股价：今日 ${record.todayStock}，昨日 ${record.yesterdayStock}${stockText}`)
+  }
+
+  lines.push(`※ 附近路况： ${record.traffic}`, '')
+
+  if (record.daysToSalaryDate > 0) {
+    lines.push(`下次发薪日是 ${record.nextSalaryDate}，还有 ${record.daysToSalaryDate} 天，加油！`)
+  } else {
+    lines.push('今天是发薪日，加油！')
+  }
+
+  return lines.join('\n')
 }
 
 function getErrorMessage(error: unknown) {
