@@ -8,9 +8,9 @@ categories: [JS]
 
 本篇介绍标题中提到的三个关键词。笼统来说，它们的作用大体上可以简介为：
 
-- Utility Types 中文叫 “实用类型”，它们是由 TypeScript 内置提供的一系列类型工具，用于实现一些类型操作；
+- Utility Types 中文叫 “实用类型”，它们是由 TS 内置提供的一系列类型工具，用于实现一些类型操作；
 - `intrinsic` 是表示 “占位” 意义的关键词，有些复杂类型必须由类型系统内部来实现，所以放这么一个关键词来占位；
-- `infer` 表示 “推断”，可以理解为中学时期数学课解方程时使用的 “未知数”，也就是把某个类型当做 “未知数”。
+- `infer` 表示 “推断”，可以理解为中学数学课解方程时使用的 “未知数”，也就是把某个类型当做 “未知数”。
 
 # Utility Types 实用类型
 
@@ -36,13 +36,13 @@ categories: [JS]
 > }
 > ```
 
-**类型集合操作：**
+**集合：**
 
 - `Extract<T, U>`：从集合 `T` 中**选取**符合 `U` 的所有项，用选取的项组成一个新集合；
 - `Exclude<T, U>`：从集合 `T` 中**删去**符合 `U` 的所有项，用剩余的项组成一个新集合；
 - `NonNullable<T>`：从集合 `T` 中删去所有 `null` 和 `undefined` 的项，用剩余的项组成一个新集合。
 
-**对象字段：**
+**对象的字段：**
 
 - `Pick<T, K>`：从对象 `T` 中**选取**数个符合 `K` 的字段，选取的字段组成一个新对象；
 - `Omit<T, K>`：从对象 `T` 中**删去**数个符合 `K` 的字段，剩余的字段组成一个新对象；
@@ -51,16 +51,18 @@ categories: [JS]
 > 实用类型 `Pick` 就像 `lodash` 的 `_.pick`，而 `Omit` 就像 `_.omit`；
 > 实际上 `Omit` 是由 `Pick` 和 `Exclude` 组合而来。
 
-**方法：**
+**函数：**
 
 - `Parameters<T>`：通常配合 `typeof` 关键字使用，获取方法 `T` 的参数的类型，并组成一个数组返回；
 - `ReturnType<T>`：通常配合 `typeof` 关键字使用，获取方法 `T` 的返回值类型。
 
 **面向对象**：
 
-- `ConstructorParameters<T>`：同上 `Parameters<T>`，只不过传入的 `T` 需要使用 `typeof` 接构造函数名（也就是类名）；
-- `InstanceType`：同上 `ReturnType<T>`，只不过传入的 `T` 需要使用 `typeof` 接构造函数名（也就是类名）；
-- `ThisType<T>`：返回一个对象，这个对象的方法中，`this` 的类型为 `T`。**现在有更好的语法来取代他，举例：**
+- `ConstructorParameters<T>`：同 `Parameters<T>` 功能类似，但它接受的 `T` 应该是某个类的构造函数，也就是类似于 `<typeof MyClass>` 这样；
+- `InstanceType`：同 `ReturnType<T>` 功能类似，但它接受的 `T` 应该是某个类的构造函数；
+- `ThisType<T>`：得到一个对象，此对象上的任何方法中的 `this` 均为 `T`，**此实用类型已被取代**。
+
+以下是新语法，取代了 `ThisType<T>`：
 
 ```typescript
 type User = {
