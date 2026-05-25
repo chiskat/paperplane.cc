@@ -1,5 +1,6 @@
 import { createId } from '@paralleldrive/cuid2'
 import dayjs from 'dayjs'
+import { sleep } from 'omn'
 import puppeteer from 'puppeteer'
 
 import { createShortURL } from '@/apis/short/create-short-url'
@@ -54,6 +55,7 @@ export async function wlbRecord(wlbProfile: WLBProfile) {
     await trafficPage.goto(`http://localhost:3000/wlb/traffic/${profileId}`, {
       waitUntil: 'networkidle2',
     })
+    await sleep(5000)
     const trafficSnapshot = Buffer.from(
       await trafficPage.screenshot({ clip: { x: 0, y: 0, width: 650, height: 650 } })
     )
