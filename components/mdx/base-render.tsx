@@ -176,7 +176,7 @@ export default function baseMDX(): MDXComponents {
         <MdxCodeBlock
           {...props}
           className={cn(
-            '**:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:-mx-4 **:data-highlighted-line:inline-block **:data-highlighted-line:min-w-[calc(100%+2rem)] **:data-highlighted-line:bg-[rgba(47,98,157,0.08)] **:data-highlighted-line:px-4',
+            '**:data-highlighted-chars:rounded-[3px] **:data-highlighted-chars:bg-[rgba(47,98,157,0.13)] **:data-highlighted-chars:px-0.5 **:data-highlighted-chars:py-px **:data-highlighted-line:bg-[rgba(47,98,157,0.08)]',
             className
           )}
         >
