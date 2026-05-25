@@ -45,7 +45,7 @@ export function MdxCodeBlock({ children, className, ...props }: MdxCodeBlockProp
       <pre
         {...props}
         className={cn(
-          'm-0 overflow-x-auto py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-none [&_code]:grid [&_code]:w-max [&_code]:min-w-full [&_code]:not-italic! [&_code>span]:px-4 [&_code>span]:pr-14 [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
+          'm-0 overflow-x-auto py-3 pb-2.5 text-[calc(1em-4px)] text-[#333] shadow-none [&_code]:grid [&_code]:w-max [&_code]:min-w-full [&_code]:not-italic! [&_code>span]:px-4 [&_em]:not-italic! [&_i]:not-italic! [&_span]:not-italic! [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded-b-[3px] [&::-webkit-scrollbar]:bg-[#f5f5f5] [&::-webkit-scrollbar-thumb]:rounded-b-[3px] [&::-webkit-scrollbar-thumb]:bg-[rgba(131,128,128,0.3)] [&::-webkit-scrollbar-track]:rounded-b-[3px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-track]:shadow-[inset_0_0_3px_rgba(0,0,0,0.1)]',
           className
         )}
       >
