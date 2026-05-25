@@ -1,6 +1,6 @@
 # PaperPlane.cc
 
-个人网站 [PaperPlane.cc](https://paperplane.cc) 的源代码。
+个人网站 [PaperPlane.cc](https://paperplane.cc) 的源代码，包含博客、在线工具、项目展示等内容。
 
 ## 起源
 
@@ -13,9 +13,10 @@
 ## 技术栈
 
 - 前端基于 Next.js，组件库使用 Shadcn 构建系统，基于 ArkUI (SharkUI) + MagicUI + AnimateUI；
-- 后端基于 tRPC 实现接口，通过 BetterAuth 实现鉴权，通过 Prisma 实现 ORM，通过 `trpc-to-openapi` 提供 OpenAPI 接口；
+- 后端基于 tRPC 实现接口，通过 Better-Auth 实现鉴权，通过 Prisma 实现 ORM，通过 `trpc-to-openapi` 提供 OpenAPI 接口；
 - 通过 `@tanstack/react-query` 实现查询，通过 `@tanstack/react-form` 实现表单校验与数据处理，通过 Zod 实现数据校验；
 - 基于 `@next/mdx` 实现 mdx 文档组件化，基于 `remark` 和 `rehype` 生态的一些插件实现 Markdown 自定义解析；
+- 通过 `puppeteer` 实现页面截图，可以生成交通状况图，用于 WLB 模块，通过自制镜像来支持 `puppeteer`；
 - 使用 Drone CI 实现 CI/CD。
 
 ## 开发指南
@@ -24,6 +25,7 @@
 
 - 查看 `/.env.example` 了解所有环境变量，请创建 `/.env.development.local` 并在其中补全；
 - 必须能连接到 PostgreSQL、Redis；博客评论区用到了 Artalk，需部署并配置；很多功能需要用到 S3 存储，需配置相关参数；
+- 如果用到邮件发送功能，必须配置 `SMTP_` 开头的环境变量，服务端需注意厂商是否开通了外部 465 等邮件端口的防火墙；
 - 如果用到登录功能，项目默认基于 Gitea 的 OAuth2 登录，需预先创建 OA2 应用；也可以改为其它的例如 GitHub 的 OA2。
 
 部署需知：
