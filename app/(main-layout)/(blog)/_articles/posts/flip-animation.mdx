@@ -349,7 +349,8 @@ function move() {
 </html>
 ```
 
-每次点击按钮，必须调用 `changeDOM()` 向页面中插入一个随机宽度的空白元素，此时会导致蓝色方块发生移动。
+每次点击按钮，必须调用 `changeDOM()` 向页面中插入一个随机宽度的白方块，此时会导致蓝色方块发生移动。
+
 效果如下：
 
 ![](../images/flip-fl-demo-1.gif)
@@ -357,9 +358,7 @@ function move() {
 这没有任何动画，观感很差。
 请你补全 `clickButton()` 方法，想办法给蓝色方块加上 FLIP 动画。
 
-<br />
-
-答案如下：
+::: collapse 答案在这里，点击展开
 
 ```js
 function clickButton() {
@@ -385,6 +384,8 @@ function clickButton() {
   })
 }
 ```
+
+:::
 
 实现效果：
 
@@ -445,9 +446,9 @@ function clickButton() {
 
 <br />
 
-然后，我们实现 FLIP 动画中的 “F” 和 “L”，即记录元素移动的开始位置、结束位置，也就是上面说的步骤 ①、③。
+然后，我们实现 FLIP 动画中的 “F” 和 “L”，记录元素的开始、结束位置，也就是上面说的步骤 ①、③。
+直接通过 `el.getBoundingClientRect()` 获取一个元素的上下左右四个方向相对于文档的偏移即可。
 
-我们通过 `el.getBoundingClientRect()` 获取一个元素的上下左右四个方向相对于文档的偏移，使用此 API 即可实现需求。
 代码如下：
 
 ```js {5-9,15-19}
@@ -547,9 +548,11 @@ box.style.transform = `translate(${deltaX}px, ${deltaY}px)`
 显而易见可以写出下面的代码：
 
 ```js
+// 开始前
 box.style.transition = null
 box.style.transform = `translate(${deltaX}px, ${deltaY}px)`
 
+// 开始后
 box.style.transition = `transform 2s`
 box.style.transform = ''
 ```
@@ -924,20 +927,26 @@ boxes.forEach(box => {
 # 自己封装一个 FLIP 动画库
 
 了解了上面的流程后，我们可以封装一个实现 FLIP 动画的工具。
-
 整体思路是：提供一个函数 `flip`，传入一个容器元素作为参数，对这个容器中的子元素应用 FLIP 动画。
 
 <br />
 
-我们来实现这个函数 `flip`，首先，它需要接受一个元素，获取其中所有子元素，并记录这些子元素的坐标信息。
+我们来实现这个函数 `flip`，首先，它需要接受一个 DOM 元素作为参数，获取其中所有子元素，并记录这些子元素的坐标信息。
 
 这里，涉及到一个问题：
-元素可能被暂时移出 DOM 并插入回来，我们如何跟踪一个元素？
+**元素可能被暂时移出 DOM 并插入回来，我们如何跟踪一个元素？**
 
-在之前的例子里，元素附带有 `key` 属性，可以使用 `key` 属性来标识并跟踪元素；你可能发现了，Vue、React 也使用 `key` 属性来跟踪元素。
+在之前的例子里，元素附带有 `key` 属性，可以使用 `key` 属性来标识并跟踪元素。
+
+::: info 恭喜你
+你发现了 Vue、React 中循环渲染必须设置 `key` 属性的原因，只有这样才能正确跟踪元素。
+:::
+
 而我们自己实现的这个函数，可以不要求用户使用 `key`，而是利用 [`WeakMap`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) 来跟踪元素，只需要把 DOM 作为键即可。
 
-实际上，[`WeakMap`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) 诞生的目的就是为了此类场景。
+::: info 再次恭喜你
+你发现了 `WeakMap` 被发明出来的目的，它也是为了在 JS 中跟踪元素，还可以避免内存泄漏。
+:::
 
 我们可以写出这样的代码：
 
@@ -971,7 +980,7 @@ function flip(target) {
 
 实现代码如下：
 
-```js
+```js {5,9}
 function flip(target) {
   const children = Array.from(target.children)
 
@@ -1034,7 +1043,7 @@ function flip(target) {
 接下来测试运行。
 使用以下测试用例：
 
-```html
+```html {38}
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -1301,10 +1310,6 @@ Vue 做的是：在 DOM 变动后，暂时屏蔽掉子组件上面的过渡 CSS 
 
 你可以试一试直接把 `transition: all 2s;` 写在 `.box{}` 里面，此时动画仍然能生效，但是在前一个动画没播放完就连续点击按钮时，动画会出问题。
 
-<br />
-
-同样，使用 `<TransitionGroup>` 组件必须保证子组件具有 `key` 属性并设为唯一的值，它用于跟踪组件的顺序。
-
 # 使用 React 封装 FLIP 组件
 
 React 并没有内置类似 `<TransitionGroup>` 的组件，我们可以尝试封装一个 FLIP 组件。
@@ -1379,8 +1384,6 @@ function FlipDemo() {
 function Demo() {
   const domRef = useRef(null)
 
-  // 代码中可以使用 domRef.current 来访问节点
-
   return <div ref={domRef}>...</div>
 }
 ```
@@ -1388,7 +1391,7 @@ function Demo() {
 但是，如果子节点是一个数组，此时我们无法直接使用上面这种方式；
 下面的代码是行不通的：
 
-```tsx
+```tsx {7-9}
 function Demo1() {
   const domRefs = useRef([])
 
@@ -1500,7 +1503,7 @@ requestAnimationFrame(() => {
 
 我们使用上述的第一种方法，组织代码：
 
-```tsx
+```tsx {16,41}
 import { cloneElement, CSSProperties, ReactElement, useLayoutEffect, useRef, useState } from 'react'
 
 interface IFlipProps {
@@ -1598,7 +1601,7 @@ function Flip(props: IFlipProps) {
 
 此时可以采取之前提到的使用 `requestAnimationFrame()` 来持续跟踪元素坐标的方案，你可以自行实践。
 
-> 你可能想到使用 `useMemo()` 来对 `children` 做一个 “tap” 操作，在这个操作中来获取并记录子元素的坐标。
+> 你可能想到使用 `useMemo()` 来对 `children` 做一个 “tap” 操作，期间获取并记录子元素的坐标。
 > 这是可行的，但是，`useMemo()` 和 `useLayoutEffect()` 之间很可能会跳帧，而且循环访问 DOM 坐标的操作比较耗时，这会导致组件出现阻塞、动画出现移位等问题，实际上并不能完美解决我们的诉求。
 
 在 React 中使用 FLIP 动画，我们推荐使用例如 `react-flip-toolkit` 这样的库。
