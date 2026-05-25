@@ -200,10 +200,10 @@ function ProfileDetailTabs({
                 工作信息
               </TabsTrigger>
               <TabsTrigger value="subscriptions" className="text-base">
-                消息订阅
+                WLB 消息订阅
               </TabsTrigger>
               <TabsTrigger value="records" className="text-base">
-                消息推送记录
+                WLB 记录
               </TabsTrigger>
               <TabsTrigger value="traffic" className="text-base">
                 实时交通状况
