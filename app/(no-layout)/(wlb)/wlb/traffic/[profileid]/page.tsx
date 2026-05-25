@@ -6,6 +6,8 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { isLocalhostRequest } from '@/utils/ip-limit'
 
+export const TILES_LOADED_FLAG = 'wlb_traffic_map_tiles_loaded'
+
 export default async function WLBTrafficView({ params }: PageProps<'/wlb/traffic/[profileid]'>) {
   const requestHeaders = await headers()
   const session = await auth.api.getSession({ headers: requestHeaders })
@@ -29,6 +31,7 @@ export default async function WLBTrafficView({ params }: PageProps<'/wlb/traffic
       className="h-162.5 w-162.5"
       latitude={profile.latitude}
       longitude={profile.longitude}
+      tilesLoadedFlag={TILES_LOADED_FLAG}
     />
   )
 }

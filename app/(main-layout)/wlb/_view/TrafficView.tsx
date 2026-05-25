@@ -72,9 +72,16 @@ function loadBaiduMapGL() {
 export interface TrafficViewProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   latitude?: string | null
   longitude?: string | null
+  tilesLoadedFlag?: string
 }
 
-export function TrafficView({ latitude, longitude, className, ...restProps }: TrafficViewProps) {
+export function TrafficView({
+  latitude,
+  longitude,
+  className,
+  tilesLoadedFlag,
+  ...restProps
+}: TrafficViewProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const [loadedCoordinate, setLoadedCoordinate] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<{ coordinate: string; message: string } | null>(null)
@@ -91,6 +98,11 @@ export function TrafficView({ latitude, longitude, className, ...restProps }: Tr
 
     let cancelled = false
     let animationFrame = 0
+    const trafficMapWindow = window as any
+
+    if (tilesLoadedFlag) {
+      trafficMapWindow[tilesLoadedFlag] = false
+    }
 
     loadBaiduMapGL()
       .then((BMapGL: any) => {
@@ -109,6 +121,12 @@ export function TrafficView({ latitude, longitude, className, ...restProps }: Tr
 
           const point = new BMapGL.Point(Number(longitude), Number(latitude))
           const map = new BMapGL.Map(container)
+
+          if (tilesLoadedFlag) {
+            map.addEventListener('tilesloaded', () => {
+              trafficMapWindow[tilesLoadedFlag] = true
+            })
+          }
 
           map.centerAndZoom(point, 17)
           map.enableScrollWheelZoom(true)
@@ -138,7 +156,7 @@ export function TrafficView({ latitude, longitude, className, ...restProps }: Tr
         window.cancelAnimationFrame(animationFrame)
       }
     }
-  }, [coordinate, hasValidPosition, latitude, longitude])
+  }, [coordinate, hasValidPosition, latitude, longitude, tilesLoadedFlag])
 
   if (!hasValidPosition) {
     return (
