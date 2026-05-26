@@ -48,7 +48,10 @@ const withMDX = createMDX({
           properties: { className: ['heading-anchor'] },
         },
       ],
-      ['rehype-pretty-code', { theme: 'github-light', keepBackground: false }],
+      [
+        'rehype-pretty-code',
+        { theme: 'github-light', keepBackground: false, defaultLang: { block: 'plaintext' } },
+      ],
     ],
   },
 })
