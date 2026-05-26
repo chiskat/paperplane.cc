@@ -4,6 +4,8 @@ import type { PhrasingContent, Root } from 'mdast'
 import { NextResponse } from 'next/server'
 import { remark } from 'remark'
 
+export const dynamic = 'force-static'
+
 const pages = [
   { title: '首页/博客文章列表', url: 'https://paperplane.cc/', description: '博客文章列表' },
   {

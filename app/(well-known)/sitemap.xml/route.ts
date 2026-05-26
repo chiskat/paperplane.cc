@@ -2,6 +2,8 @@ import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-static'
+
 function escapeXml(value: string) {
   return value
     .replace(/&/g, '&amp;')
