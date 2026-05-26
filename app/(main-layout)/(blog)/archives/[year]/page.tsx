@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -15,6 +16,17 @@ export function generateStaticParams() {
   return getArchiveYears().map(year => ({
     year: String(year),
   }))
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<'/archives/[year]'>): Promise<Metadata> {
+  const { year: rawYear } = await params
+  const year = parseYearParam(rawYear)
+
+  return {
+    title: year === null ? '博文归档 - PaperPlane.cc' : `${year}年 - 博文归档 - PaperPlane.cc`,
+  }
 }
 
 export default async function ArchiveYearPage({ params }: PageProps<'/archives/[year]'>) {

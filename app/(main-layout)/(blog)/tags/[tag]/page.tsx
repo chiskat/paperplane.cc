@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { archivePosts } from '@/app/(main-layout)/(blog)/archives/archive-data'
@@ -15,6 +16,12 @@ export function generateStaticParams() {
   }
 
   return [...tags].sort((a, b) => a.localeCompare(b)).map(tag => ({ tag }))
+}
+
+export async function generateMetadata({ params }: PageProps<'/tags/[tag]'>): Promise<Metadata> {
+  const { tag } = await params
+
+  return { title: `${tag} - 博文标签 - PaperPlane.cc` }
 }
 
 export default async function TagPage({ params }: PageProps<'/tags/[tag]'>) {

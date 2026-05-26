@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -20,6 +21,21 @@ export function generateStaticParams() {
       month: formatMonthParam(item.month),
     }))
   )
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<'/archives/[year]/[month]'>): Promise<Metadata> {
+  const { year: rawYear, month: rawMonth } = await params
+  const year = parseYearParam(rawYear)
+  const month = parseMonthParam(rawMonth)
+
+  return {
+    title:
+      year === null || month === null
+        ? '博文归档 - PaperPlane.cc'
+        : `${year}年${month}月 - 博文归档 - PaperPlane.cc`,
+  }
 }
 
 export default async function ArchiveMonthPage({ params }: PageProps<'/archives/[year]/[month]'>) {

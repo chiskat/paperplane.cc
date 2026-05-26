@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { archivePosts } from '@/app/(main-layout)/(blog)/archives/archive-data'
@@ -15,6 +16,14 @@ export function generateStaticParams() {
   }
 
   return [...categories].sort((a, b) => a.localeCompare(b)).map(category => ({ category }))
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<'/categories/[category]'>): Promise<Metadata> {
+  const { category } = await params
+
+  return { title: `${category} - 博文分类 - PaperPlane.cc` }
 }
 
 export default async function CategoryPage({ params }: PageProps<'/categories/[category]'>) {

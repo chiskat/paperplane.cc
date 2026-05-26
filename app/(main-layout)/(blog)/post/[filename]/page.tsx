@@ -1,5 +1,6 @@
 import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -12,17 +13,30 @@ import { extractTocFromMdx, Toc } from './Toc'
 
 export const dynamicParams = false
 
+function getArticle(filename: string) {
+  return allArticles.find(item => item._meta.path === filename)
+}
+
 export function generateStaticParams() {
   return allArticles.map(item => ({
     filename: item._meta.path,
   }))
 }
 
+export async function generateMetadata({
+  params,
+}: PageProps<'/post/[filename]'>): Promise<Metadata> {
+  const { filename } = await params
+  const article = getArticle(filename)
+
+  return { title: article ? `${article.title} - 博客 - PaperPlane.cc` : '博客 - PaperPlane.cc' }
+}
+
 const mdxComponent = baseMDX()
 
 export default async function ArticlePage({ params }: PageProps<'/post/[filename]'>) {
   const { filename } = await params
-  const article = allArticles.find(item => item._meta.path === filename)
+  const article = getArticle(filename)
   if (!article) {
     notFound()
   }

@@ -45,6 +45,7 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 
 - 优先使用 `@tabler/icons-react` 图标库
 - 处理 `className` 拼接请使用 @/utils/style 里的 `cn` 函数，不要手写代码拼接
+- 页面需要有 title，前面可以有一个或多个标题，末尾是 `PaperPlane.cc`，中间使用 `-` 连接
 - 组件代码中，请先导出组件参数 `interface`，然后再导出组件 `function`
 - 组件代码中，组件参数的类型名称必须是组件名后加 `Props`
 - 组件接受的 `string` 格式的参数，都要考虑是否可以换成 `ReactNode`
