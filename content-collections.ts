@@ -80,15 +80,6 @@ const kms = defineCollection({
   }),
 })
 
-const llms = defineCollection({
-  name: 'llms',
-  directory: 'app/(misc)/llms.txt',
-  include: 'llms.md',
-  schema: z.object({
-    content: z.string(),
-  }),
-})
-
 export default defineConfig({
-  content: [articles, open, demos, registry, snippet, kms, llms],
+  content: [articles, open, demos, registry, snippet, kms],
 })

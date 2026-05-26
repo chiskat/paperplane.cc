@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: '/post/:filename.md', destination: '/post/:filename/md' }],
+    }
+  },
 }
 
 const withMDX = createMDX({
