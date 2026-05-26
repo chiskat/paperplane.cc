@@ -11,7 +11,7 @@ import '../styles/theme.css'
 import '../styles/app.css'
 
 export const metadata: Metadata = {
-  title: 'PaperPlane.cc',
+  title: '纸飞机的信笺 PaperPlane.cc',
   description: 'PaperPlane.cc by chiskat',
 }
 
