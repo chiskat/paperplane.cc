@@ -1,4 +1,5 @@
 import { IconId, IconInfoCircle, IconMail } from '@tabler/icons-react'
+import type { Metadata } from 'next'
 
 import MoonFavicon from '@/assets/nav-icons/favicon-moon.png'
 import PaperPlaneFavicon from '@/assets/nav-icons/favicon-paperplane.png'
@@ -17,6 +18,8 @@ import {
   ShieldsioIcon,
 } from '@/components/icon/tech-icons'
 import Website, { type WebsiteProps } from './Website'
+
+export const metadata: Metadata = { title: '关于 - PaperPlane.cc' }
 
 const MainSiteIcon = createTechIcon(PaperPlaneFavicon, '')
 const TimelineIcon = createTechIcon(MoonFavicon, '')

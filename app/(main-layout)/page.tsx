@@ -1,9 +1,14 @@
 import { readdir } from 'fs/promises'
 import path from 'path'
 import dayjs from 'dayjs'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { ArticleTitleLink } from './ArticleTitleLink'
+
+export const metadata: Metadata = {
+  title: '首页 - PaperPlane.cc',
+}
 
 interface PostFrontmatter {
   title: string
