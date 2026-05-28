@@ -54,6 +54,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
     "dotenv-cli": "^11.0.0",
+    "feed": "^5.2.1",
     "github-slugger": "^2.0.0",
     "ioredis": "^5.10.1",
     "lodash-es": "^4.17.23",
