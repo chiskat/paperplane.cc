@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { getAtomXml } from '../feed.xml/_feed'
+import { getAtomXml } from '../feed.xml/feed'
 
 export const dynamic = 'force-static'
 

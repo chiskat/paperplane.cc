@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { getFeedXml } from './_feed'
+import { getFeedXml } from './feed'
 
 export const dynamic = 'force-static'
 
