@@ -32,6 +32,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <meta name="force-rendering" content="webkit" />
         <meta name="theme-color" content="#FFFFFF" />
         <meta name="msapplication-TileColor" content="#FFFFFF" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="纸飞机的信笺 PaperPlane.cc"
+          href="/rss.xml"
+        />
       </head>
 
       <body style={{ marginRight: '0 !important' }}>
