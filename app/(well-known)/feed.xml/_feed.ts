@@ -2,6 +2,7 @@ import { allArticles } from 'content-collections'
 import { Feed } from 'feed'
 
 export const siteUrl = process.env.NEXT_PUBLIC_BASE_URL!
+export const canonicalSiteUrl = new URL('/', siteUrl).toString()
 export const feedAuthor = { name: 'chiskat', email: '1@paperplane.cc', link: siteUrl }
 
 export function getPostUrl(slug: string) {
@@ -15,6 +16,7 @@ export function getPostUrl(slug: string) {
 
 export function getFeedDescription(content: string) {
   return content
+    .replace(/<br\s*\/?>/gi, ' ')
     .replace(/:::[\s\S]*?:::/g, '')
     .replace(/```[\s\S]*?```/g, '')
     .replace(/!\[[^\]]*]\([^)]+\)/g, '')
@@ -37,7 +39,7 @@ export function createBlogFeed() {
   const latestArticleDate = sortedArticles[0]?.date
 
   const feed = new Feed({
-    id: siteUrl,
+    id: canonicalSiteUrl,
     title: '纸飞机的信笺 PaperPlane.cc',
     description: 'PaperPlane.cc by chiskat',
     link: siteUrl,
@@ -61,7 +63,7 @@ export function createBlogFeed() {
       published: date,
       description: getFeedDescription(article.content),
       author: [feedAuthor],
-      category: [...article.categories, ...article.tags].map(name => ({ name })),
+      category: [...article.categories, ...article.tags].map(name => ({ name, term: name })),
     })
   }
 
