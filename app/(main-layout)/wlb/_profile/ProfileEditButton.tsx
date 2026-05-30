@@ -5,7 +5,6 @@ import { useForm } from '@tanstack/react-form'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import chinaDivisionPc from 'china-division/dist/pc.json'
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { MapPinIcon } from 'lucide-react'
 import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from 'react'
 import type { z } from 'zod'
@@ -36,8 +35,6 @@ import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { wlbOffworkTimeZod, wlbProfileZod } from '@/lib/zods/wlb'
 import { SalaryDayType, WLBWeekendOffworkType } from '@/models/enums'
 import { WLBProfilePositionButton } from './ProfilePositionButton'
-
-dayjs.extend(customParseFormat)
 
 export type WLBProfileFormValue = z.input<typeof wlbProfileZod>
 

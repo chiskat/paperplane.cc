@@ -31,6 +31,7 @@ export const userContent = router({
       const key = generateShortKey(10)
       const ext = path.extname(filename).slice(1)
       const filePath = `${pathMap[usage]}/${key}.${ext}`
+      const expiredAt = dayjs().add(expiresInSeconds, 'seconds').toDate()
 
       const { preSignUrl: uploadURL } = await publicUploadPreSign(filePath, {
         expiresIn: expiresInSeconds,
@@ -42,7 +43,7 @@ export const userContent = router({
           uploadURL,
           ready: false,
           usage,
-          expiredAt: dayjs().add(expiresInSeconds, 'seconds').toDate(),
+          expiredAt,
           userId: session?.user.id || null,
         },
       })

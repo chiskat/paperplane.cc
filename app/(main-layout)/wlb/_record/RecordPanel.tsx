@@ -3,7 +3,7 @@
 import { IconPlus } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -28,8 +28,10 @@ export function WLBRecordPanel({ profileId }: { profileId: string }) {
   const trpc = useTRPC()
   const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
-  const today = dayjs().format('YYYY-MM-DD')
-  const todayLabel = dayjs(today).format('M月D日')
+
+  const today = useMemo(() => dayjs().format('YYYY-MM-DD'), [])
+  const todayLabel = useMemo(() => dayjs(today).format('M月D日'), [today])
+
   const [selectedDate, setSelectedDate] = useState(today)
   const isSelectedToday = selectedDate === today
   const { data: records = [], isPending } = useQuery({

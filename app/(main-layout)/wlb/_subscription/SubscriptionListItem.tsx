@@ -10,6 +10,7 @@ import {
 } from '@tabler/icons-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import { useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
@@ -37,8 +38,10 @@ export function WLBSubscriptionListItem({
   const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
   const { id, name, enable, type, timeOffset } = subscription
-  const today = dayjs().format('YYYY-MM-DD')
+
+  const today = useMemo(() => dayjs().format('YYYY-MM-DD'), [])
   const TypeIcon = type === WLBSubscriptionType.EMAIL ? IconMail : IconRobotFace
+
   const sendDisabledTitle = !enable
     ? '订阅已停用，暂不可推送'
     : !todayRecordReady

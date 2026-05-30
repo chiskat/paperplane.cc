@@ -4,7 +4,6 @@ import { createListCollection } from '@ark-ui/react/select'
 import { useForm } from '@tanstack/react-form'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from 'react'
 import type { z } from 'zod'
 
@@ -35,8 +34,6 @@ import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { wlbSubscriptionZod } from '@/lib/zods/wlb'
 import type { WLBProfile } from '@/models/browser'
 import { WLBSubscriptionMessage, WLBSubscriptionType } from '@/models/enums'
-
-dayjs.extend(customParseFormat)
 
 export type WLBSubscriptionFormValue = z.input<typeof wlbSubscriptionZod>
 
@@ -133,7 +130,10 @@ interface TriggerTimeInputFieldProps extends Omit<
 function TriggerTimeInputField(props: TriggerTimeInputFieldProps) {
   const { field, profile, label, required = false, description, ...inputProps } = props
   const errorMessage = formatFieldErrors(field.state.meta.errors)
-  const offworkTime = dayjs().startOf('day').add(profile.offworkTime, 'millisecond')
+  const offworkTime = useMemo(
+    () => dayjs().startOf('day').add(profile.offworkTime, 'millisecond'),
+    [profile.offworkTime]
+  )
   const value = offworkTime.add(field.state.value, 'millisecond').format(TIME_FORMAT)
 
   return (

@@ -57,7 +57,7 @@ export function WLBNotificationRecord({ recordId }: { recordId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 pb-4">
       {records.map(record => (
         <NotificationRecordListItem key={record.id} record={record} />
       ))}

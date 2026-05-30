@@ -29,6 +29,7 @@ export async function wlbRecord(wlbProfile: WLBProfile) {
     weekendOption,
     salaryDayOption,
   } = wlbProfile
+
   const now = dayjs()
 
   const workday = await fetchWorkdayInfo()

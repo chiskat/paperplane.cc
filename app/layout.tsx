@@ -5,8 +5,7 @@ import { cn } from '@/utils/style'
 import ClientProvider from './ClientProvider'
 import { fontFZYanSong, fontIosevka, fontLXGWWenKai, fontSwift } from './fonts'
 
-import '@/utils/init-dayjs'
-import '@/utils/init-zod'
+import '@/utils/init-lib'
 import '../styles/theme.css'
 import '../styles/app.css'
 

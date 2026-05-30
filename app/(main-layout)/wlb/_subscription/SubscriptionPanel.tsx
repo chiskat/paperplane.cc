@@ -3,6 +3,7 @@
 import { IconPlus, IconSend2 } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import { useMemo } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -17,7 +18,8 @@ export function WLBSubscriptionPanel({ profileId }: { profileId: string }) {
   const trpc = useTRPC()
   const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
-  const today = dayjs().format('YYYY-MM-DD')
+
+  const today = useMemo(() => dayjs().format('YYYY-MM-DD'), [])
 
   const { data: profile, isPending: profilePending } = useQuery({
     ...trpc.wlb.profile.get.queryOptions({ id: profileId }),

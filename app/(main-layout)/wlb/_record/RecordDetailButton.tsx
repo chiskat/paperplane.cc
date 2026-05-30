@@ -188,7 +188,7 @@ function ScrollableTabsContent({
   return (
     <TabsContent className={cn('min-h-0 overflow-hidden', className)} {...props}>
       <ScrollArea className="min-h-0 pr-1" scrollFade>
-        <div className="pb-4">{children}</div>
+        {children}
       </ScrollArea>
     </TabsContent>
   )

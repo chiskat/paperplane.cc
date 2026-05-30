@@ -1,8 +1,5 @@
 import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-
-dayjs.extend(customParseFormat)
 
 export interface ArchivePostItem {
   slug: string

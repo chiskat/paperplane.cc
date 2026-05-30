@@ -1,11 +1,8 @@
 import dayjs from 'dayjs'
-import dayOfYear from 'dayjs/plugin/dayOfYear'
 
 import { WLBDailyRecord, WLBProfile } from '@/models/browser'
 import backgroundImages from './BackgroundImage'
 import WeatherIcon from './WeatherIcon'
-
-dayjs.extend(dayOfYear)
 
 export interface RecordViewProps {
   record: WLBDailyRecord
