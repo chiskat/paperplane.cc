@@ -4,4 +4,19 @@ type: pypi
 repo: registry
 ---
 
-敬请期待。
+PyPI 源仓库： `https://pypi.p01.cc`
+浏览器访问 https://pypi.p01.cc/simple/ 能通过登录认证，即表明能成功访问。
+
+使用方式：
+
+临时使用：
+
+```bash
+pip install 包名 --index-url https://用户名:密码@pypi.p01.cc/simple/
+```
+
+长期配置：
+
+```bash
+pip config set global.index-url https://用户名:密码@pypi.p01.cc/simple/
+```
