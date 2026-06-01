@@ -37,7 +37,7 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 - 对象写法尽量写到一行内，不要把每个字段都单开一行
 - Prettier 配置了每行最大字符数限制、`import` 排序规则、TailwindCSS 类名排序规则
 - ESLint 配置了 Next.js 和 React 相关最佳实践规则，ESLint 还会要求源码必须符合 Prettier 的输出
-- 可通过 `pnpm ckeck-types` 检查 TS 错误、`pnpm lint` 检查 ESLint 错误，`pnpm format` 检查 Prettier 错误
+- 可通过 `pnpm check-types` 检查 TS 错误、`pnpm lint` 检查 ESLint 错误，`pnpm format` 检查 Prettier 错误
 - 日期处理相关，请优先使用 `dayjs` 而不是自行实现复杂的计算逻辑
 - 数据实体模型尽可能使用现有的，优先使用 Prisma 中的，或是通过 Zod 的 `z.infer<typeof 实体对象>` 来提取类型
 - 新增模块后，请在 @app/sitemap.ts 将新模块信息加入 `sitePages` 数组，站点地图和 llms.txt 都依据它来更新
