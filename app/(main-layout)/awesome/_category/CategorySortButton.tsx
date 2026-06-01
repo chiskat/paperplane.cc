@@ -37,7 +37,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import { AwesomeCatelogNode } from '@/apis/awesome/catelogs'
+import type { AwesomeCatelogNode } from '@/apis/awesome/catelogs'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import {

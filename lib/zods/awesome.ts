@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { compatFormData } from './common'
+export const awesomeTagIconUploadPathPrefix = '/usercontent/awesome/tag/icon'
 
 export const awesomeItemZod = z.object({
   id: z.string().optional(),
@@ -25,19 +25,18 @@ export const awesomeCatelogZod = z.object({
   parentId: z.string().nullish(),
 })
 
-export const awesomeTagZod = compatFormData(
-  z.object({
-    id: z.string().optional(),
+export const awesomeTagZod = z.object({
+  id: z.string().optional(),
 
-    label: z.string('标签名称是必须的').min(2, '标签名称至少需要 2 个字符'),
-    desc: z.string().nullish().default(''),
-    color: z
-      .union([z.string().regex(/^(#[0-9A-F]{6})$/i, '颜色格式不正确'), z.literal(''), z.null()])
-      .optional()
-      .transform(value => (value === '' ? null : value))
-      .default(null),
-    icon: z.string().nullish(),
-
-    iconFile: z.instanceof(File).nullish(),
-  })
-)
+  label: z.string('标签名称是必须的').min(2, '标签名称至少需要 2 个字符'),
+  desc: z.string().nullish().default(''),
+  color: z
+    .union([z.string().regex(/^(#[0-9A-F]{6})$/i, '颜色格式不正确'), z.literal(''), z.null()])
+    .optional()
+    .transform(value => (value === '' ? null : value))
+    .default(null),
+  icon: z
+    .url()
+    .startsWith(`https://${process.env.NEXT_PUBLIC_S3_CNAME}${awesomeTagIconUploadPathPrefix}`)
+    .nullish(),
+})

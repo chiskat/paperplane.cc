@@ -4,19 +4,14 @@ import dayjs from 'dayjs'
 import { prisma } from '@/lib/prisma'
 import { publicFileExists, publicUploadPreSign } from '@/lib/s3'
 import { publicProcedure, router } from '@/lib/trpc'
-import { OARobotMessageUploadPathPrefix } from '@/lib/zods/oa-robot'
 import {
   checkResultZod,
   checkZod,
   presignResultZod,
   presignZod,
-  UserContentPresetType,
+  userContentUploadPathMap,
 } from '@/lib/zods/user-content'
 import { generateShortKey } from '../short/helper/generate-short-key'
-
-const pathMap: Record<UserContentPresetType, string> = {
-  [UserContentPresetType.OA_ROBOT_MESSAGE]: OARobotMessageUploadPathPrefix,
-}
 
 export const userContent = router({
   presign: publicProcedure
@@ -30,7 +25,7 @@ export const userContent = router({
       const expiresInSeconds = 600
       const key = generateShortKey(10)
       const ext = path.extname(filename).slice(1)
-      const filePath = `${pathMap[usage]}/${key}.${ext}`
+      const filePath = `${userContentUploadPathMap[usage]}/${key}.${ext}`
       const expiredAt = dayjs().add(expiresInSeconds, 'seconds').toDate()
 
       const { preSignUrl: uploadURL } = await publicUploadPreSign(filePath, {

@@ -1,7 +1,9 @@
 'use client'
 
+import { IconTrash } from '@tabler/icons-react'
 import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
+import { retry } from 'omn'
 import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from 'react'
 import type { input } from 'zod'
 
@@ -18,11 +20,12 @@ import {
   DialogHeader,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { FileUpload, FileUploadTrigger } from '@/components/ui/file-upload'
 import { toast } from '@/components/ui/toast'
-import { useTRPC } from '@/lib/trpc-client'
+import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { awesomeTagZod } from '@/lib/zods/awesome'
+import { UserContentPresetType } from '@/lib/zods/user-content'
 
 const swatches = [
   '#ef4444',
@@ -37,6 +40,8 @@ const swatches = [
 ]
 
 export type TagFormValue = input<typeof awesomeTagZod>
+
+type UploadState = 'idle' | 'uploading' | 'checking' | 'error'
 
 export interface TagEditButtonProps extends Omit<ComponentProps<typeof Button>, 'onSubmit'> {
   children: ReactNode
@@ -54,6 +59,7 @@ export function TagEditButton({
 }: TagEditButtonProps) {
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
+  const [iconUploading, setIconUploading] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const trpc = useTRPC()
@@ -77,8 +83,7 @@ export function TagEditButton({
       label: source?.label ?? '',
       desc: source?.desc ?? '',
       color: source?.color ?? null,
-      icon: source?.icon ?? undefined,
-      iconFile: undefined,
+      icon: source?.icon ?? null,
     }
   }, [currentTag, isEditMode, tagId])
 
@@ -216,67 +221,14 @@ export function TagEditButton({
               )}
             </form.Field>
 
-            <form.Field name="iconFile">
+            <form.Field name="icon">
               {field => (
-                <Field>
-                  <FieldLabel>图标</FieldLabel>
-
-                  <div className="flex items-center gap-3">
-                    <form.Subscribe
-                      selector={s => ({
-                        icon: s.values.icon,
-                        iconFile: s.values.iconFile,
-                      })}
-                    >
-                      {({ icon, iconFile }) => {
-                        const preview =
-                          iconFile instanceof File ? URL.createObjectURL(iconFile) : (icon ?? null)
-                        return preview ? (
-                          <img
-                            src={preview}
-                            alt="标签图标预览"
-                            className="h-7 w-7 shrink-0 object-cover"
-                          />
-                        ) : null
-                      }}
-                    </form.Subscribe>
-
-                    <FileUpload
-                      className="flex-1 gap-1"
-                      accept="image/*"
-                      maxFiles={1}
-                      disabled={isEditMode && tagListLoading}
-                      acceptedFiles={field.state.value instanceof File ? [field.state.value] : []}
-                      onFileChange={({ acceptedFiles }) => {
-                        const file = acceptedFiles[0] ?? null
-                        field.handleChange(() => file)
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <FileUploadTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={isEditMode && tagListLoading}
-                          >
-                            选择图片
-                          </Button>
-                        </FileUploadTrigger>
-
-                        <form.Subscribe selector={s => s.values.iconFile?.name}>
-                          {iconFileName => (
-                            <span className="text-muted-foreground truncate text-xs">
-                              {iconFileName ?? '未选择文件'}
-                            </span>
-                          )}
-                        </form.Subscribe>
-                      </div>
-                    </FileUpload>
-                  </div>
-
-                  <FieldDescription>可选，上传标签图标</FieldDescription>
-                </Field>
+                <TagIconUploadField
+                  value={field.state.value ?? null}
+                  disabled={isEditMode && tagListLoading}
+                  onUploadingChange={setIconUploading}
+                  onChange={value => field.handleChange(() => value)}
+                />
               )}
             </form.Field>
 
@@ -304,21 +256,177 @@ export function TagEditButton({
           <Button
             type="button"
             size="lg"
-            disabled={pending}
+            disabled={pending || iconUploading}
+            isLoading={pending}
             onClick={() => {
               form.handleSubmit()
             }}
           >
-            {pending
-              ? isEditMode
-                ? '保存中...'
-                : '创建中...'
-              : isEditMode
-                ? '保存标签'
-                : '创建标签'}
+            {iconUploading
+              ? '图标上传中...'
+              : pending
+                ? isEditMode
+                  ? '保存中...'
+                  : '创建中...'
+                : isEditMode
+                  ? '保存标签'
+                  : '创建标签'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export interface TagIconUploadFieldProps {
+  value: string | null
+  disabled?: boolean
+  onUploadingChange?: (uploading: boolean) => void
+  onChange: (value: string | null) => void
+}
+
+function TagIconUploadField({
+  value,
+  disabled,
+  onUploadingChange,
+  onChange,
+}: TagIconUploadFieldProps) {
+  const trpc = useTRPCClient()
+  const [uploadState, setUploadState] = useState<UploadState>('idle')
+  const [selectedFile, setSelectedFile] = useState<File>()
+  const [selectedFilePreview, setSelectedFilePreview] = useState<string>()
+  const [uploadError, setUploadError] = useState<string>()
+
+  const isUploading = uploadState === 'uploading' || uploadState === 'checking'
+  const isDisabled = disabled || isUploading
+  const previewSrc = value ?? selectedFilePreview
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setSelectedFilePreview(undefined)
+      return
+    }
+
+    const objectURL = URL.createObjectURL(selectedFile)
+    setSelectedFilePreview(objectURL)
+
+    return () => {
+      URL.revokeObjectURL(objectURL)
+    }
+  }, [selectedFile])
+
+  const handleFileChange = async (file: File | undefined) => {
+    if (!file) {
+      return
+    }
+
+    setSelectedFile(file)
+    setUploadState('uploading')
+    setUploadError(undefined)
+    onUploadingChange?.(true)
+
+    try {
+      const { id, uploadURL } = await trpc.userContent.presign.mutate({
+        filename: file.name,
+        usage: UserContentPresetType.AWESOME_TAG_ICON,
+      })
+
+      const uploadResponse = await fetch(uploadURL, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      })
+
+      if (!uploadResponse.ok) {
+        throw new Error('上传失败')
+      }
+
+      setUploadState('checking')
+
+      const result = await retry(() => trpc.userContent.check.mutate({ id }), {
+        interval: 1000,
+        maxRounds: 3,
+        success: result => result.ready === true,
+      })
+
+      if (result.success && result.data?.ready) {
+        onChange(result.data.publicURL)
+        setUploadState('idle')
+        toast.success({ title: '图标上传成功' })
+        return
+      }
+
+      throw new Error('文件处理超时')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '上传失败'
+      setUploadState('error')
+      setUploadError(message)
+      setSelectedFile(undefined)
+      toast.error({ title: message })
+    } finally {
+      onUploadingChange?.(false)
+    }
+  }
+
+  const handleRemove = () => {
+    setSelectedFile(undefined)
+    setUploadError(undefined)
+    setUploadState('idle')
+    onChange(null)
+  }
+
+  return (
+    <Field invalid={uploadState === 'error'}>
+      <FieldLabel>图标</FieldLabel>
+
+      <div className="flex items-center gap-3">
+        {previewSrc ? (
+          <img
+            src={previewSrc}
+            alt="标签图标预览"
+            className="size-8 shrink-0 rounded-sm object-cover"
+          />
+        ) : null}
+
+        <FileUpload
+          className="min-w-0 flex-1 gap-1"
+          accept="image/*"
+          maxFiles={1}
+          disabled={isDisabled}
+          acceptedFiles={selectedFile ? [selectedFile] : []}
+          onFileChange={({ acceptedFiles }) => handleFileChange(acceptedFiles[0])}
+        >
+          <div className="flex items-center gap-2">
+            <FileUploadTrigger asChild>
+              <Button type="button" variant="secondary" size="sm" disabled={isDisabled}>
+                {value ? '重新选择' : '选择图片'}
+              </Button>
+            </FileUploadTrigger>
+
+            <span className="text-muted-foreground truncate text-xs">
+              {isUploading
+                ? uploadState === 'uploading'
+                  ? '上传中...'
+                  : '处理中...'
+                : selectedFile?.name || (value ? '已上传图标' : '未选择文件')}
+            </span>
+          </div>
+        </FileUpload>
+
+        {value ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            disabled={isDisabled}
+            aria-label="删除图标"
+            onClick={handleRemove}
+          >
+            <IconTrash size={16} aria-hidden />
+          </Button>
+        ) : null}
+      </div>
+      {uploadError ? <FieldError>{uploadError}</FieldError> : null}
+    </Field>
   )
 }

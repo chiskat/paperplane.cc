@@ -1,7 +1,7 @@
 import { IconCode } from '@tabler/icons-react'
 import Link from 'next/link'
 
-import { AwesomeItemResult } from '@/apis/awesome/items'
+import type { AwesomeItemResult } from '@/apis/awesome/items'
 import githubIcon from '@/assets/tech-icons/github.svg'
 import { fromURL, PackageIcon } from '@/components/icon/package-icon'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'

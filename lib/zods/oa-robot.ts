@@ -10,8 +10,6 @@ export enum OARobotMessageType {
 
 export const OARobotMessageUploadPathPrefix = '/usercontent/oarobot'
 
-export const OARobotMessageUploadURLPrefix = `https://${process.env.NEXT_PUBLIC_S3_CNAME}${OARobotMessageUploadPathPrefix}`
-
 export const OARobotProfileZod = z.object({
   id: z.string().optional(),
 
@@ -44,7 +42,9 @@ export const OARobotMessageMarkdownZod = z.object({
 export const OARobotMessageImageZod = z.object({
   message: z.literal(OARobotMessageType.IMAGE),
 
-  imageURL: z.url().startsWith(OARobotMessageUploadURLPrefix),
+  imageURL: z
+    .url()
+    .startsWith(`https://${process.env.NEXT_PUBLIC_S3_CNAME}${OARobotMessageUploadPathPrefix}`),
   title: z.string().optional(),
 })
 
@@ -53,7 +53,10 @@ export const OARobotMessgeOpenAPIZod = z.object({
   text: z.string().optional(),
   markdown: z.string().optional(),
   title: z.string().optional(),
-  imageURL: z.string().startsWith(OARobotMessageUploadURLPrefix).optional(),
+  imageURL: z
+    .string()
+    .startsWith(`https://${process.env.NEXT_PUBLIC_S3_CNAME}${OARobotMessageUploadPathPrefix}`)
+    .optional(),
   atAll: z.boolean().optional(),
   atList: z.array(z.string()).optional(),
 })

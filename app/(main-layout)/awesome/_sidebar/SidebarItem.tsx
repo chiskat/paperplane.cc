@@ -3,7 +3,7 @@
 import { IconPointFilled, IconSquareRotatedFilled } from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'motion/react'
 
-import { AwesomeCatelogNode } from '@/apis/awesome/catelogs'
+import type { AwesomeCatelogNode } from '@/apis/awesome/catelogs'
 import { cn } from '@/utils/style'
 
 const CHILDREN_TRANSITION = { duration: 0.2, ease: 'easeOut' } as const

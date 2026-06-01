@@ -4,7 +4,7 @@ import { IconCode, IconMichelinStar, IconPackage, IconPointFilled } from '@table
 import { motion } from 'motion/react'
 import Link from 'next/link'
 
-import { AwesomeItemResult } from '@/apis/awesome/items'
+import type { AwesomeItemResult } from '@/apis/awesome/items'
 import dockerIcon from '@/assets/tech-icons/docker.svg'
 import githubIcon from '@/assets/tech-icons/github.svg'
 import npmFlatIcon from '@/assets/tech-icons/npm-flat.svg'

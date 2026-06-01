@@ -1,7 +1,7 @@
 import { IconMichelinStar, IconPointFilled } from '@tabler/icons-react'
 import Link from 'next/link'
 
-import { AwesomeItemResult } from '@/apis/awesome/items'
+import type { AwesomeItemResult } from '@/apis/awesome/items'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
 import { ListItemLinks } from './ListItemLinks'

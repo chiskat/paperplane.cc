@@ -1,40 +1,21 @@
 import 'server-only'
 
-import { createId } from '@paralleldrive/cuid2'
-
 import { prisma } from '@/lib/prisma'
-import { publicUpload } from '@/lib/s3'
 import { loginProcedure, publicProcedure, router } from '@/lib/trpc'
 import { awesomeTagZod } from '@/lib/zods/awesome'
 import { deleteZod, resortZod } from '@/lib/zods/common'
 import { Prisma } from '@/models/client'
 
-async function uploadTagIcon(file: File): Promise<string> {
-  return publicUpload(`/awesome/tags/icon/${createId()}`, Buffer.from(await file.arrayBuffer()), {
-    mime: file.type,
-  }).then(res => res.fileUrl)
-}
-
 export const tags = router({
   list: publicProcedure.query(() => prisma.awesomeTag.findMany({ orderBy: { index: 'asc' } })),
 
   add: loginProcedure.input(awesomeTagZod).mutation(async ({ input }) => {
-    if (input.iconFile) {
-      input.icon = await uploadTagIcon(input.iconFile as File)
-      delete input.iconFile
-    }
-
     return prisma.awesomeTag.create({
       data: { ...input, index: await prisma.awesomeTag.count() },
     })
   }),
 
   update: loginProcedure.input(awesomeTagZod).mutation(async ({ input }) => {
-    if (input.iconFile) {
-      input.icon = await uploadTagIcon(input.iconFile as File)
-      delete input.iconFile
-    }
-
     return prisma.awesomeTag.update({ where: { id: input.id }, data: input })
   }),
 

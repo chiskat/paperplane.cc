@@ -1,4 +1,4 @@
-import { AwesomeItemResult } from '@/apis/awesome/items'
+import type { AwesomeItemResult } from '@/apis/awesome/items'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from './ListItem'
 
