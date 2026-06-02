@@ -1,0 +1,27 @@
+---
+title: 初始化
+---
+
+可在 [官网文档](https://typicode.github.io/husky/) 了解 `husky` 的用法。
+
+初始化：
+
+```bash
+npx husky init
+```
+
+配置 `package.json`，添加一项脚本：
+
+```json
+{
+  "scripts": {
+    "prepare": "husky"
+  }
+}
+```
+
+建议安装最新版 v9，而不是 v4。v9 不支持以前的 JSON 配置。
+
+---
+
+如果想要暂时停用 `husky`，例如在 CI/CD 中，可设置环境变量 `HUSKY: 0`

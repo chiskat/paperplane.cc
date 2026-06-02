@@ -1,0 +1,21 @@
+---
+title: .czrc
+---
+
+`commitizen` 的配置是 JSON 格式，可以把配置放在 `/.czrc` 或是 `package.json` 中的 `config.commitizen` 字段中。
+
+使用推荐的适配器，配置文件 `.czrc` 内容如下（记得安装它）：
+
+```json
+{
+  "path": "cz-conventional-changelog"
+}
+```
+
+如果使用 `commitlint` 的适配器，配置改为（记得安装它）：
+
+```json
+{
+  "path": "@commitlint/cz-commitlint"
+}
+```

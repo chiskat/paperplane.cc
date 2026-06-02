@@ -1,0 +1,21 @@
+---
+title: 初始化
+---
+
+可在 [官网文档](https://commitlint.js.org/) 了解 `CommitLint` 的用法。
+
+安装：
+
+```bash
+npm add -D @commitlint/cli @commitlint/config-conventional
+```
+
+和 Commitizen 配合使用，还需要安装：
+
+```bash
+npm add -D @commitlint/cz-commitlint
+```
+
+配置 `husky`：
+可以配置 `commit-msg` hook，在提交消息时进行检查；
+在 [Husky / CommitLint](/snippet/husky/commitlint) 章节查看如何配置。

@@ -1,0 +1,17 @@
+---
+title: .commitlintrc
+---
+
+使用通常配置，配置文件 `.commitlintrc` 内容如下：
+
+```json
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {},
+}
+```
+
+---
+
+`commitlint` 的配置是 JSON 格式，可以把配置放在 `/.commitlintrc`、`/.commitlintrc.json` 文件中，或者放置于 `package.json` 中的 `commitlint` 字段中；
+如果使用方式比较复杂，还可以使用 `/.commitlintrc.js` 通过代码来定制它的行为。

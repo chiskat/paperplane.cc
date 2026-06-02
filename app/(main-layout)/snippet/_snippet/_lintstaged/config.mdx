@@ -1,0 +1,19 @@
+---
+title: .lintstagedrc
+---
+
+Web 项目常用 `.lintstagedrc` 配置：
+
+```json
+{
+  "*.{ts,tsx}": ["eslint", "prettier --list-different"],
+  "*.{css,md,mdx}": ["prettier --list-different"]
+}
+```
+
+以上配置在每次提交前，对代码进行 ESLint 和 Prettier 检查；而对 CSS 和 Markdown 文件只进行 Prettier 检查，因为 ESLint 不能用于这些文件。
+
+---
+
+`lint-staged` 的配置是 JSON 格式，可以把配置放在 `/.lintstagedrc` 或是 `package.json` 中的 `lint-staged` 字段中；
+如果使用方式比较复杂，还可以使用 `/lint-staged.config.mjs` 通过代码来定制它的行为。

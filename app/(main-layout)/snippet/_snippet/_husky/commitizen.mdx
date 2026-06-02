@@ -1,0 +1,11 @@
+---
+title: Commitizen
+---
+
+创建 `/.husky/prepare-commit-msg` 文件：
+
+```bash
+exec < /dev/tty && npx --no-install cz --hook || true
+```
+
+执行 `git commit` 命令时，会进入 Commitizen 交互菜单。

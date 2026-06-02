@@ -83,6 +83,20 @@ export const list: SnippetListGroup[] = [
   },
 
   {
+    title: '代码质量',
+    children: [
+      {
+        dir: '_husky',
+        title: 'Husky',
+        children: ['init', 'commitizen', 'commitlint', 'lintstaged'],
+      },
+      { dir: '_commitizen', title: 'Commitizen', children: ['init', 'config'] },
+      { dir: '_commitlint', title: 'CommitLint', children: ['init', 'config'] },
+      { dir: '_lintstaged', title: 'LintStaged', children: ['init', 'config'] },
+    ],
+  },
+
+  {
     title: '传统',
     children: [
       { dir: '_webpack', title: 'Webpack', children: ['common', 'cdn', 'sass', 'less', 'antdv4'] },
