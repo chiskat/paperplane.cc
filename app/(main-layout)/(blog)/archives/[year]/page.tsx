@@ -72,20 +72,14 @@ export default async function ArchiveYearPage({ params }: PageProps<'/archives/[
           </div>
           <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
             {monthPosts.map(item => (
-              <li key={item.slug} className="relative rounded-sm px-2 py-1.5">
-                <span className="pointer-events-none absolute top-3 -left-5 h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-white bg-[#b7c0cc]" />
-                <div className="font-en-sans mb-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[#7a8797]">
-                  <span>
-                    {item.dateText}
-                    {item.categories.length > 0 ? ` · ${item.categories.join(' / ')}` : ''}
-                  </span>
-                </div>
-                <ArticleTitleLink
-                  href={`/post/${item.slug}`}
-                  title={item.title}
-                  className="font-title-serif hover:text-primary text-[24px] text-[#2f3a49] transition-colors"
-                />
-              </li>
+              <ArticleTitleLink
+                key={item.slug}
+                href={`/post/${item.slug}`}
+                title={item.title}
+                dateText={item.dateText}
+                categories={item.categories}
+                tags={item.tags}
+              />
             ))}
           </ul>
         </section>
