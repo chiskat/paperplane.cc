@@ -5,7 +5,10 @@ title: Commitizen
 创建 `/.husky/prepare-commit-msg` 文件：
 
 ```bash
-exec < /dev/tty && npx --no-install cz --hook || true
+[ -n "$2" ] && exit 0
+
+exec < /dev/tty && npx --no-install git-cz --hook || true
 ```
 
 执行 `git commit` 命令时，会进入 Commitizen 交互菜单。
+这里和官方的不太一样，多了一行，这是为了避免通过 `npm run cz` 这种方式提交时，再次触发 Husky Hook。
