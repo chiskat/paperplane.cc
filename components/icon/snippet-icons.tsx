@@ -2,6 +2,9 @@ import Image, { type StaticImageData } from 'next/image'
 import type { CSSProperties } from 'react'
 
 import BabelAsset from '@/assets/snippet-icons/babel.svg'
+import ClaudeAsset from '@/assets/snippet-icons/claude.svg'
+import CodexAsset from '@/assets/snippet-icons/codex.svg'
+import CommandAsset from '@/assets/snippet-icons/command.svg'
 import CraAsset from '@/assets/snippet-icons/cra.svg'
 import DefaultAsset from '@/assets/snippet-icons/default.svg'
 import DockerAsset from '@/assets/snippet-icons/docker.svg'
@@ -18,7 +21,6 @@ import PostcssAsset from '@/assets/snippet-icons/postcss.svg'
 import PrettierAsset from '@/assets/snippet-icons/prettier.svg'
 import RollupAsset from '@/assets/snippet-icons/rollup.svg'
 import TailwindcssAsset from '@/assets/snippet-icons/tailwindcss.svg'
-import TerminalAsset from '@/assets/snippet-icons/terminal.svg'
 import TypescriptAsset from '@/assets/snippet-icons/typescript.svg'
 import ViteAsset from '@/assets/snippet-icons/vite.svg'
 import VitestAsset from '@/assets/snippet-icons/vitest.svg'
@@ -46,6 +48,9 @@ function createSnippetIcon(src: StaticImageData, alt: string) {
 }
 
 export const BabelIcon = createSnippetIcon(BabelAsset, 'babel')
+export const ClaudeIcon = createSnippetIcon(ClaudeAsset, 'claude')
+export const CodexIcon = createSnippetIcon(CodexAsset, 'codex')
+export const CommandIcon = createSnippetIcon(CommandAsset, 'command')
 export const CraIcon = createSnippetIcon(CraAsset, 'cra')
 export const DefaultIcon = createSnippetIcon(DefaultAsset, 'default')
 export const DockerIcon = createSnippetIcon(DockerAsset, 'docker')
@@ -62,7 +67,6 @@ export const PostcssIcon = createSnippetIcon(PostcssAsset, 'postcss')
 export const PrettierIcon = createSnippetIcon(PrettierAsset, 'prettier')
 export const RollupIcon = createSnippetIcon(RollupAsset, 'rollup')
 export const TailwindcssIcon = createSnippetIcon(TailwindcssAsset, 'tailwindcss')
-export const TerminalIcon = createSnippetIcon(TerminalAsset, 'terminal')
 export const TypescriptIcon = createSnippetIcon(TypescriptAsset, 'typescript')
 export const ViteIcon = createSnippetIcon(ViteAsset, 'vite')
 export const VitestIcon = createSnippetIcon(VitestAsset, 'vitest')
@@ -71,6 +75,9 @@ export const WebpackIcon = createSnippetIcon(WebpackAsset, 'webpack')
 
 export const snippetIcons = {
   babel: BabelIcon,
+  claude: ClaudeIcon,
+  codex: CodexIcon,
+  command: CommandIcon,
   cra: CraIcon,
   default: DefaultIcon,
   docker: DockerIcon,
@@ -87,7 +94,6 @@ export const snippetIcons = {
   prettier: PrettierIcon,
   rollup: RollupIcon,
   tailwindcss: TailwindcssIcon,
-  terminal: TerminalIcon,
   typescript: TypescriptIcon,
   vite: ViteIcon,
   vitest: VitestIcon,
@@ -96,12 +102,6 @@ export const snippetIcons = {
 } as const
 
 export type SnippetIconName = keyof typeof snippetIcons
-
-const snippetIconAliasMap: Record<string, SnippetIconName> = {
-  command: 'terminal',
-  'next-js': 'nextjs',
-  'package-json': 'default',
-}
 
 function normalizeSnippetIconKey(key: string): string {
   return key.trim().toLowerCase().replace(/_/g, '-')
@@ -113,9 +113,7 @@ function isSnippetIconName(key: string): key is SnippetIconName {
 
 export function getSnippetIconByKey(key: string) {
   const normalizedKey = normalizeSnippetIconKey(key)
-  const matchedKey: SnippetIconName = isSnippetIconName(normalizedKey)
-    ? normalizedKey
-    : (snippetIconAliasMap[normalizedKey] ?? 'default')
+  const matchedKey: SnippetIconName = isSnippetIconName(normalizedKey) ? normalizedKey : 'default'
 
   return snippetIcons[matchedKey]
 }

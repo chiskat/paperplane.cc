@@ -34,9 +34,22 @@ export const list: SnippetListGroup[] = [
   },
 
   {
+    title: 'Agent',
+    children: [
+      { dir: '_claudecode', title: 'Claude Code', icon: 'claude', children: ['config'] },
+      { dir: '_codex', title: 'Codex', children: ['config', 'noupgrade'] },
+    ],
+  },
+
+  {
     title: '开发配置',
     children: [
-      { dir: '_next.js', title: 'Next.js', children: ['basic', 'cdn', 'image', 'markdown'] },
+      {
+        dir: '_next.js',
+        title: 'Next.js',
+        icon: 'nextjs',
+        children: ['basic', 'cdn', 'image', 'markdown'],
+      },
       { dir: '_vite', title: 'Vite', children: ['react', 'cdn', 'css', 'env'] },
       { dir: '_vitest', title: 'Vitest', children: ['basic', 'msw', 'server', 'browser'] },
       { dir: '_postcss', title: 'PostCSS', children: ['config'] },

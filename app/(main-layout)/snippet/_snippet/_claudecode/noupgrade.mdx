@@ -1,0 +1,17 @@
+---
+title: 禁用自动更新
+---
+
+考虑到 Anthropic 经常会更改请求结构，导致缓存失效，如果使用第三方 API，建议关闭自动更新。
+
+原来的 `DISABLE_AUTOUPDATER` 或 `claude config set -g autoUpdates disabled` 都是无效的，正确方式如下：
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": true
+  }
+}
+```
+
+这个配置项本意是最大限度减少非必要流量，包括更新、日志遥测等在内的流量。

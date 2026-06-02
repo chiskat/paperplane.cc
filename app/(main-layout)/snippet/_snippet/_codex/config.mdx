@@ -1,0 +1,34 @@
+---
+title: config.toml
+---
+
+可在 OpenAI Codex [官网文档](https://developers.openai.com/codex/config-basic) 查阅 `config.toml` 完整配置文档。
+
+以下给出一份推荐配置：
+
+```toml
+model = "gpt-5.4"        # 主模型，按需调整
+review_model = "gpt-5.4" # 审查模型
+
+model_reasoning_effort = "xhigh" # 思考强度超高
+
+model_context_window = 1000000           # 模型上下文窗口大小，这里设置的是 1M
+model_auto_compact_token_limit = 800000  # 虽然是 1M，但是有效注意力不够，不建议开的太高
+
+
+[model_providers.apibox]
+name = "OpenAI" # 如果用的是中转站，建议把名字改成 OpenAI（注意大小写），命中缓存节省 token
+
+[features]
+memories = true  # 开启记忆
+fast_mode = true # 极大提高使用体验，会让 token 用量变 2 倍
+
+[memories]
+consolidation_model = "gpt-5.4" # 总结记忆用的模型
+extract_model = "gpt-5.4"
+max_raw_memories_for_consolidation = 512
+max_unused_days = 30       # 默认 30
+max_rollout_age_days = 45  # 默认 30
+```
+
+注意模型名称可能会更新，本文不一定是最新的，使用时替换即可。
