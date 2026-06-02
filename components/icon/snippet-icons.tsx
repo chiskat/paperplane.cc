@@ -5,6 +5,8 @@ import BabelAsset from '@/assets/snippet-icons/babel.svg'
 import ClaudeAsset from '@/assets/snippet-icons/claude.svg'
 import CodexAsset from '@/assets/snippet-icons/codex.svg'
 import CommandAsset from '@/assets/snippet-icons/command.svg'
+import CommitizenAsset from '@/assets/snippet-icons/commitizen.svg'
+import CommitlintAsset from '@/assets/snippet-icons/commitlint.svg'
 import CraAsset from '@/assets/snippet-icons/cra.svg'
 import DefaultAsset from '@/assets/snippet-icons/default.svg'
 import DockerAsset from '@/assets/snippet-icons/docker.svg'
@@ -12,7 +14,9 @@ import DroneAsset from '@/assets/snippet-icons/drone.svg'
 import EditorconfigAsset from '@/assets/snippet-icons/editorconfig.svg'
 import EslintAsset from '@/assets/snippet-icons/eslint.svg'
 import GitAsset from '@/assets/snippet-icons/git.svg'
+import HuskyAsset from '@/assets/snippet-icons/husky.svg'
 import LicenseAsset from '@/assets/snippet-icons/license.svg'
+import LintstagedAsset from '@/assets/snippet-icons/lintstaged.svg'
 import MonorepoAsset from '@/assets/snippet-icons/monorepo.svg'
 import NextjsAsset from '@/assets/snippet-icons/nextjs.svg'
 import NodejsAsset from '@/assets/snippet-icons/nodejs.svg'
@@ -27,6 +31,8 @@ import VitestAsset from '@/assets/snippet-icons/vitest.svg'
 import VscodeAsset from '@/assets/snippet-icons/vscode.svg'
 import WebpackAsset from '@/assets/snippet-icons/webpack.svg'
 import { cn } from '@/utils/style'
+
+// 图标来源： https://github.com/material-extensions/vscode-material-icon-theme
 
 export interface SnippetIconProps {
   className?: string
@@ -51,6 +57,8 @@ export const BabelIcon = createSnippetIcon(BabelAsset, 'babel')
 export const ClaudeIcon = createSnippetIcon(ClaudeAsset, 'claude')
 export const CodexIcon = createSnippetIcon(CodexAsset, 'codex')
 export const CommandIcon = createSnippetIcon(CommandAsset, 'command')
+export const CommitizenIcon = createSnippetIcon(CommitizenAsset, 'commitizen')
+export const CommitlintIcon = createSnippetIcon(CommitlintAsset, 'commitlint')
 export const CraIcon = createSnippetIcon(CraAsset, 'cra')
 export const DefaultIcon = createSnippetIcon(DefaultAsset, 'default')
 export const DockerIcon = createSnippetIcon(DockerAsset, 'docker')
@@ -58,7 +66,9 @@ export const DroneIcon = createSnippetIcon(DroneAsset, 'drone')
 export const EditorconfigIcon = createSnippetIcon(EditorconfigAsset, 'editorconfig')
 export const EslintIcon = createSnippetIcon(EslintAsset, 'eslint')
 export const GitIcon = createSnippetIcon(GitAsset, 'git')
+export const HuskyIcon = createSnippetIcon(HuskyAsset, 'husky')
 export const LicenseIcon = createSnippetIcon(LicenseAsset, 'license')
+export const LintstagedIcon = createSnippetIcon(LintstagedAsset, 'lintstaged')
 export const MonorepoIcon = createSnippetIcon(MonorepoAsset, 'monorepo')
 export const NextjsIcon = createSnippetIcon(NextjsAsset, 'nextjs')
 export const NodejsIcon = createSnippetIcon(NodejsAsset, 'nodejs')
@@ -78,6 +88,8 @@ export const snippetIcons = {
   claude: ClaudeIcon,
   codex: CodexIcon,
   command: CommandIcon,
+  commitizen: CommitizenIcon,
+  commitlint: CommitlintIcon,
   cra: CraIcon,
   default: DefaultIcon,
   docker: DockerIcon,
@@ -85,7 +97,9 @@ export const snippetIcons = {
   editorconfig: EditorconfigIcon,
   eslint: EslintIcon,
   git: GitIcon,
+  husky: HuskyIcon,
   license: LicenseIcon,
+  lintstaged: LintstagedIcon,
   monorepo: MonorepoIcon,
   nextjs: NextjsIcon,
   nodejs: NodejsIcon,
