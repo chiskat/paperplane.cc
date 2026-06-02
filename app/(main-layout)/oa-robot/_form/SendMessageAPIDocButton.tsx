@@ -240,7 +240,7 @@ const checkApiDoc: ApiDocProps = {
       {
         name: 'publicURL',
         type: 'string',
-        description: '仅图片是否已上传成功时有此值，图片的公开访问 URL',
+        description: '仅图片已上传成功时有此值，图片的公开访问 URL',
       },
     ],
   },
