@@ -36,8 +36,13 @@ export const list: SnippetListGroup[] = [
   {
     title: 'Agent',
     children: [
-      { dir: '_claudecode', title: 'Claude Code', icon: 'claude', children: ['config'] },
-      { dir: '_codex', title: 'Codex', children: ['config', 'noupgrade'] },
+      {
+        dir: '_claudecode',
+        title: 'Claude Code',
+        icon: 'claude',
+        children: ['config', 'noupgrade'],
+      },
+      { dir: '_codex', title: 'Codex', children: ['config'] },
     ],
   },
 
