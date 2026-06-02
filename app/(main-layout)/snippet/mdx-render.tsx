@@ -21,21 +21,21 @@ export default function snippetMDX(): MDXComponents {
     ),
     h1({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h1 {...props} className="font-title-serif mt-4 mb-4 text-[24px] [&_a]:hidden!">
+        <h1 {...props} className="font-title-serif mt-4 mb-3 text-[24px] [&_a]:hidden!">
           {children}
         </h1>
       )
     },
     h2({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h2 {...props} className="font-title-serif mt-4 mb-4 text-[20px] [&_a]:hidden!">
+        <h2 {...props} className="font-title-serif mt-4 mb-3 text-[20px] [&_a]:hidden!">
           {children}
         </h2>
       )
     },
     h3({ children, ...props }: ComponentPropsWithoutRef<'h1'>) {
       return (
-        <h3 {...props} className="font-title-serif mt-4 mb-4 text-[18px] [&_a]:hidden!">
+        <h3 {...props} className="font-title-serif mt-4 mb-3 text-[18px] [&_a]:hidden!">
           {children}
         </h3>
       )
