@@ -1,1 +1,1 @@
-npx cz --hook || true
+npx --no-install cz --hook || true
