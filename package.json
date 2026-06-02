@@ -11,7 +11,7 @@
     "lint": "eslint",
     "format": "prettier --list-different .",
     "check-types": "tsc --noEmit",
-    "commit": "git-cz",
+    "cz": "git-cz",
     "commitlint": "commitlint --edit",
     "db:gen": "pnpm db:generate",
     "db:generate": "dotenv -c development -- prisma generate && pnpm dlx prettier --write ./models/**/*.ts --log-level silent",
