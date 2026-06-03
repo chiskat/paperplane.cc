@@ -6,6 +6,7 @@ tags: [React, JS, CSS]
 categories: [React]
 ---
 
+import { DemoShell } from '@/components/helper/demo-shell'
 import Model1 from '../demos/animation-compose/Model1'
 import Model2 from '../demos/animation-compose/Model2'
 import Model3 from '../demos/animation-compose/Model3'
@@ -91,11 +92,9 @@ export default function App() {
 
 ![](../images/dialog-demo-1.gif)
 
-::: info 在线 Demo
-
-<Model1 />
-
-:::
+<DemoShell>
+  <Model1 />
+</DemoShell>
 
 这样我们成功实现了模态框的切换显示，但是，这个过程太突兀，没有任何过渡动画。
 接下来，我们可以尝试给组件加上过渡动画。
@@ -163,11 +162,9 @@ function Dialog(props: IDialogProps) {
 
 ![](../images/dialog-demo-2.gif)
 
-::: info 在线 Demo
-
-<Model2 />
-
-:::
+<DemoShell>
+  <Model2 />
+</DemoShell>
 
 ---
 
@@ -228,11 +225,9 @@ function Dialog(props: IDialogProps) {
 
 ![](../images/dialog-demo-3.gif)
 
-::: info 在线 Demo
-
-<Model3 />
-
-:::
+<DemoShell>
+  <Model3 />
+</DemoShell>
 
 这样显示和隐藏的动画就都能显示了。
 
@@ -332,11 +327,9 @@ function Dialog(props: IDialogProps) {
 
 ![](../images/dialog-demo-4.gif)
 
-::: info 在线 Demo
-
-<Model4 />
-
-:::
+<DemoShell>
+  <Model4 />
+</DemoShell>
 
 而且我们这个模态框的实现相对比较 “完善”，在关闭时，DOM 也会被移除，不会有残留。
 
