@@ -140,10 +140,10 @@ export default async function History({ filename, oldFilename }: HistoryProps) {
                 <span className="absolute top-[1.1rem] -left-7 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#2f629d] shadow-[0_0_0_1px_#2f629d]" />
 
                 <div className="inline-block max-w-full rounded-[3px] border border-[#ddd] bg-[rgba(255,255,255,0.7)] px-4 py-3">
-                  <div className="font-en-sans mb-1.5 flex flex-wrap items-center gap-2 text-[15px] text-[#999]">
+                  <div className="mb-1.5 flex flex-wrap items-center gap-2 font-sans text-[15px] text-[#999]">
                     <time dateTime={item.date}>{getHistoryDateText(item.date)}</time>
                     {item.old ? (
-                      <span className="font-en-sans rounded-full bg-[#f0ebe6] px-2 py-0.5 text-[13px] text-[#8a6a4a]">
+                      <span className="rounded-full bg-[#f0ebe6] px-2 py-0.5 font-sans text-[13px] text-[#8a6a4a]">
                         旧版 Hexo 博客
                       </span>
                     ) : null}

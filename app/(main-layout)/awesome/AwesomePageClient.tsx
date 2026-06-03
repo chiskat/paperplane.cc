@@ -120,7 +120,7 @@ export default function AwesomePageClient() {
 
             <div className="relative flex flex-wrap items-end gap-2">
               <label className="min-w-0 flex-1">
-                <span className="font-en-sans mb-2 block text-xs tracking-wide text-slate-500 uppercase">
+                <span className="mb-2 block font-sans text-xs tracking-wide text-slate-500 uppercase">
                   搜索 Awesome
                 </span>
                 <Input

@@ -418,7 +418,7 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
                     onClick={event => handleTocClick(event, item.id)}
                     aria-current={isActive ? 'location' : undefined}
                     className={cn(
-                      'font-en-sans text-muted-foreground relative z-1 block truncate py-px pl-2 text-[13px] transition-[color,font-weight]',
+                      'text-muted-foreground relative z-1 block truncate py-px pl-2 font-sans text-[13px] transition-[color,font-weight]',
                       'hover:text-primary pr-2',
                       isActive && 'text-primary'
                     )}

@@ -228,7 +228,7 @@ function DetailHighlightLinkCard({ link }: { link: HighlightLink }) {
     >
       <div className="flex items-center gap-2">
         {iconNode}
-        <p className="font-en-sans ml-1 text-[16px] leading-5 font-medium tracking-[0.01em] text-slate-500">
+        <p className="ml-1 font-sans text-[16px] leading-5 font-medium tracking-[0.01em] text-slate-500">
           {link.label}
         </p>
       </div>
@@ -269,12 +269,12 @@ export function AwesomeDetail({ awesome, mode = 'auto', className }: AwesomeDeta
                 href={awesome.homepage}
                 target="_blank"
                 rel="noreferrer"
-                className="font-en-sans mb-6 block text-[18px] leading-6 break-all text-[#2f629d] underline decoration-[#2f629d]/35 underline-offset-[3px] transition-colors hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
+                className="mb-6 block font-sans text-[18px] leading-6 break-all text-[#2f629d] underline decoration-[#2f629d]/35 underline-offset-[3px] transition-colors hover:text-[#c0332f] hover:decoration-[#c0332f]/60"
               >
                 {awesome.homepage}
               </Link>
 
-              <p className="font-en-sans text-sm leading-relaxed text-slate-600 sm:text-[16px]">
+              <p className="font-sans text-sm leading-relaxed text-slate-600 sm:text-[16px]">
                 {awesome.desc || '暂无描述。'}
               </p>
             </div>
@@ -283,12 +283,12 @@ export function AwesomeDetail({ awesome, mode = 'auto', className }: AwesomeDeta
               <div className="flex h-full border-t border-blue-200/70 pt-4 sm:border-t-0 sm:pt-0 sm:pl-6">
                 <div className="w-full min-w-47.5 space-y-4 text-left">
                   <div className="space-y-1">
-                    <p className="font-en-sans text-[14px] text-slate-400 uppercase">类别</p>
+                    <p className="font-sans text-[14px] text-slate-400 uppercase">类别</p>
                     <p className="text-[14px] leading-6 text-slate-600">{categoryPath}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="font-en-sans text-[14px] text-slate-400 uppercase">星级</p>
+                    <p className="font-sans text-[14px] text-slate-400 uppercase">星级</p>
                     <p className="text-[14px] text-slate-600">{awesomeStarLevel(stars)}</p>
 
                     <div className="inline-flex items-center gap-1 text-[#f01879]">

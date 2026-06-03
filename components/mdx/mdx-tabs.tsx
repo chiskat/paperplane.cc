@@ -39,7 +39,7 @@ export function MdxTabs({ children, className }: { children: ReactNode; classNam
               value={value}
               fill={false}
               itemClassName="flex h-full items-center"
-              className="font-en-sans cursor-pointer px-3"
+              className="cursor-pointer px-3 font-sans"
             >
               {item.props.label || `选项 ${index + 1}`}
             </TabsTrigger>

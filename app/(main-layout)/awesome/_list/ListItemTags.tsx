@@ -67,7 +67,7 @@ export function ListItemTags({ awesome }: ListItemTagsProps) {
                     style={{ backgroundColor: color }}
                   />
                 ) : (
-                  <span aria-hidden className="font-en-sans text-[11px] leading-none">
+                  <span aria-hidden className="font-sans text-[11px] leading-none">
                     {firstCharacter}
                   </span>
                 )}
