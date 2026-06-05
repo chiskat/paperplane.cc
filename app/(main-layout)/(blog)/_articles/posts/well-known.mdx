@@ -127,7 +127,12 @@ export const dynamic = 'force-static'
 
 `LLMs.txt` 提案的官网还提出，如果有可能，可以为每个页面提供一个 `.md` 后缀的路径，这个路径返回纯 Markdown 格式的内容；如果某个页面 URL 不含文件名，则使用 `/index.html.md`。
 
-这个提案意义不大，目前也没有其它网站实现此规范。
+AntD 官网同样实现了这个规范：
+
+- 组件原始文档 URL 后面加上 `.md`，即可访问 Markdown 格式的文档；
+  例如： https://ant.design/components/button.md
+- 如果改为在 URL 后面加上 `/semantic.md`，可以访问 “语义描述” 文档。
+  例如： https://ant.design/components/button/semantic.md
 
 ---
 
