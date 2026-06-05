@@ -61,7 +61,7 @@ export default async function ArchiveMonthPage({ params }: PageProps<'/archives/
         </h1>
       </section>
 
-      <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
+      <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
         {posts.map(item => (
           <ArticleTitleLink
             key={item.slug}

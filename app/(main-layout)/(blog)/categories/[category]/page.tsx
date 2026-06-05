@@ -42,7 +42,7 @@ export default async function CategoryPage({ params }: PageProps<'/categories/[c
         <h1 className="font-title-serif mt-1 text-[32px] text-[#2f3a49]">{category}</h1>
       </section>
 
-      <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
+      <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
         {posts.map(item => (
           <ArticleTitleLink
             key={item.slug}

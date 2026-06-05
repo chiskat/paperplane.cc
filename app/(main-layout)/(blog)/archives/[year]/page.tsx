@@ -70,7 +70,7 @@ export default async function ArchiveYearPage({ params }: PageProps<'/archives/[
               {month} 月
             </Link>
           </div>
-          <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
+          <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
             {monthPosts.map(item => (
               <ArticleTitleLink
                 key={item.slug}

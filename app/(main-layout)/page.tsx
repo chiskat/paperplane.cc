@@ -88,7 +88,7 @@ export default async function HomePage() {
               {year}
             </Link>
           </h2>
-          <ul className="ml-1 space-y-3 border-l border-[#ddd] pl-5">
+          <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
             {items.map(item => (
               <ArticleTitleLink
                 key={item.slug}

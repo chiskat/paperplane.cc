@@ -64,7 +64,7 @@ export function ArticleTitleLink({
   return (
     <li className={cn('relative rounded-sm px-2 py-1.5', className)}>
       <span className="pointer-events-none absolute top-3 -left-5 h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-white bg-[#b7c0cc]" />
-      <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-[12px] text-[#7a8797]">
+      <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-[14px] text-[#7a8797]">
         {metaItems.map((item, index) => (
           <span key={index} className="inline-flex items-center gap-x-3">
             {index > 0 && <span className="h-0.75 w-0.75 rounded-full bg-[#b7c0cc]" />}
@@ -77,7 +77,7 @@ export function ArticleTitleLink({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={cn(
-          'font-title-serif hover:text-primary inline-block py-0.5 text-[26px] leading-snug text-[#2f3a49] transition-colors',
+          'font-title-serif hover:text-primary inline-block py-0.5 text-[28px] leading-snug text-[#2f3a49] transition-colors',
           titleClassName
         )}
       >
