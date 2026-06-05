@@ -1,0 +1,643 @@
+---
+title: tRPC + React Query 的 “坑”，AI 都无法完美解决
+date: 2026-01-10 15:30:00
+tags: [JS]
+categories: [JS]
+---
+
+import { DemoShell } from '@/components/helper/demo-shell'
+import TodoCard from '../demos/trpc-react-query-challenge/TodoCard'
+import TodoCardEffectTimes from '../demos/trpc-react-query-challenge/TodoCardEffectTimes'
+import TodoCardDeep from '../demos/trpc-react-query-challenge/TodoCardDeep'
+import TodoCardDate from '../demos/trpc-react-query-challenge/TodoCardDate'
+import TodoCardDateUpdated from '../demos/trpc-react-query-challenge/TodoCardDateUpdated'
+
+如果使用 TypeScript 技术栈开发 Web 项目，较为先进的选择是 [tRPC](https://trpc.io/) + [Prisma](https://www.prisma.io/) + [@tanstack/react-query](https://tanstack.com/query) + [Zod](https://zod.dev/)，这一套工具可以在全链路 TypeScript 的情况下实现从数据库到 API 再到前端渲染的完整开发。
+
+但是，这些工具结合在一起时，需要大量的配置，即使是官网文档也要给出好几页的代码；实际开发中，还会遇到一些边界情况，这些问题即使是 AI，也是 “缺乏经验” 的，经常会给出无法解决问题的答案。
+
+# 数据的 `Date` 字段导致错误地触发更新
+
+这个问题，完整描述是这样的：`@tanstack/react-query` 在面对 `Date` 时，始终当作一个新对象，错误地引发 React 更新；而 Prisma 中数据库类型 `DateTime` 会映射为 JavaScript 的 `Date` 并通过 `trpc` 中配置的 `superjson` 序列化传输到浏览器，导致引发上述问题。
+
+## 数据库 `DateTime` 类型如何流转到浏览器端
+
+首先，Prisma 对数据库字段类型 `DateTime` 会映射为 JavaScript 中的 `Date`，而 Prisma 对每个模型都有 `createdAt` 和 `updatedAt` 两个字段是 `DateTime` 类型；因此，每个实体都具有 `Date` 字段的属性。
+
+然后，tRPC 顾名思义它是一种 “RPC”，也就是说在这个过程中，“请求” / “响应” 的概念是被淡化的，数据可以看作是直接从后端流向前端。
+
+这时，你应该看出问题了：**Prisma 从数据库里取出的 `Date` 类型，如何传递到浏览器端？**
+
+<br />
+
+这个问题，tRPC 早就考虑到了，也给出了解答：**使用序列化 / 反序列化工具，官方推荐 [`superjson`](https://github.com/flightcontrolhq/superjson)。**
+
+tRPC 官方给出的推荐配置代码是这样的：
+
+::: code-group
+
+```typescript {3,7} [服务端]
+import 'server-only'
+import { initTRPC } from '@trpc/server'
+import superjson from 'superjson'
+
+// 以下代码经过简化
+const t = initTRPC.create({
+  transformer: superjson,
+})
+
+export const { router, procedure } = t
+```
+
+```typescript {11,22,24} [客户端]
+'use client'
+
+import {
+  createTRPCProxyClient,
+  httpBatchLink,
+  httpLink,
+  isNonJsonSerializable,
+  splitLink,
+} from '@trpc/client'
+import { createTRPCContext } from '@trpc/tanstack-react-query'
+import superjson from 'superjson'
+
+import type { AppRouter } from '../path/to/trpc-api'
+
+// 以下代码经过简化
+export const trpcClientConfig: Parameters<typeof createTRPCProxyClient>[0] = {
+  links: [
+    splitLink({
+      condition: op => isNonJsonSerializable(op.input),
+      true: httpLink({
+        url: `/api/trpc`,
+        transformer: { serialize: data => data, deserialize: superjson.deserialize },
+      }),
+      false: httpBatchLink({ url: `/api/trpc`, transformer: superjson }),
+    }),
+  ],
+}
+
+export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>()
+```
+
+:::
+
+可以看出，无论是客户端还是服务端，有一个 `transformer` 属性，专门用来配置序列化 / 反序列化。
+
+这里，官方推荐使用 [`superjson`](https://github.com/flightcontrolhq/superjson)，它在序列化对象时，会添加额外的字段来记录类型信息，反序列化时根据类型信息便能还原出一些原生类型，例如 `Date`、`Map`、`Set`、`RegExp` 等。
+
+也正因此，Prisma 的 `DateTime` 类型即使到了 JavaScript 中变成了 `Date` 类型，也能被序列化传给浏览器，并在浏览器中通过 `superjson` 反序列化，还原成 `Date` 类型。
+
+## `@tanstack/react-query` 如何控制 React 更新
+
+`@tanstack/react-query` （以下简称 React Query）可以在客户端持久化维护某个来自于外部接口的状态；默认情况下，它会在网页切换回前台、网络状态变更、超过一定时间等时机重新发起请求，以维持数据的时效。
+也就是说，浏览网页的过程中，数据可能已经被 React Query 默默地重复请求验证了若干次。
+
+而且，后端返回的数据大部分场合都是对象。
+在 JavaScript 中，无论是通过 `fetch()` 还是 JSON 反序列化等方式，创建两个字段完全一样的对象，彼此也是不相等的。
+
+这时，你应该看出问题了：**React Query 会不会因为接口返回了对象，或者是重复请求，从而导致返回结果每次都不同，从而错误地触发 React 更新？**
+
+<br />
+
+用代码来举例：
+
+```tsx
+import { QueryClient, useQuery } from '@tanstack/react-query'
+
+interface TodoItem {
+  id: string
+  title: string
+  done: boolean
+}
+
+async function fetchTodo(id: string): Promise<TodoItem> {
+  // 模拟接口的网络传输延迟
+  return { id, title: '学习 React', done: false }
+}
+
+export function TodoCard({ id }: { id: string }) {
+  const { data, isLoading, isRefetching } = useQuery({
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id),
+  })
+
+  if (isLoading || !data) {
+    return <div>加载中...</div>
+  }
+
+  return (
+    <div>
+      <div>代办事项：{data.title}</div>
+      <div>完成：{data.done ? '是' : '否'}</div>
+      {isRefetching ? <div>获取最新数据中...</div> : null}
+    </div>
+  )
+}
+```
+
+上述代码中，`TodoItem` 是一个有多个字段的对象，我们通过函数模拟了后端接口返回数据。
+React Query 通过 “请求” 得到数据后，便会用它来渲染页面。
+
+渲染出的实例如下（这里组件样式经过了一些美化）：
+
+<DemoShell manual rerender>
+  <TodoCard id="1" />
+</DemoShell>
+
+点击 “加载 Demo” 可以显示出 Todo 卡片，初始状态下还没有拿到请求的数据，因此有一个发出请求的过程，当然这是模拟的。
+
+请求完成后，渲染出了 Todo 卡片，此后点击 “重新渲染” 按钮，虽然组件被重新渲染，但 React Query 会在自己的全局内部存储中，按照 `queryKey` 暂存数据，在新的请求拿到之前，都会先使用旧的数据，这便是 “SWR（Stale-While-Revalidate，重验证时使用旧数据）”。
+
+在重新渲染或是切换回前台等时机，React Query 在显示旧组件数据的同时发出请求准备更新组件数据，这个过程就叫做 “Revalidate（重验证）”。
+
+---
+
+**React Query 的核心功能之一，就是对同一个 `queryKey` 查询到相同的结果时，保持引用的稳定性。**
+
+更新代码：
+
+```tsx {21-26,42}
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+interface TodoItem {
+  id: string
+  title: string
+  done: boolean
+}
+
+async function fetchTodo(id: string): Promise<TodoItem> {
+  // 模拟接口的网络传输延迟
+  return { id, title: '学习 React', done: false }
+}
+
+export function TodoCard({ id }: { id: string }) {
+  const { data, isLoading, isRefetching, refetch } = useQuery({
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id),
+  })
+
+  const [effectTimes, setEffectTimes] = useState(0)
+  useEffect(() => {
+    if (data) {
+      setEffectTimes(t => t + 1)
+    }
+  }, [data])
+
+  if (isLoading || !data) {
+    return <div>加载中...</div>
+  }
+
+  return (
+    <div>
+      <div>代办事项：{data.title}</div>
+      <div>完成：{data.done ? '是' : '否'}</div>
+      <div>版本：{effectTimes}</div>
+
+      <div>
+        {isRefetching ? (
+          <span>获取最新数据中...</span>
+        ) : (
+          <button onClick={() => void refetch()}>刷新</button>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+这里通过 `useEffect` 来观察 React Query 的返回值，只要有变更，就会导致 `effectTimes` 的数值增加，从而导致 “版本” 的数字增加。
+
+渲染出的实例如下（这里组件样式经过了一些美化）：
+
+<DemoShell manual>
+  <TodoCardEffectTimes id="2" />
+</DemoShell>
+
+点击 “刷新” 按钮后通过 `refetch()` 触发 React Query 的重新请求，可以看出：
+虽然 `fetchTodo()` 每次返回一个全新的对象，但只要数据和上一次相同，React Query 会保持引用的稳定，`useEffect` 就不会触发，版本号 `effectTimes` 也没有增长。
+
+只有当 `fetchTodo()` 返回的数据字段有变化时，`data` 的引用才会发生变化，触发 React 的副作用。
+
+这便是 React Query 对相同查询结果的引用性保持稳定的核心特性。
+
+---
+
+React Query 对相同数据保持稳定性的特性，是 “深层” 的。
+
+对于一个对象而言，它的任意子属性发生变更都会导致这个对象的引用发生变更；
+**但是，其它不属于它的属性发生变更时，React Query 会尽可能保持子对象的引用稳定。**
+
+示例：
+
+```tsx
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+interface TodoItem {
+  id: string
+  title: string
+  done: boolean
+
+  meta: {
+    createAt: string
+    createBy: string
+  }
+}
+
+let title = '学习 React'
+let createBy = 'chiskat'
+
+async function fetchTodo(id: string): Promise<TodoItem> {
+  // 模拟接口的网络传输延迟
+  return {
+    id,
+    title,
+    done: false,
+    meta: {
+      createAt: '2025-01-01',
+      createBy,
+    },
+  }
+}
+
+export function TodoCard({ id }: { id: string }) {
+  const { data, isLoading, isRefetching, refetch } = useQuery({
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id),
+  })
+  const meta = data?.meta
+
+  const [todoUpdates, setTodoUpdates] = useState(0)
+  useEffect(() => {
+    if (data) setTodoUpdates(t => t + 1)
+  }, [data])
+
+  const [metaUpdates, setMetaUpdates] = useState(0)
+  useEffect(() => {
+    if (meta) setMetaUpdates(t => t + 1)
+  }, [meta])
+
+  if (isLoading || !data) {
+    return <div>加载中...</div>
+  }
+
+  return (
+    <div>
+      <div>代办事项：{data.title} (版本 {todoUpdates})</div>
+      <div>完成：{data.done ? '是' : '否'}</div>
+      <div>版本：{todoUpdates}</div>
+
+      <div>
+        <div>详情： (版本 {metaUpdates})</div>
+        <div>创建用户：{meta?.createBy}</div>
+        <div>创建时间：{meta?.createAt}</div>
+      </div>
+
+      <div>{isRefetching ? <span>获取最新数据中...</span> : null}</div>
+
+      <div>
+        <button
+          onClick={() => {
+            title += '1'
+            refetch()
+          }}
+        >
+          更新 Todo
+        </button>
+        <button
+          onClick={() => {
+            createBy += '1'
+            refetch()
+          }}
+        >
+          更新 Todo.Meta
+        </button>
+      </div>
+    </div>
+  )
+}
+```
+
+现在，点击 “更新 Todo” 后会更新 Todo 项的直接字段，点击 “更新 Todo.Meta” 则会更新其中的 `meta` 字段。
+
+渲染出的实例如下（这里组件样式经过了一些美化）：
+
+<DemoShell>
+  <TodoCardDeep id="3" />
+</DemoShell>
+
+可以看出，如果 `data` 自身的字段发生变更，那么 `data.meta` 这个子对象的引用并不会发生变化，因此也不会触发 `useEffect`；
+但是，如果 `data.meta` 的字段发生变更，那么它本身以及整个 `data` 的引用都会变更。
+
+这就是 `@tanstack/react-query` 的特性：
+
+- **在多次请求数据之间，只要请求到的数据和上一次相同，那么引用保持不变；**
+- **某个字段发生变化后，它的所有父级对象的引用都会变更，这是为了保证能触发 React 副作用；这只会影响到这个字段的所有父级对象，其它支路的不受影响，它们的引用不会变化。**
+
+## `Date` 字段和 `@tanstack/react-query` 的交互
+
+使用 tRPC 和 React Query 集成时，React Query 得到的是 **已被 tRPC 反序列化后的数据**，也就是说，数据库中的 `DateTime` 会被 `superjson` 反序列化成 `Date` 数据。
+
+**每次 tRPC 反序列化得到的 `Date` 是一个全新的对象，它们的引用不可能相等；因此，React Query 检测到 `Date` 和上一次结果不同，便会认为数据发生了变更，从而改变 `data` 的引用，触发 React 副作用。**
+
+更新上面的演示代码，现在给返回的数据添加一个 `Date` 数据：
+
+```tsx {8,13}
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+interface TodoItem {
+  id: string
+  title: string
+  done: boolean
+  createAt: Date
+}
+
+async function fetchTodo(id: string): Promise<TodoItem> {
+  // 模拟接口的网络传输延迟
+  return { id, title: '学习 React', done: false, createAt: new Date('2025-01-01') }
+}
+
+export function TodoCard({ id }: { id: string }) {
+  const { data, isLoading, isRefetching, refetch } = useQuery({
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id),
+  })
+
+  const [effectTimes, setEffectTimes] = useState(0)
+  useEffect(() => {
+    if (data) {
+      setEffectTimes(t => t + 1)
+    }
+  }, [data])
+
+  if (isLoading || !data) {
+    return <div>加载中...</div>
+  }
+
+  return (
+    <div>
+      <div>代办事项：{data.title}</div>
+      <div>完成：{data.done ? '是' : '否'}</div>
+      <div>版本：{effectTimes}</div>
+
+      <div>
+        {isRefetching ? (
+          <span>获取最新数据中...</span>
+        ) : (
+          <button onClick={() => void refetch()}>刷新</button>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+渲染出的实例如下（这里组件样式经过了一些美化）：
+
+<DemoShell>
+  <TodoCardDate id="4" />
+</DemoShell>
+
+在这里，`queryFn` 现在每次会返回日期时间相同的 `Date` 对象。
+每次点击 “刷新” 按钮后，都可以看到版本号增加，这说明 `data` 发生了变更，触发了 React 的副作用。
+
+**React Query 可以深度检测对象的属性进行比对，但是，对于 `Date` 这种特殊对象，只能回退到按引用对比；而 tRPC 反序列化的 `Date` 每次都是新创建的，引用必然不同，因此会被 React Query 当作 “已变更” 来对待的，从而产生副作用。**
+
+而 Prisma 每个表中都有 `createAt` 和 `updateAt` 字段，它们在数据库中是 `DateTime` 类型，会被映射为 `Date` 类型，正好完美命中这个缺陷。
+
+## 最佳实践解决问题
+
+如果你询问 AI，AI 会给出各种不切实际的方式来解决，例如：使用 React Query 的 `select`。
+想解决这个问题，最准确的做法是，想办法让 React Query 能正确处理 `Date` 这类字段。
+
+`@tanstack/react-query` 使用 [“structural sharing（结构共享）”](https://tanstack.com/query/latest/docs/framework/react/guides/render-optimizations) 来实现对对象的跟踪。
+
+每当新的请求得到返回后，结构共享函数都会将它与全局存储中相同 `queryKey` 的上次结果进行对比，这个函数是这样做的：
+
+- 深度遍历对象中的所有字段，以及子对象的所有字段；
+- 如果某个子对象的所有字段和原来相同，通过了深度比较，此时直接返回此子对象的已存储的引用，这样保证了引用的稳定性，不会触发 React 副作用；
+- 如果某个子对象存在和原来不同的字段，说明这里有字段已被更改，此时创建一个浅拷贝的新对象来使用，这样也会触发依赖此子对象字段的 React 副作用；但是子对象使用浅拷贝，只要它们没变，只依赖子对象的属性的 React 副作用不会触发。
+
+结构共享会在字段没变的情况下，尽可能地使用原先已缓存的对象引用，因此名字叫做 “结构共享”。
+
+<br />
+
+React Query 提供了 `structuralSharing` 配置项，用于选择是否启用这个功能，它默认是开启的，值为 `true`；但是也可以传入一个新的函数，React Query 会使用传入的函数来取代默认的 “结构共享”。
+
+因此，我们可以有以下思路：
+**重写这个 `structuralSharing`，在对字段进行深比较时，检测到 `Date` 时不再是直接对比引用，而是使用它的 `.valueOf()` 来进行对比。**
+
+实现代码如下：
+
+```typescript {1-8,11,32,51}
+/** 重写原版的比较算法，兼容 Date 对象 */
+function isEqual(a: any, b: any): boolean {
+  if (a instanceof Date && b instanceof Date) {
+    return a.valueOf() === b.valueOf()
+  }
+
+  return a === b
+}
+
+export function replaceEqualDeep(a: any, b: any): any {
+  if (isEqual(a, b)) {
+    return a
+  }
+
+  const array = isPlainArray(a) && isPlainArray(b)
+
+  if (!array && !(isPlainObject(a) && isPlainObject(b))) return b
+
+  const aItems = array ? a : Object.keys(a)
+  const aSize = aItems.length
+  const bItems = array ? b : Object.keys(b)
+  const bSize = bItems.length
+  const copy: any = array ? new Array(bSize) : {}
+
+  let equalItems = 0
+
+  for (let i = 0; i < bSize; i++) {
+    const key: any = array ? i : bItems[i]
+    const aItem = a[key]
+    const bItem = b[key]
+
+    if (isEqual(aItem, bItem)) {
+      copy[key] = aItem
+      if (array ? i < aSize : Object.prototype.hasOwnProperty.call(a, key)) equalItems++
+      continue
+    }
+
+    if (
+      aItem === null ||
+      bItem === null ||
+      typeof aItem !== 'object' ||
+      typeof bItem !== 'object'
+    ) {
+      copy[key] = bItem
+      continue
+    }
+
+    const v = replaceEqualDeep(aItem, bItem)
+    copy[key] = v
+
+    if (isEqual(v, aItem)) equalItems++
+  }
+
+  return aSize === bSize && equalItems === aSize ? a : copy
+}
+
+function isPlainArray(value: unknown): value is Array<unknown> {
+  return Array.isArray(value) && value.length === Object.keys(value).length
+}
+
+function isPlainObject(o: any): o is Record<PropertyKey, unknown> {
+  if (!hasObjectPrototype(o)) {
+    return false
+  }
+
+  const ctor = o.constructor
+  if (ctor === undefined) {
+    return true
+  }
+
+  const prot = ctor.prototype
+  if (!hasObjectPrototype(prot)) {
+    return false
+  }
+
+  if (!prot.hasOwnProperty('isPrototypeOf')) {
+    return false
+  }
+
+  if (Object.getPrototypeOf(o) !== Object.prototype) {
+    return false
+  }
+
+  return true
+}
+
+function hasObjectPrototype(o: any): boolean {
+  return Object.prototype.toString.call(o) === '[object Object]'
+}
+```
+
+这段代码不是我凭空写出来的，而是基于 `@tanstack/react-quey` 代码仓库中的 [源码](https://github.com/TanStack/query/blob/main/packages/query-core/src/utils.ts) 修改增强而来，因此可以放心使用。
+
+后续可以在请求时传入此参数：
+
+```typescript {4}
+import { replaceEqualDeep } from '../path/to/structural-sharing'
+
+const { data } = useQuery({
+  structuralSharing: replaceEqualDeep,
+  // ...
+})
+```
+
+不过，每个请求都配置，未免太过于麻烦；
+最好的做法是，在 `@tanstack/react-query` 的 `QueryClientProvider` 中全局注册默认配置：
+
+```tsx {10}
+import { QueryClient } from '@tanstack/react-query'
+import { PropsWithChildren, useState } from 'react'
+
+import { replaceEqualDeep } from '../path/to/structural-sharing'
+
+export function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        structuralSharing: replaceEqualDeep,
+      },
+      // ...
+    },
+  })
+}
+
+export default function ClientProvider(props: PropsWithChildren) {
+  const [queryClient] = useState(() => makeQueryClient())
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {props.children}
+    </QueryClientProvider>
+  )
+}
+
+```
+
+这样以来，整个项目都能享受到统一配置。
+
+<br />
+
+我们来实验以上做法是否成立。
+
+首先，还是使用上面带有 `Date` 字段的例子，但给它配置 `structuralSharing`：
+
+```tsx {11-13,24}
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+interface TodoItem {
+  id: string
+  title: string
+  done: boolean
+  createAt: Date
+}
+
+export function replaceEqualDeep(a: any, b: any): any {
+  // ... 实现方式省略
+}
+
+async function fetchTodo(id: string): Promise<TodoItem> {
+  // 模拟接口的网络传输延迟
+  return { id, title: '学习 React', done: false, createAt: new Date('2025-01-01') }
+}
+
+export function TodoCard({ id }: { id: string }) {
+  const { data, isLoading, isRefetching, refetch } = useQuery({
+    queryKey: ['todo', id],
+    queryFn: () => fetchTodo(id),
+    structuralSharing: replaceEqualDeep,
+  })
+
+  const [effectTimes, setEffectTimes] = useState(0)
+  useEffect(() => {
+    if (data) {
+      setEffectTimes(t => t + 1)
+    }
+  }, [data])
+
+  if (isLoading || !data) {
+    return <div>加载中...</div>
+  }
+
+  return (
+    <div>
+      <div>代办事项：{data.title}</div>
+      <div>完成：{data.done ? '是' : '否'}</div>
+      <div>版本：{effectTimes}</div>
+
+      <div>
+        {isRefetching ? (
+          <span>获取最新数据中...</span>
+        ) : (
+          <button onClick={() => void refetch()}>刷新</button>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+渲染出的实例如下（这里组件样式经过了一些美化）：
+
+<DemoShell>
+  <TodoCardDateUpdated id="5" />
+</DemoShell>
+
+此时，再点击 “刷新” 触发请求，即使每次都是创建新的 `Date`，也不会被当作是不同的字段，从而不会触发预期以外的 React 副作用。

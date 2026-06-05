@@ -10,6 +10,7 @@ export interface DemoShellProps {
   children: ReactNode
   title?: ReactNode
   manual?: boolean
+  rerender?: boolean
   contentClassName?: string
   initButtonText?: ReactNode
   rerenderButtonText?: ReactNode
@@ -20,6 +21,7 @@ export function DemoShell({
   children,
   title,
   manual = false,
+  rerender = false,
   contentClassName,
   initButtonText = '加载 Demo',
   rerenderButtonText = '重新渲染',
@@ -56,7 +58,7 @@ export function DemoShell({
           )}
         </div>
 
-        {initialized && (
+        {rerender && initialized && (
           <Button
             aria-label="重新渲染 Demo"
             className="ml-auto border-sky-200 bg-sky-50 text-sky-700 hover:border-sky-300 hover:bg-sky-100 hover:text-sky-800 dark:border-sky-800/70 dark:bg-sky-950/40 dark:text-sky-200 dark:hover:border-sky-700 dark:hover:bg-sky-900/50 dark:hover:text-sky-100"
