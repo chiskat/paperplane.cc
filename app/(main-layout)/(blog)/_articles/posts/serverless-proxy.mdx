@@ -2,13 +2,19 @@
 title: 为 AI 搭建 HTTP 代理与 Serverless 请求转发
 old_filename: HTTP 代理与 Serverless 请求转发
 date: 2025-06-13 10:00:00
-tags: [DevOps, Node]
+tags: [DevOps, Node, AI]
 categories: [DevOps]
 ---
 
 我原先一直通过 [OpenRouter](https://openrouter.ai/) 购买和使用 AI 服务，但 AI 服务提供商往往会有服务地区限制，例如 OpenAI 不对亚洲大部分地区提供服务；而 OpenRouter 作为代理商，也遵守此规则透传用户 IP。
 
-> 现在 OpenRouter 会检测付款方式中的国家，对中国用户不开放 OpenAI、Claude 等模型，因此不再使用。
+::: info Tips
+
+现在 OpenRouter 会检测付款方式中的国家，对中国用户不开放 OpenAI、Claude 等模型，不推荐使用。
+
+推荐使用 Vercel AI Gateway 或 Cloudflare AI Gateway。相比于 OpenRouter 而言，它们不收取额外费用；此外，它们对用户地区的限制也更少。
+
+:::
 
 因此，需要一种中转代理的方式，使我们的 AI 调用的出口 IP 改为欧美国家。
 
@@ -341,7 +347,7 @@ services:
 记得修改上文中的用户名、密码、端口号，用户名和密码是数组格式，因此可以设置多个。
 这里的 `allowTransparent` 可以开启，这会启用 “透明模式”，如果你的请求工具或目标无法正常运作，可以尝试开启它。
 
-# Serverless 中转
+# Serverless 转发
 
 使用云服务器的成本太高。现在很多云服务厂商例如 Cloudflare、腾讯云、阿里云，提供 Serverless 服务，且往往伴随着较大的免费额度。
 而转发 AI 请求这类简单需求，使用 Serverless 来做再简单不过，接下来介绍这些方法。
@@ -364,7 +370,7 @@ services:
 可以看出，这只能称得上是 “转发”，而不是 “代理”。
 
 这种方式，这个第三方服务对请求和响应完全可见，安全性较差；**如果你用它转发 AI 接口或者 GitHub API，它的部署方甚至可以直接窃取你的 Token。**
-不过，我们可以自己用 Node.js 来搭建一个，而且这种方式可以使用 Serverless 来搭建，来节约成本。
+所以，更好的选择是自己来搭建，这样就具备了安全性；更重要的是，自己搭建可以使用 Serverless，即使没有云服务器也可以实现，既简单又便宜。
 
 ## Cloudflare Workers 搭建 URL 前缀转发
 
