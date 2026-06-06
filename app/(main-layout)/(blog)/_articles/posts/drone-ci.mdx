@@ -291,51 +291,15 @@ volumes:
 
 ---
 
-请注意：Drone 使用镜像中的默认用户来执行 CI/CD 命令；`node` 镜像中，默认用户是 `root`，也存在一个 `node` 用户不过不是默认的；可以通过 `docker run --rm node:20-alpine whoami` 来验证当前用户。
+使用 `node` 镜像时，默认用户是 `root`。
+工作区往往是 `root` 用户创建的目录，使用其它用户，可能连访问工作区都很困难。
 
-<br />
+对于 `root` 用户而言，根据使用不同的包管理工具，缓存目录如下：
 
-使用 npm 的用户可以通过 `npm config get cache` 来获取当前缓存存储的目录；
-在 Linux 系统中通常位于：`~/.npm`；因此缓存目录是 `/root/.npm`。
-
-<br />
-
-对于 yarn 用户而言，可以通过 `yarn cache dir` 来获取当前缓存存储的目录；[官方文档](https://classic.yarnpkg.com/lang/en/docs/cli/cache/#toc-yarn-cache-dir)；
-在 Linux 系统中，yarn 使用以下规则：
-
-- 非 `root` 用户，缓存目录位于：`~/.cache/yarn`；
-- `root` 用户，缓存目录位于：`/usr/local/share/.cache/yarn`；
-
-镜像默认是 `root`，因此缓存目录是 `/usr/local/share/.cache/yarn`。
-
-<br />
-
-对于 pnpm 而言，可以通过 ` pnpm store path` 来获取当前缓存存储的目录；[官方文档](https://pnpm.io/npmrc#store-settings)。
-
-注意：因为 pnpm 安装依赖时，`node_modules` 目录下全是硬链接，不是真实的文件，真实的文件存储于 “store-dir” 中，我称这个为缓存；
-而 pnpm 还存在另一个 “cache-dir”，这个目录会被用来存储包的元数据、全局包、`pnpm dlx` 的缓存等等。
-
-在 Linux 系统中，pnpm 使用以下规则：
-
-- 对于 “store-dir”：
-  - 早期版本，它位于 `~/.pnpm-store`；
-  - 自 `v7.0.0` 以来，它位于 `~/.local/share/pnpm/store`；
-- 但是，以上规则仅适用于存在 “home” 的磁盘，如果没有 “home” 目录，pnpm 使用项目所在的磁盘根目录下的 `.pnpm-store` 来作为缓存目录，因为硬链接是不可能跨磁盘的；
-- **但是，在 Drone 流水线中运行时，pnpm 使用项目根目录下的 `.pnpm-store` 来作为缓存目录；**
-  项目所在的目录，基于你在 `.drone.yml` 中配置的 ["workspace.path"](https://docs.drone.io/pipeline/docker/syntax/workspace/)，默认是 `"/drone/src"`，所以默认情况下缓存目录是 `/drone/src/.pnpm-store`；
-  如果你修改了 `workspace`，记得把挂载出去的缓存目录一并修改；
-- **这是因为 pnpm 的 `node_modules` 目录里面都是硬链接，不存在真实的文件，而真实的文件如果放在其他目录，在下一个流水线步骤时这些文件都会丢失掉，只有项目根目录下的文件才是从头到尾一直持久化的；**
-- 对于 “cache-dir”，它的默认目录是 `~/.cache/pnpm`；
-  如果你需要安装很多全局包，或者执行很多条 `pnpm dlx` 命令，也可以把这个目录挂载出来持久化；
-- pnpm 的缓存和版本有关联，如果你在 `package.json` 中指定了 `"packageManager": "pnpm@版本号"`，那么大版本号变动时，旧版本的缓存无法应用，必须重新下载安装；
-- 顺带提一嘴，使用 `node` 镜像时，`yarn` 是预装的，但 `pnpm` 不是预装的，正确的开启方式是执行 `corepack enable` 指令，而不是 `npm i -g pnpm`。
-
-为了测试以上内容，我创建了几个仓库：
-
-- [test-package-manager-cache](https://git.paperplane.cc/chiskat/test-package-manager-cache) 测试三个包管理工具在 [Drone 流水线](https://drone.paperplane.cc/chiskat/test-package-manager-cache) 中的缓存目录；
-- [test-package-manager-cache-default-workspace](https://git.paperplane.cc/chiskat/test-package-manager-cache-default-workspace) 测试三个包管理工具在默认 `workspace` 时在 [Drone 流水线](https://drone.paperplane.cc/chiskat/test-package-manager-cache-default-workspace) 中的缓存目录。
-
-你可以点开流水线的页面，查看日志输出，找到这些缓存目录的位置和结构。
+- npm，总是位于 `~/.npm`，也就是 `/root/.npm`；
+- yarn，位于 `/usr/local/share/.cache/yarn`；
+- pnpm，位于 `工作区/.pnpm-store`；
+  这里的 “工作区” 指的是 `.drone.yml` 中配置的 ["workspace.path"](https://docs.drone.io/pipeline/docker/syntax/workspace/)，默认是 `"/drone/src"`。
 
 ---
 
