@@ -60,22 +60,24 @@ export default async function OpenItemPage({ params }: PageProps<'/open/[name]'>
   if (!project) {
     notFound()
   }
+
+  const packageNameInLink = project.override?.nameInLink || project.name
+
   const packageLink =
     project.type === 'npm'
-      ? `https://www.npmjs.com/package/${project.name}`
+      ? `https://www.npmjs.com/package/${packageNameInLink}`
       : project.type === 'docker'
-        ? `https://hub.docker.com/r/${project.name}`
-        : `https://pypi.org/project/meme-generator/${project.name}`
+        ? `https://hub.docker.com/r/${packageNameInLink}`
+        : `https://pypi.org/project/meme-generator/${packageNameInLink}`
   const githubLink = `https://github.com/${project.repo}`
   const giteaLink = `https://git.paperplane.cc/${project.repo}`
 
-  const shieldsName = project.override?.shields || project.name
   const shieldsImg =
     project.type === 'npm'
-      ? `https://shields.paperplane.cc/npm/v/${shieldsName}?logo=npm&sort=semver&cacheSeconds=86400`
+      ? `https://shields.paperplane.cc/npm/v/${packageNameInLink}?logo=npm&sort=semver&cacheSeconds=86400`
       : project.type === 'docker'
-        ? `https://shields.paperplane.cc/docker/v/${shieldsName}?logo=docker&sort=semver&cacheSeconds=86400`
-        : `https://shields.paperplane.cc/pypi/v/${shieldsName}?logo=pypi&sort=semver&cacheSeconds=86400`
+        ? `https://shields.paperplane.cc/docker/v/${packageNameInLink}?logo=docker&sort=semver&cacheSeconds=86400`
+        : `https://shields.paperplane.cc/pypi/v/${packageNameInLink}?logo=pypi&sort=semver&cacheSeconds=86400`
   const shieldsAlt =
     project.type === 'npm'
       ? `package version on npm`

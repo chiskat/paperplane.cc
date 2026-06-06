@@ -25,7 +25,7 @@ const open = defineCollection({
     type: z.enum(['npm', 'docker']),
     homepage: z.url().optional(),
     techs: z.array(z.string()).optional(),
-    override: z.object({ shields: z.string().optional() }).optional(),
+    override: z.object({ nameInLink: z.string().optional() }).optional(),
     content: z.string(),
   }),
 })
