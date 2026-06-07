@@ -1,6 +1,10 @@
 export function MdxHr() {
   return (
-    <div className="my-10 flex items-center gap-3" role="separator" aria-orientation="horizontal">
+    <div
+      className="mdx-hr my-10 flex items-center gap-3"
+      role="separator"
+      aria-orientation="horizontal"
+    >
       {/* 左侧线 */}
       <div
         className="h-px flex-1"

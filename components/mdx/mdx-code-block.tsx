@@ -33,7 +33,7 @@ export function MdxCodeBlock({ children, className, ...props }: MdxCodeBlockProp
   const value = useMemo(() => extractText(children), [children])
 
   return (
-    <figure className="group relative my-6 overflow-hidden rounded-md bg-[#f5f2f0] shadow-xs">
+    <figure className="mdx-code-block group relative my-6 overflow-hidden rounded-md bg-[#f5f2f0] shadow-xs">
       <div className="absolute top-2 right-2 z-10 opacity-0 transition-opacity duration-200 group-focus-within:opacity-100 group-hover:opacity-100">
         <CopyButton
           value={value}

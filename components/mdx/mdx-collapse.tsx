@@ -18,7 +18,10 @@ export function MdxCollapse({ title, children, className, ...props }: MdxCollaps
   return (
     <div
       {...props}
-      className={cn('my-6 rounded-md border border-[#d1d5db] bg-[#f3f4f6] px-4', className)}
+      className={cn(
+        'mdx-collapse my-6 rounded-md border border-[#d1d5db] bg-[#f3f4f6] px-4',
+        className
+      )}
     >
       <Accordion collapsible defaultValue={[]}>
         <AccordionItem value="mdx-collapse-item" className="border-b-0">

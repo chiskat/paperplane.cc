@@ -29,7 +29,10 @@ export function MdxPreviewImage({ alt = '', className, src, ...props }: MdxPrevi
           {...props}
           src={src}
           alt={alt}
-          className={cn('cursor-zoom-in shadow-[0_0_10px_rgba(0,0,0,0.2)]', className)}
+          className={cn(
+            'mdx-preview-image cursor-zoom-in shadow-[0_0_10px_rgba(0,0,0,0.2)]',
+            className
+          )}
         />
       </PhotoView>
     </PhotoProvider>

@@ -70,8 +70,8 @@ export function MdxAlert({ type = 'info', title, children, className, ...props }
     <div
       {...props}
       className={cn(
-        'my-6 flex gap-3 rounded-md border-l-[5px] px-4 py-3 text-[18px] leading-[1.65] shadow-[0_1px_0_rgba(0,0,0,0.03)]',
-        '[&_ol]:my-2 [&_p]:my-0 [&_p+p]:mt-2 [&_pre]:my-3 [&_ul]:my-2',
+        'mdx-alert my-6 flex gap-3 rounded-md border-l-[5px] px-4 py-3 text-[18px] leading-[1.65] shadow-[0_1px_0_rgba(0,0,0,0.03)]',
+        '[&_ol]:my-2 [&_p]:my-0 [&_p+p]:mt-2 [&_pre]:my-0 [&_ul]:my-2',
         config.className,
         className
       )}

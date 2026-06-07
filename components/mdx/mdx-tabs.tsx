@@ -28,7 +28,7 @@ export function MdxTabs({ children, className }: { children: ReactNode; classNam
   const defaultValue = tabValues[0]
 
   return (
-    <Tabs defaultValue={defaultValue} className={cn('my-6 w-full gap-0', className)}>
+    <Tabs defaultValue={defaultValue} className={cn('mdx-tabs my-6 w-full gap-0', className)}>
       <TabsList className="h-9 p-1">
         {items.map((item, index) => {
           const value = tabValues[index]
@@ -52,7 +52,7 @@ export function MdxTabs({ children, className }: { children: ReactNode; classNam
           <TabsContent
             key={tabValues[index]}
             value={tabValues[index]}
-            className="flow-root"
+            className="mdx-tab flow-root"
             style={{ overflow: 'visible' }}
           >
             {item.props.children}
