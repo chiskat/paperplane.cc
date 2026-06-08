@@ -298,8 +298,10 @@ volumes:
 
 - npm，总是位于 `~/.npm`，也就是 `/root/.npm`；
 - yarn，位于 `/usr/local/share/.cache/yarn`；
-- pnpm，位于 `工作区/.pnpm-store`；
+- pnpm，位于 `工作区/.pnpm-store`，默认情况下是 `/drone/src/.pnpm-store`；
   这里的 “工作区” 指的是 `.drone.yml` 中配置的 ["workspace.path"](https://docs.drone.io/pipeline/docker/syntax/workspace/)，默认是 `"/drone/src"`。
+
+有关包管理工具的缓存路径的探索，可以阅读我的 [这一篇博文](https://paperplane.cc/post/npm-cache)。
 
 ---
 
