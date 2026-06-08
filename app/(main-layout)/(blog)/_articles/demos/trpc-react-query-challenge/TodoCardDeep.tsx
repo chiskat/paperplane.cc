@@ -65,7 +65,7 @@ export default function TodoCardDeep({ id }: TodoCardProps) {
   if (isLoading || !data) {
     return (
       <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-base text-zinc-500">
-        加载中...
+        请求中...
       </div>
     )
   }
