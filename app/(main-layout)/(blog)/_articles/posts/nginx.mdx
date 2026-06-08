@@ -221,6 +221,23 @@ location / {
 
 否则 WebSocket 可能会一直出错，却不会显示原因。
 
+# AI 流式输出优化
+
+前两项，优化流式输出的流畅度；后门几项避免流式输出超时；
+推荐把这些配置放在 `/api` 等纯数据接口处，直接放在网站根级 `/` 也行，但不如前者。
+
+```nginx
+location / {
+  proxy_buffering off;
+  proxy_cache off;
+
+  proxy_connect_timeout 3600s;
+  proxy_send_timeout 3600s;
+  proxy_read_timeout 3600s;
+  send_timeout 3600s;
+}
+```
+
 # `location` 路由的几种配置的区别
 
 **修饰符：**
