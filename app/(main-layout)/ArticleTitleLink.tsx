@@ -51,7 +51,7 @@ export function ArticleTitleLink({
           <Link
             key={tag}
             href={`/tags/${encodeURIComponent(tag)}`}
-            className="hover:bg-primary/10 hover:text-primary rounded-sm bg-[#f0f3f7] px-1.5 py-0.5 text-[#657386] transition-colors"
+            className="hover:bg-primary/10 hover:text-primary rounded-sm bg-[#f0f3f7] px-1.5 py-0 text-[#657386] transition-colors"
           >
             #{tag}
           </Link>
