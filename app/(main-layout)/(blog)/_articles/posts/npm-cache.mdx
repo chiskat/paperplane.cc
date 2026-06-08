@@ -14,7 +14,7 @@ categories: [JS]
 
 # 包管理工具的缓存
 
-本文不考虑 Windows 和 macOS 环境，只考虑 CI/CD 场景常用的操作系统，例如 Ubuntu、Alpine、Node 镜像。
+本文只考虑 CI/CD 常用的系统，例如 Ubuntu、Alpine、Node 镜像；不考虑 Windows 和 macOS。
 
 ## npm 的缓存
 
@@ -456,7 +456,7 @@ steps:
 
 不过，Volume Cache 这个插件会按照仓库名来对缓存文件进行分目录存放，**所以多个项目无法复用同一份缓存**，但优点是所有类型的项目都可以配置同一个宿主机的缓存目录，彼此是完全隔离的。后续即使有需求，fork 一份代码后只需要极少的改动便可完成修改。
 
-# GitHub Actions 的 `setup-node` 模式（推荐）
+# GitHub Actions 的 `setup-node` 模式
 
 这是推荐的方式，也是最常见的方式。
 
@@ -560,8 +560,8 @@ jobs:
 
 但是，新的问题来了：我们为什么不需要在流水线中配置这两个流程，而是只需要一个？
 
-这是因为，**每个 GitHub Actions 的流水线插件都可以注册 “Run” 和 “Post” 两个步骤，前者先执行，后者用于收尾。**
-如果有多个插件，那么遵循 “先 Run 后 Post”，类似于 “洋葱模型”。
+这是因为，**每个 GitHub Actions 的流水线插件都可以注册 “Run” 和 “Post” 两个阶段，前者是插件主要执行者，是必须的；而后者专门用于收尾，可以没有 “Post” 阶段。**
+如果有多个插件，那么遵循 “先 Run 的后 Post”，类似于 “洋葱模型”。
 
 示意图如下：
 
@@ -818,7 +818,7 @@ Cache saved with key: node-cache-Linux-npm-71d8e9...(哈希)
 
 找到 pnpm 运行记录，打开 “安装依赖并运行测试” 这一步，打印输出如下：
 
-```
+```plaintext {3,5,7-8}
 当前用户： root
 
 用户目录： /github/home
@@ -842,7 +842,7 @@ Cache saved with key: node-cache-Linux-npm-71d8e9...(哈希)
 
 - 因为使用的是 `node` 镜像，默认用户就是 `root`，这没错；
 - 但用户目录却是 `/github/home`，非常神奇；
-  还好我们 npm 缓存写的是 `~/.npm`，如果写成绝对路径，那就是 `/github/home/.npm`，非常容易写错；
+  还好我们 npm 缓存写的是 `~/.npm`，如果写成绝对路径，得写成 `/github/home/.npm`，非常容易写错；
 - 工作区的目录竟然是 `/__w/仓库名/仓库名`；
   可能这就是 GitHub Actions 中以 `root` 用户运行第三方镜像时的初始化；
 - pnpm 的缓存目录却是 `/__w/.pnpm-store`！
@@ -851,7 +851,7 @@ Cache saved with key: node-cache-Linux-npm-71d8e9...(哈希)
 
 我们查看 “分析运行环境” 这一栏的输出：
 
-```
+```plaintext {8}
 （...前部内容省略）
 
 ===== 3. df -h 查看各挂载点设备和文件系统 =====
