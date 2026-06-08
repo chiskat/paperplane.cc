@@ -54,13 +54,13 @@ services:
 
 其中，两个访问密码请自行设置；还有 `volumes` 里的卷挂载，目录名你并没有看错，确实是 `antigravity_tools`。
 
-部署后，请通过 Nginx 对外暴露访问，打开网页，准备下一步登录账号。
+部署后，请通过 Nginx 对外暴露访问，打开网页，输入刚设置的访问密码进入主界面，准备下一步登录账号。
 
 ## 登录 Google 账号
 
 点击界面右上角的 “添加账号”，选择 “OAuth 授权” 并选择开始，然后跳转到 Google 的 OAuth 页面，登录或选择自己的 Google 账号，然后，会提示 “localhost 拒绝了我们的连接请求”，这是因为 Antigravity 是一个客户端软件，它的登录 URL 回调是 `localhost` 域名，而本地我们并没有运行这个软件，故而报错。
 
-此时，**复制 URL 地址栏中的完整内容，**切换回 Antigravity Manager，在下方的地址栏中粘贴，并提交：
+此时，**复制 URL 地址栏中的完整内容**，切换回 Antigravity Manager，在下方的地址栏中粘贴，并提交：
 
 ![](../images/image-20260608182800880.png)
 
@@ -69,9 +69,10 @@ services:
 ## 将 AI 的接口反代出来
 
 点击页面上方的 “API 反代” 选项卡，打开后，确认服务处于运行中，确认监听端口是否正常；建议把 “跟随应用自动启动” 打开。
-此时，AI 接口便可用了。
+此时，AI 接口便可用了：
 
-我们可以在域名后面，添加 `/v1` 后缀，这便是 OpenAI 兼容接口；也可以使用 `/v1/messages` 这个路径，来使用 Anthropic 接口格式；甚至还可以使用 Gemini 的接口格式。我们使用接口时可以使用任何格式，Antigravity Manager 会自动适配；甚至，使用了 Antigravity 不提供的模型，工具也可以帮我们映射为当前可用的模型。
+我们可以在域名后面，添加 `/v1` 后缀，这便是 OpenAI 兼容接口；也可以使用 `/v1/messages` 这个路径，来使用 Anthropic 接口格式；甚至还可以使用 Gemini 的接口格式。
+我们使用接口时，不论哪一种格式，Antigravity Manager 会自动适配；甚至，使用了 Antigravity 不提供的模型，工具也可以帮我们映射为当前可用的模型。
 
 ---
 
@@ -79,19 +80,21 @@ services:
 
 在 AI 供应商处，这样添加供应商：
 
-- 地址：`http://antigravity-manager:8045/v1`，因为我的 OpenWebUI 和 Antigravity Manager 部署在同一个 Docker Compose 配置中，因此这里填写镜像名作为主机名，可以互通，注意末尾加上 `/v1`；
+- 地址：`http://antigravity-manager:8045/v1`，**因为我的 OpenWebUI 和 Antigravity Manager 部署在同一个 Docker Compose 配置中**，因此这里填写镜像名作为主机名，可以互通，注意末尾加上 `/v1`；
 - 访问令牌填写 Antigravity Manager 环境变量的 `API_KEY` 配置的值；
 - 模型名称从 Antigravity Manager 的界面上复制，例如 `gemini-3.1-pro-high` 和 `claude-sonnet-4-6`。
 
-这样即可调用 Gemini 等模型。我的实例如下图：
+这样即可调用 Gemini 等模型。我的实例实测如下图：
 
 ![](../images/image-20260608185311716.png)
+
+我这里配置好了网络。如果你使用时，提示 400 错误，请继续阅读下文，设置网络。
 
 ## 关于额度计算
 
 目前，Antigravity 的用量是这样计算的：
 
-- Gemini Pro 和 Gemini Flash 是一起算的，每 7 天重置一次免费用量；
+- 现在免费用户的 Gemini Pro 和 Gemini Flash 是一起算的，每 7 天重置一次免费用量；
   （曾经，Pro 和 Flash 是分开计算的）
 - Claude 模型单独算，每 7 天重置一次免费用量。
 - 付费用户是 5 小时重置一次用量，且用量是免费用户的至少 2 倍起。
@@ -107,11 +110,11 @@ services:
 这表明你所使用的网络被 Google 认为是机房网络、代理网络、不提供服务的地区的地址等情况。
 
 其实，机房 IP 大概率会有这种问题，我推荐使用 [Cloudflare WARP](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-wan/zero-trust/cloudflare-one-client/) 来解决。
+Cloudflare WARP 是免费的零信任安全网络，接入后，你的流量在网络中加密传输，并通过随机的出口访问外部服务。使用它来代理 Antigravity 的请求，便可以正常使用，不再回出现 400 报错。
 
-Cloudflare WARP 是免费的零信任安全网络，接入后，你的流量在网络中加密传输，并通过随机的出口访问外部服务。
-使用它来代理 Antigravity 的请求，便可以正常使用，不再回出现 400 报错。
+安装 Cloudflare WARP 特别复杂，而且对主机有严重的影响，会让主机的所有出口流量都被代理，不太值得。
 
-安装 Cloudflare WARP 特别复杂，而且对主机有严重的影响，因此使用 Docker 来配置更好：
+好在，CaoMingJun 大神开发了 `caomingjun/warp` 这个镜像，允许我们通过 sock5 接入 WARP，只代理这部分流量。部署方式：
 
 ```yaml
 services:
@@ -153,21 +156,19 @@ services:
 socks5://warp:1080
 ```
 
-如果你的 WARP 容器名字不叫这个，记得一同修改了。
+如果你的 WARP 容器名字不叫这个，记得一同修改了；配置后，可能要重启 Antigravity Manager。
 
 ::: info 注意
 
-WARP 必须和 Antigravity Manager 接入同一个 Docker Network，才能使用容器名来互相访问，最简单方式就算把它们的配置放在同一个 `docker-compose.yml` 文件中。
+WARP 必须和 Antigravity Manager 接入同一个 Docker Network，才能使用容器名来互相访问，最简单方式就是把它们的配置放在同一个 `docker-compose.yml` 文件中。
 
 :::
 
-配置后，可能要重启 Antigravity Manager。
-
 这样，就成功解决了 Google 对 IP 区域的限制。
 
-# Gemini 工具调用出错
+# Gemini 工具调用签名出错
 
-不仅是我，很多人也遇到了 Gemini 的工具调用报错，内容如下：
+不仅是我，很多人也遇到了 Gemini 的工具调用 400 报错，内容如下：
 
 ```
 Function call is missing a thought_signature in functionCall parts.
@@ -176,15 +177,16 @@ Additional data, function call *****. Please refer to
 https://ai.google.dev/gemini-api/docs/thought-signatures for more details.
 ```
 
-用户的话触发了工具调用，比如搜索网络，或检索文件，此时便会触发以上报错，导致请求中断。
+用户的输入触发了工具调用，比如搜索网络，或检索文件，此时便会触发以上报错，导致任务中断。
 
-下图中，我的问题触发了网络搜索工具调用，Antigravity 返回了 400 报错，消息直接终止：
+下图中，我的问题触发了网络搜索工具调用，Antigravity 返回了 400 报错，任务直接终止：
 
 ![](../images/image-20260608192848214.png)
 
 这是因为，Google [更新了请求格式](https://ai.google.dev/gemini-api/docs/thought-signatures?hl=zh-cn)，请求需要携带思维链的 base64 签名。
 
 原本 Antigravity Manager 会处理请求，把这些数据补全，它的源码中也一直存在相关逻辑。
+
 但是，随着时间推移，Google 后续的更新以及 Antigravity Manager 的维护进度跟不上 Google，导致工具调用现在大概率首次失败。
 
 > 似乎只有 Gemini 模型有这个问题，Claude 模型不受影响。
@@ -193,7 +195,7 @@ https://ai.google.dev/gemini-api/docs/thought-signatures for more details.
 
 作为用户，向 AI 发出文字 “继续” 即可，就是这么简单。
 
-因为这个思维链的签名只在工具调用的步骤比较关键，所以，只要当前发送的消息体中没有工具调用，那请求大概率会成功。
+因为这个思维链的签名只在工具调用的步骤才需要，所以，只要当前发送的消息体中没有工具调用，那请求大概率会成功。
 
 如下图，第一次触发工具调用报错终止，发出 “继续” 后可以继续工作：
 
