@@ -2,7 +2,7 @@
 name: chiskat/baseline-node
 repo: chiskat/baseline-node
 type: docker
-override: { nameInLink: "chiskat/baseline-node20" }
+override: { nameInLink: "chiskat/baseline-node24" }
 techs: ["nodejs", "docker"]
 ---
 
@@ -13,18 +13,36 @@ techs: ["nodejs", "docker"]
 
 CI/CD 定时任务每周都会检查 Node.js 和 pnpm 的版本，如果有更新的版本，则会触发构建，同时使用日期作为 Tag，例如 `2025.10.26`。
 
-目前提供 `20` 版本的 Node.js，所有镜像名前缀均为 `baseline-node20`；
-后续根据需求，可能会添加更多和更新的 Node.js 大版本，例如 `22` 或 `24`。
+目前提供 `20`、`22`、`24` 版本的 Node.js，所有镜像名前缀均为 `baseline-node20`；
+后续根据需求，可能会添加更多和更新的 Node.js 大版本，仅限偶数的 LTSC 版本，例如 `26` 或 `18`。
 
 ---
 
 目前包含了以下镜像：
+
+Node 20：
 
 - `chiskat/baseline-node20-alpine`
 - `chiskat/baseline-node20`
 - `chiskat/baseline-node20-puppeteer`
 - `chiskat/baseline-node20-full`
 - `chiskat/baseline-node20-full-puppeteer`
+
+Node 22：
+
+- `chiskat/baseline-node22-alpine`
+- `chiskat/baseline-node22`
+- `chiskat/baseline-node22-puppeteer`
+- `chiskat/baseline-node22-full`
+- `chiskat/baseline-node22-full-puppeteer`
+
+Node 24：
+
+- `chiskat/baseline-node24-alpine`
+- `chiskat/baseline-node24`
+- `chiskat/baseline-node24-puppeteer`
+- `chiskat/baseline-node24-full`
+- `chiskat/baseline-node24-full-puppeteer`
 
 所有版本均已配置好并通过 `corepack` 开启 `pnpm`。
 
