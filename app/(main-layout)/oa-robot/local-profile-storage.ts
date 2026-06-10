@@ -4,7 +4,7 @@ import { createId } from '@paralleldrive/cuid2'
 import type { inferRouterOutputs } from '@trpc/server'
 import { useLocalStorageState } from 'ahooks'
 
-import type { AppRouter } from '@/apis/appRouter'
+import type { AppRouter } from '@/apis/app-router'
 import type { OARobotProfile } from '@/models/client'
 
 type RouterOutputs = inferRouterOutputs<AppRouter>

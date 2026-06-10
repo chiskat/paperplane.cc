@@ -4,7 +4,7 @@ import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 
 import { getQueryClient } from '@/lib/query-client'
 import { createCallerFactory, createTRPCContext } from './trpc'
-import { appRouter } from '../apis/appRouter'
+import { appRouter } from '../apis/app-router'
 
 export const trpcServer = createTRPCOptionsProxy({
   ctx: await createTRPCContext(null),

@@ -2,7 +2,7 @@ import 'server-only'
 
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 
-import { appRouter } from '@/apis/appRouter'
+import { appRouter } from '@/apis/app-router'
 import { createTRPCContext } from '@/lib/trpc'
 
 const handler = (req: Request) =>

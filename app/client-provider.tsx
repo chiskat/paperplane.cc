@@ -7,7 +7,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { createTRPCClient } from '@trpc/client'
 import { PropsWithChildren, useState } from 'react'
 
-import type { AppRouter } from '@/apis/appRouter'
+import type { AppRouter } from '@/apis/app-router'
 import { Toaster } from '@/components/ui/toast'
 import { getQueryClient } from '@/lib/query-client'
 import { trpcClientConfig, TRPCProvider } from '@/lib/trpc-client'

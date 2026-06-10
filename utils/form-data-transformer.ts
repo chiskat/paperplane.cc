@@ -2,7 +2,7 @@ import { TRPCLink } from '@trpc/client'
 import { set } from 'lodash-es'
 import { parse, stringify } from 'superjson'
 
-import type { AppRouter } from '@/apis/appRouter'
+import type { AppRouter } from '@/apis/app-router'
 
 const REST_FIELD_NAME = '__rest'
 const FILE_FIELDS_NAME = '__fileFields'
