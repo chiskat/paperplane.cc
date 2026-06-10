@@ -193,12 +193,6 @@ pnpm add streamdown @streamdown/cjk @streamdown/code
 
 其中，`@streamdown/cjk` 可以让 Markdown 的标记语法在连接中日韩文字时能正确生效，`@streamdown/code` 用于渲染代码块。
 
-Streamdown 使用了 Vercel AI Elements 相关的组件，添加它：
-
-```bash
-pnpm dlx ai-elements@latest add message
-```
-
 此外，还需要在 TailwindCSS 的全局 CSS 中添加：
 
 ```css
@@ -273,7 +267,7 @@ export default function ChatDemo1() {
 npx shadcn@latest add @ai-elements/all
 ```
 
-因为后续会不断完善功能，所以直接一次性安装完全。
+因为后续会不断开发新功能，要用到各种 AI 组件，所以直接一次性安装完全。
 
 ---
 
@@ -786,12 +780,11 @@ export async function POST(request: Request) {
 
 新的组件同样可以正常在工具调用后输出最终回答。
 
-使用我默认的提示词测试 Demo，你会发现，因为美国跨越多个时区，此问题会导致多次工具调用。尽管配置了 `stopWhen: stepCountIs(2)`，但最终还是可以完成输出；从这可以看出，Vercel AI SDK 允许我们在一个步骤中发起多次工具调用。
-
 <br />
 
-实际开发中，Agent 会执行更多的步骤，因此 `stopWhen: stepCountIs(5)` 的值会调的比较大，例如 `50`；
-前端方面，也会开启 `sendAutomaticallyWhen`，通过前后端同时采取措施，避免工具调用作为最后一条消息的情况。
+也可以写成 `stopWhen: stepCountIs(2)`，但这样会遇到一些问题：有时，AI 会在发起一轮工具调用后，返回文字：“考虑到美国有夏令时，我再次以夏令时的时区偏移查询一遍”，然后开始第二轮工具调用，此时 `stepCountIs(2)` 就不够用了，会导致这轮工具调用后 AI 无法总结回答。
+
+实际开发中，Agent 可能还会执行更多的步骤，因此 `stopWhen: stepCountIs(5)` 的值会调的比较大，例如 `50`；前端方面，也会开启 `sendAutomaticallyWhen`，通过前后端同时采取措施，避免工具调用作为最后一条消息的情况。
 
 # 支持客户端工具调用
 
