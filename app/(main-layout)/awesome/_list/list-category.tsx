@@ -2,11 +2,11 @@
 
 import type { AwesomeTreeResult } from '@/apis/awesome/items'
 import { useSession } from '@/lib/auth-client'
-import { ListItem } from './ListItem'
-import { CategoryDeleteButton } from '../_category/CategoryDeleteButton'
-import { CategoryEditButton, type CategoryFormValue } from '../_category/CategoryEditButton'
-import { AwesomeEditButton } from '../_item/AwesomeEditButton'
-import { AwesomeSortButton } from '../_item/AwesomeSortButton'
+import { ListItem } from './list-item'
+import { CategoryDeleteButton } from '../_category/category-delete-button'
+import { CategoryEditButton, type CategoryFormValue } from '../_category/category-edit-button'
+import { AwesomeEditButton } from '../_item/awesome-edit-button'
+import { AwesomeSortButton } from '../_item/awesome-sort-button'
 
 export interface ListCategoryProps {
   catelog: AwesomeTreeResult

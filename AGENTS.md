@@ -14,14 +14,14 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 
 ## 目录结构
 
-- `app/`：Next.js App Router 页面、布局和路由处理，此目录下文件名允许 PascalCase
+- `app/`：Next.js App Router 页面、布局和路由处理
   - `(main-layout)/`：使用主站布局的页面路由，绝大部分页面应该在这里
   - `(no-layout)/`：不使用主站布局的路由，例如部分给 Puppeteer 截图用的界面
   - `(redirect)/`：跳转、短链等重定向相关路由
   - `(well-known)`：网站一些元数据，例如 SiteMap、llms.txt、OIDC 等
   - `api/`：接口路由，tRPC、Better-Auth 等工具会使用此路径
 - `apis/`：tRPC 后端业务接口代码
-- `components/`：通用 UI 组件，此目录下文件名必须遵循 dash-case
+- `components/`：通用 UI 组件
 - `hooks/`：通用 React Hooks
 - `lib/`：认证、数据库、缓存、存储、tRPC 等基础设施封装
 - `models/`：由 Prisma 生成的类型，禁止直接修改
@@ -32,7 +32,7 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 
 ## 通用规范
 
-- `/app` 目录下的组件可以使用 PascalCase 命名，其它文件尽量以 dash-case 命名
+- 除非特殊情况，所有文件必须以 dash-case 形式命名
 - 为了提高 Next.js 约定式路由的性能，不需要作为 path 的目录请使用 `_` 下划线开头
 - 对象写法尽量写到一行内，不要把每个字段都单开一行
 - Prettier 配置了每行最大字符数限制、`import` 排序规则、TailwindCSS 类名排序规则
@@ -49,7 +49,7 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 - 页面需要有 title，前面可以有一个或多个标题，末尾是 `PaperPlane.cc`，中间使用 `-` 连接
 - 组件代码中，请先导出组件参数 `interface`，然后再导出组件 `function`
 - 组件代码中，组件参数的类型名称必须是组件名后加 `Props`
-- 组件接受的 `string` 格式的参数，都要考虑是否可以换成 `ReactNode`
+- 组件接受的要渲染到 DOM 上的参数，都要考虑是否可以把 `string` 类型换成 `ReactNode`
 - 使用 Shadcn 添加 UI 组件时，如果提示某些文件已存在，则不要覆盖现有文件；添加后请对新增的文件进行格式化，处理其中的 ESLint 问题
 - 对于拖拽放置类组件，需实现原始版本和 “可拖拽” 版本，拖拽过程中通过 `createPortal()` 包裹原始版本组件，来模拟被拖拽元素的样式；具体代码可以参考 @app/(main-layout)/awesome/\_item/AwesomeSortButton.tsx
 

@@ -22,7 +22,7 @@ import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
 import { shortURLPrefix } from '@/lib/zods/short'
 import { ShortRedirectType } from '@/models/enums'
-import { ShortDeleteButton } from './ShortDeleteButton'
+import { ShortDeleteButton } from './short-delete-button'
 
 const PAGE_SIZE = 10
 

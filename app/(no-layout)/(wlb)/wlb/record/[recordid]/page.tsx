@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 
-import { RecordView } from '@/app/(main-layout)/wlb/_view/RecordView'
+import { RecordView } from '@/app/(main-layout)/wlb/_view/record-view'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { isLocalhostRequest } from '@/utils/ip-limit'

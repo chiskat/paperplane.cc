@@ -4,10 +4,10 @@ import Link from 'next/link'
 import type { AwesomeItemResult } from '@/apis/awesome/items'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
-import { ListItemLinks } from './ListItemLinks'
-import { ListItemTags } from './ListItemTags'
-import { AwesomeDeleteButton } from '../_item/AwesomeDeleteButton'
-import { AwesomeEditButton } from '../_item/AwesomeEditButton'
+import { ListItemLinks } from './list-item-links'
+import { ListItemTags } from './list-item-tags'
+import { AwesomeDeleteButton } from '../_item/awesome-delete-button'
+import { AwesomeEditButton } from '../_item/awesome-edit-button'
 
 export function awesomeStarLevel(stars: number) {
   return stars >= 5

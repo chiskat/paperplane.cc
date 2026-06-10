@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 
 import { WLBDailyRecord, WLBProfile } from '@/models/browser'
-import backgroundImages from './BackgroundImage'
-import WeatherIcon from './WeatherIcon'
+import backgroundImages from './background-image'
+import WeatherIcon from './weather-icon'
 
 export interface RecordViewProps {
   record: WLBDailyRecord

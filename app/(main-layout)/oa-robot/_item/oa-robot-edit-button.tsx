@@ -34,7 +34,7 @@ import {
   useOARobotLocalProfiles,
   type OARobotLocalProfile,
   type OARobotLocalProfilePayload,
-} from '../localProfileStorage'
+} from '../local-profile-storage'
 import { oaRobotTypeOptions } from '../robot-icon'
 
 type OARobotStorageSource = 'local' | 'cloud'

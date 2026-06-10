@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 import { list } from './list'
-import { SnippetLink } from './SnippetLink'
+import { SnippetLink } from './snippet-link'
 
 interface SnippetCategory {
   title: string

@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
-import { DemoSidebarItem } from './DemoSidebarItem'
+import { DemoSidebarItem } from './demo-sidebar-item'
 import { filterAndSortByDemoOrder } from './sort'
 
 export default function DemosLayout({ children }: { children: ReactNode }) {

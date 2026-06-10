@@ -7,7 +7,7 @@ import { Switch } from '@/components/animate-ui/components/radix/switch'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useTRPC } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { SidebarItem } from './SidebarItem'
+import { SidebarItem } from './page-sidebar-item'
 
 export interface SidebarProps {
   onScrollToSection: (id: string) => void

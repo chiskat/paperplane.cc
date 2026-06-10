@@ -34,7 +34,7 @@ import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { wlbOffworkTimeZod, wlbProfileZod } from '@/lib/zods/wlb'
 import { SalaryDayType, WLBWeekendOffworkType } from '@/models/enums'
-import { WLBProfilePositionButton } from './ProfilePositionButton'
+import { WLBProfilePositionButton } from './profile-position-button'
 
 export type WLBProfileFormValue = z.input<typeof wlbProfileZod>
 

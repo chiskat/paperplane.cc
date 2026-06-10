@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 
-import SendMessageForm from './_form/SendMessageForm'
-import OARobotList, { type OARobotListSelectedProfile } from './_list/List'
+import SendMessageForm from './_form/send-message-form'
+import OARobotList, { type OARobotListSelectedProfile } from './_list/profile-list'
 
 export default function OARobotPageClient() {
   const [selectedProfile, setSelectedProfile] = useState<OARobotListSelectedProfile | null>(null)

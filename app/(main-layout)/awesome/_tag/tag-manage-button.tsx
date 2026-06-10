@@ -15,9 +15,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { TagDeleteButton } from './TagDeleteButton'
-import { TagEditButton, type TagFormValue } from './TagEditButton'
-import { TagSortButton } from './TagSortButton'
+import { TagDeleteButton } from './tag-delete-button'
+import { TagEditButton, type TagFormValue } from './tag-edit-button'
+import { TagSortButton } from './tag-sort-button'
 
 export interface TagManageButtonProps extends Omit<ComponentProps<typeof Button>, 'onClick'> {
   children?: ReactNode

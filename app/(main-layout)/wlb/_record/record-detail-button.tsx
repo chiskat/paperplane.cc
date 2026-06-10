@@ -34,7 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useTRPC } from '@/lib/trpc-client'
 import type { WLBDailyRecord } from '@/models/browser'
 import { cn } from '@/utils/style'
-import { WLBNotificationRecord } from './NotificationRecord'
+import { WLBNotificationRecord } from './notification-record'
 
 type WLBRecordDetail = WLBDailyRecord & {
   profile?: {

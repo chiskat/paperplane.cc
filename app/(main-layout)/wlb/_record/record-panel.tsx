@@ -21,8 +21,8 @@ import { DatePicker, DatePickerContent, DatePickerInput } from '@/components/ui/
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
-import { WLBRecordListItem } from './RecordListItem'
-import { WLBPanelLoadingState } from '../_shared/PanelLoadingState'
+import { WLBRecordListItem } from './record-list-item'
+import { WLBPanelLoadingState } from '../_shared/panel-loading-state'
 
 export function WLBRecordPanel({ profileId }: { profileId: string }) {
   const trpc = useTRPC()

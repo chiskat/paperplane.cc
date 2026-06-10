@@ -10,7 +10,7 @@ import {
   parseMonthParam,
   parseYearParam,
 } from '@/app/(main-layout)/(blog)/archives/archive-data'
-import { ArticleTitleLink } from '@/app/(main-layout)/ArticleTitleLink'
+import { ArticleTitleLink } from '@/app/(main-layout)/article-title-link'
 
 export const dynamicParams = false
 

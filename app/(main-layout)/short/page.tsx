@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import ShortPageClient from './ShortPageClient'
+import ShortPageClient from './page-client'
 
 export const metadata: Metadata = {
   title: '短链接 - PaperPlane.cc',

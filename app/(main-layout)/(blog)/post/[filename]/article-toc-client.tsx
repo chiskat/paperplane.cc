@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { cn } from '@/utils/style'
-import type { TocItem } from './Toc'
+import type { TocItem } from './article-toc'
 
 const ACTIVE_HEADING_OFFSET = 180
 const DEFAULT_SCROLL_TARGET_OFFSET = 128

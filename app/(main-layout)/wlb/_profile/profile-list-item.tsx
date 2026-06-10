@@ -3,8 +3,8 @@
 import { IconEdit, IconTrash } from '@tabler/icons-react'
 
 import { cn } from '@/utils/style'
-import { WLBProfileDeleteButton } from './ProfileDeleteButton'
-import { WLBProfileEditButton } from './ProfileEditButton'
+import { WLBProfileDeleteButton } from './profile-delete-button'
+import { WLBProfileEditButton } from './profile-edit-button'
 
 export type WLBProfileListItemData = {
   id: string

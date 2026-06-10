@@ -16,7 +16,7 @@ import { PackageIcon } from '@/components/icon/package-icon'
 import { GiteaIcon, GithubIcon } from '@/components/icon/tech-icons'
 import { getTechTagByName } from '@/components/tag/tech-tags'
 import { cn } from '@/utils/style'
-import { VersionBadgeImage } from './VersionBadgeImage'
+import { VersionBadgeImage } from './version-badge-image'
 import { filterAndSortByOpenOrder } from '../sort'
 
 export const dynamicParams = false

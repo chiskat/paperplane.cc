@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
 import { cn } from '@/utils/style'
-import ClientProvider from './ClientProvider'
+import ClientProvider from './client-provider'
 import { fontFZYanSong, fontIosevka, fontLXGWWenKai, fontSwift } from './fonts'
 
 import '@/utils/init-lib'

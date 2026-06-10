@@ -12,12 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/lib/auth-client'
 import { useTRPC } from '@/lib/trpc-client'
-import { WLBProfileEditButton } from './_profile/ProfileEditButton'
-import { WLBProfileListItem, type WLBProfileListItemData } from './_profile/ProfileListItem'
-import { WLBProfilePanel } from './_profile/ProfilePanel'
-import { WLBRecordPanel } from './_record/RecordPanel'
-import { WLBSubscriptionPanel } from './_subscription/SubscriptionPanel'
-import { TrafficView } from './_view/TrafficView'
+import { WLBProfileEditButton } from './_profile/profile-edit-button'
+import { WLBProfileListItem, type WLBProfileListItemData } from './_profile/profile-list-item'
+import { WLBProfilePanel } from './_profile/profile-panel'
+import { WLBRecordPanel } from './_record/record-panel'
+import { WLBSubscriptionPanel } from './_subscription/subscription-panel'
+import { TrafficView } from './_view/traffic-view'
 
 const SKELETON_KEYS = {
   profileList: 'wlb-profile-skeleton',

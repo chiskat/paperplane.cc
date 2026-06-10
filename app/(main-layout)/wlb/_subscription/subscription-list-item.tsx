@@ -18,8 +18,8 @@ import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import type { WLBProfile, WLBSubscription } from '@/models/browser'
 import { WLBSubscriptionType } from '@/models/enums'
 import { cn } from '@/utils/style'
-import { WLBSubscriptionDeleteButton } from './SubscriptionDeleteButton'
-import { WLBSubscriptionEditButton } from './SubscriptionEditButton'
+import { WLBSubscriptionDeleteButton } from './subscription-delete-button'
+import { WLBSubscriptionEditButton } from './subscription-edit-button'
 
 export interface WLBSubscriptionListItemProps {
   subscription: Pick<WLBSubscription, 'id' | 'name' | 'enable' | 'type' | 'timeOffset'>

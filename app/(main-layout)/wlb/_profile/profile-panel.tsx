@@ -16,7 +16,7 @@ import type { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react'
 import { useTRPC } from '@/lib/trpc-client'
 import type { WLBProfile } from '@/models/browser'
 import { WLBWeekendOffworkType } from '@/models/enums'
-import { WLBPanelLoadingState } from '../_shared/PanelLoadingState'
+import { WLBPanelLoadingState } from '../_shared/panel-loading-state'
 
 const TIME_FORMAT = 'HH:mm'
 

@@ -7,9 +7,9 @@ import { notFound } from 'next/navigation'
 import absurdityBg from '@/assets/article-page/absurdity.png'
 import postmarkImg from '@/assets/article-page/postmark.png'
 import baseMDX from '@/components/mdx/base-render'
-import Commet from './Commet'
-import History from './History'
-import { extractTocFromMdx, Toc } from './Toc'
+import Commet from './article-commet'
+import { extractTocFromMdx, Toc } from './article-toc'
+import History from './edit-history'
 
 export const dynamicParams = false
 

@@ -1,6 +1,6 @@
 import type { AwesomeItemResult } from '@/apis/awesome/items'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Separator } from './ListItem'
+import { Separator } from './list-item'
 
 export interface ListItemTagsProps {
   awesome: AwesomeItemResult

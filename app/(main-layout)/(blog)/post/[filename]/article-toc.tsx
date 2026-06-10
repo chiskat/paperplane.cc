@@ -3,7 +3,7 @@ import type { Heading, PhrasingContent } from 'mdast'
 import { remark } from 'remark'
 import remarkFrontmatter from 'remark-frontmatter'
 
-import TocClient from './TocClient'
+import TocClient from './article-toc-client'
 
 export interface TocItem {
   depth: number

@@ -9,7 +9,7 @@ import { use, useCallback, useEffect, useRef, useState } from 'react'
 import {
   AwesomeDetail,
   AwesomeDetailSkeleton,
-} from '@/app/(main-layout)/awesome/_item/AwesomeDetail'
+} from '@/app/(main-layout)/awesome/_item/awesome-detail'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { useTRPC } from '@/lib/trpc-client'

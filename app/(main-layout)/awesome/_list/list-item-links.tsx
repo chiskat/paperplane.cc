@@ -5,7 +5,7 @@ import type { AwesomeItemResult } from '@/apis/awesome/items'
 import githubIcon from '@/assets/tech-icons/github.svg'
 import { fromURL, PackageIcon } from '@/components/icon/package-icon'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Separator } from './ListItem'
+import { Separator } from './list-item'
 
 export interface ListItemLinksProps {
   awesome: AwesomeItemResult

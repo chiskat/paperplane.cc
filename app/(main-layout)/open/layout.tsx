@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
-import { OpenSidebarItem } from './OpenSidebarItem'
+import { OpenSidebarItem } from './open-sidebar-item'
 import { filterAndSortByOpenOrder } from './sort'
 
 export default function OpenLayout({ children }: { children: ReactNode }) {

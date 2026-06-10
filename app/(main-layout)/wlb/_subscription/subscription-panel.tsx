@@ -10,9 +10,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from '@/components/ui/toast'
 import { useTRPC, useTRPCClient } from '@/lib/trpc-client'
 import { cn } from '@/utils/style'
-import { WLBSubscriptionEditButton } from './SubscriptionEditButton'
-import { WLBSubscriptionListItem } from './SubscriptionListItem'
-import { WLBPanelLoadingState } from '../_shared/PanelLoadingState'
+import { WLBSubscriptionEditButton } from './subscription-edit-button'
+import { WLBSubscriptionListItem } from './subscription-list-item'
+import { WLBPanelLoadingState } from '../_shared/panel-loading-state'
 
 export function WLBSubscriptionPanel({ profileId }: { profileId: string }) {
   const trpc = useTRPC()

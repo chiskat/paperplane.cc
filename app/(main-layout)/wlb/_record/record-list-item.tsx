@@ -12,8 +12,8 @@ import {
 import dayjs from 'dayjs'
 
 import { cn } from '@/utils/style'
-import { WLBRecordDeleteButton } from './RecordDeleteButton'
-import { WLBRecordDetailButton } from './RecordDetailButton'
+import { WLBRecordDeleteButton } from './record-delete-button'
+import { WLBRecordDetailButton } from './record-detail-button'
 
 export type WLBRecordListItemData = {
   id: string

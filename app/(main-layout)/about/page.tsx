@@ -17,7 +17,7 @@ import {
   OpenwebuiIcon,
   ShieldsioIcon,
 } from '@/components/icon/tech-icons'
-import Website, { type WebsiteProps } from './Website'
+import Website, { type WebsiteProps } from './website-list'
 
 export const metadata: Metadata = { title: '关于 - PaperPlane.cc' }
 

@@ -4,7 +4,7 @@ import Artalk from 'artalk'
 import { usePathname } from 'next/navigation'
 import { useCallback, useRef } from 'react'
 
-import './Commet.css'
+import './article-commet.css'
 
 export default function Commet() {
   const pathname = usePathname()

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { ArticleTitleLink } from '@/app/(main-layout)/ArticleTitleLink'
+import { ArticleTitleLink } from '@/app/(main-layout)/article-title-link'
 import {
   formatMonthParam,
   getArchiveYears,
