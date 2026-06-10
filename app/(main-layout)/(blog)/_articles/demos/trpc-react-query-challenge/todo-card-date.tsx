@@ -11,6 +11,7 @@ interface TodoItem {
   id: string
   title: string
   done: boolean
+  createAt: Date
 }
 
 export interface TodoCardProps {
@@ -18,11 +19,11 @@ export interface TodoCardProps {
 }
 
 async function fetchTodo(id: string): Promise<TodoItem> {
-  await sleep(1500)
-  return { id, title: '学习 React', done: false }
+  await sleep(500)
+  return { id, title: '学习 React', done: false, createAt: new Date('2025-01-01') }
 }
 
-export default function TodoCard({ id }: TodoCardProps) {
+export function TodoCardDate({ id }: TodoCardProps) {
   const { data, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ['todo', id],
     queryFn: () => fetchTodo(id),

@@ -39,7 +39,7 @@ async function fetchTodo(id: string): Promise<TodoItem> {
   }
 }
 
-export default function TodoCardDeep({ id }: TodoCardProps) {
+export function TodoCardDeep({ id }: TodoCardProps) {
   const { data, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ['todo', id],
     queryFn: () => fetchTodo(id),

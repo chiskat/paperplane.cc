@@ -20,7 +20,7 @@ async function fetchTodo(id: string): Promise<TodoItem> {
   return { id, title: '学习 React', done: false }
 }
 
-export default function TodoCard({ id }: TodoCardProps) {
+export function TodoCard({ id }: TodoCardProps) {
   const { data, isLoading, isRefetching } = useQuery({
     queryKey: ['todo', id],
     queryFn: () => fetchTodo(id),

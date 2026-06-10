@@ -23,13 +23,12 @@ async function fetchTodo(id: string): Promise<TodoItem> {
   return { id, title: '学习 React', done: false, createAt: new Date('2025-01-01') }
 }
 
-export default function TodoCardDate({ id }: TodoCardProps) {
+export function TodoCardDateUpdated({ id }: TodoCardProps) {
   const { data, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ['todo', id],
     queryFn: () => fetchTodo(id),
 
     // 以下代码用于恢复 @tanstack/react-query 的默认配置
-    structuralSharing: true,
     staleTime: 0,
   })
 
