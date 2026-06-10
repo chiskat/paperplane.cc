@@ -238,7 +238,7 @@ export default function baseMDX(): MDXComponents {
       )
     },
     img(props) {
-      return <MdxPreviewImage className="mdx-img my-8" {...props} />
+      return <MdxPreviewImage className="mdx-img my-8" {...(props as any)} />
     },
     table({ className, ...props }: ComponentPropsWithoutRef<'table'>) {
       return (

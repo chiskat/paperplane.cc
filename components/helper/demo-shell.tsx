@@ -1,7 +1,12 @@
 'use client'
 
-import { IconPlayerPlay, IconRefresh } from '@tabler/icons-react'
-import { useState, type ReactNode } from 'react'
+import {
+  IconAlertTriangle,
+  IconChevronDown,
+  IconPlayerPlay,
+  IconRefresh,
+} from '@tabler/icons-react'
+import { Component, useState, type ErrorInfo, type ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/style'
@@ -17,6 +22,70 @@ export interface DemoShellProps {
   className?: string
 }
 
+interface DemoErrorBoundaryProps {
+  children: ReactNode
+  onReload: () => void
+}
+
+interface DemoErrorBoundaryState {
+  error: Error | null
+  componentStack: string | null
+}
+
+class DemoErrorBoundary extends Component<DemoErrorBoundaryProps, DemoErrorBoundaryState> {
+  state: DemoErrorBoundaryState = { componentStack: null, error: null }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  componentDidCatch(_error: Error, errorInfo: ErrorInfo) {
+    this.setState({ componentStack: errorInfo.componentStack || null })
+  }
+
+  render() {
+    const { children } = this.props
+    const { componentStack, error } = this.state
+
+    if (!error) {
+      return children
+    }
+
+    const errorStack = [
+      error.stack || error.message,
+      componentStack && `React 组件栈：\n${componentStack}`,
+    ]
+      .filter(Boolean)
+      .join('\n\n')
+
+    return (
+      <div className="flex min-h-40 flex-col items-center justify-center gap-4 rounded-lg border border-red-200 bg-red-50 px-5 py-8 text-center text-red-950 dark:border-red-900/70 dark:bg-red-950/30 dark:text-red-100">
+        <div className="flex size-12 items-center justify-center text-red-700 dark:text-red-200">
+          <IconAlertTriangle aria-hidden stroke={2} />
+        </div>
+
+        <div className="font-title-serif space-y-2 text-[20px] font-semibold">
+          Demo 渲染出错，点击右上角按钮以重载
+        </div>
+
+        <details className="group w-full max-w-3xl rounded-lg border border-red-200 bg-white/75 text-left dark:border-red-900/70 dark:bg-red-950/40">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-red-800 outline-none select-none hover:bg-red-100/60 dark:text-red-100 dark:hover:bg-red-900/30 [&::-webkit-details-marker]:hidden">
+            <span>{error.message || '未知错误。'}</span>
+            <IconChevronDown
+              aria-hidden
+              className="size-4 transition-transform group-open:rotate-180"
+              stroke={2}
+            />
+          </summary>
+          <pre className="max-h-80 overflow-auto border-t border-red-200 p-4 font-mono text-xs leading-5 whitespace-pre-wrap text-red-950 dark:border-red-900/70 dark:text-red-100">
+            {errorStack || '没有可用的错误栈。'}
+          </pre>
+        </details>
+      </div>
+    )
+  }
+}
+
 export function DemoShell({
   children,
   title,
@@ -30,13 +99,18 @@ export function DemoShell({
   const [renderKey, setRenderKey] = useState(0)
   const [initialized, setInitialized] = useState(!manual)
 
+  const reloadChildren = () => {
+    setInitialized(true)
+    setRenderKey(key => key + 1)
+  }
+
   const handleRerender = () => {
     if (!initialized) {
       setInitialized(true)
       return
     }
 
-    setRenderKey(key => key + 1)
+    reloadChildren()
   }
 
   return (
@@ -76,9 +150,9 @@ export function DemoShell({
       </div>
 
       {initialized ? (
-        <div key={renderKey} className={cn('font-sans text-[20px]', contentClassName)}>
-          {children}
-        </div>
+        <DemoErrorBoundary key={renderKey} onReload={reloadChildren}>
+          <div className={cn('font-sans text-[20px]', contentClassName)}>{children}</div>
+        </DemoErrorBoundary>
       ) : (
         <div className="flex min-h-32 items-center justify-center">
           <Button aria-label="加载 Demo" size="lg" onClick={handleRerender}>
