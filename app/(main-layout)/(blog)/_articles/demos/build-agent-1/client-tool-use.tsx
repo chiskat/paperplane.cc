@@ -18,7 +18,7 @@ import {
   ToolClarifyingRequirement,
   type ClarifyingRequirementOutput,
   type ClientToolUseMessage,
-} from './ToolClarifyingRequirement'
+} from './tool-clarifying-requirement'
 
 const chatHistory: ClientToolUseMessage[] = [
   {
@@ -32,7 +32,7 @@ const transport = new DefaultChatTransport<ClientToolUseMessage>({
   api: '/api/agent/demo/build-agent-1/client-tool',
 })
 
-export default function ClientToolUse() {
+export function ClientToolUse() {
   const [customTextByToolCallId, setCustomTextByToolCallId] = useState<Record<string, string>>({})
 
   const { addToolOutput, error, messages, sendMessage, status, stop } =

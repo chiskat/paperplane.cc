@@ -24,7 +24,7 @@ const chatHistory: UIMessage[] = [
 
 const transport = new DefaultChatTransport({ api: '/api/agent/demo/build-agent-1/chat' })
 
-export default function Chat() {
+export function BaseChat() {
   const { error, messages, sendMessage, status, stop } = useChat({
     messages: chatHistory,
     transport,

@@ -27,7 +27,7 @@ const chatHistory: UIMessage[] = [
   },
 ]
 
-export default function ServerTool({
+export function ServerToolUse({
   multipleSteps,
   autoResend,
 }: {

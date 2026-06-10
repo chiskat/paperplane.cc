@@ -8,7 +8,7 @@ import { Streamdown } from 'streamdown'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
-export default function WithStreamdown() {
+export function WithStreamdown() {
   const { completion, complete, error, input, isLoading, setCompletion, setInput } = useCompletion({
     api: '/api/agent/demo/build-agent-1/text',
     streamProtocol: 'text',

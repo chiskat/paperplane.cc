@@ -6,11 +6,11 @@ categories: [AI]
 ---
 
 import { DemoShell } from '@/components/helper/demo-shell'
-import StreamText from '../demos/build-agent-1/StreamText'
-import WithStreamdown from '../demos/build-agent-1/WithStreamdown'
-import Chat from '../demos/build-agent-1/Chat'
-import ServerToolUse from '../demos/build-agent-1/ServerToolUse'
-import ClientToolUse from '../demos/build-agent-1/ClientToolUse'
+import { StreamText } from '../demos/build-agent-1/stream-text'
+import { WithStreamdown } from '../demos/build-agent-1/with-streamdown'
+import { BaseChat } from '../demos/build-agent-1/base-chat'
+import { ServerToolUse } from '../demos/build-agent-1/server-tool-use'
+import { ClientToolUse } from '../demos/build-agent-1/client-tool-use'
 
 别人开发的 Agent 用久了，肯定会有想法自己也开发一个，而且，这个开发过程能使我们更深一步理解 Agent 的实现原理。
 
@@ -430,7 +430,7 @@ export default function Chat() {
 渲染组件如下：
 
 <DemoShell rerender>
-  <Chat />
+  <BaseChat />
 </DemoShell>
 
 这样，我们就实现了一个简单的会话系统。

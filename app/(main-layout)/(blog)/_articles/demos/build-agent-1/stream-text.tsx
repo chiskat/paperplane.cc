@@ -5,7 +5,7 @@ import { useCompletion } from '@ai-sdk/react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
-export default function StreamText() {
+export function StreamText() {
   const { completion, complete, error, input, isLoading, setCompletion, setInput } = useCompletion({
     api: '/api/agent/demo/build-agent-1/text',
     streamProtocol: 'text',
