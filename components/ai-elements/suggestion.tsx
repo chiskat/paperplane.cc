@@ -3,8 +3,8 @@
 import type { ComponentProps } from 'react'
 import { useCallback } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
-import { ScrollArea, ScrollBar } from '@/components/ai-elements-ui/scroll-area'
+import { Button } from '@/components/ai-elements/deps/button'
+import { ScrollArea, ScrollBar } from '@/components/ai-elements/deps/scroll-area'
 import { cn } from '@/utils/style'
 
 export type SuggestionsProps = ComponentProps<typeof ScrollArea>

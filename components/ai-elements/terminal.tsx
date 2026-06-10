@@ -5,7 +5,7 @@ import { CheckIcon, CopyIcon, TerminalIcon, Trash2Icon } from 'lucide-react'
 import type { ComponentProps, HTMLAttributes } from 'react'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import { cn } from '@/utils/style'
 
 interface TerminalContextType {

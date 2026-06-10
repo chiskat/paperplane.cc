@@ -15,7 +15,7 @@ import {
 import type { ComponentProps, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Command,
   CommandDialog,
@@ -26,14 +26,14 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/components/ai-elements-ui/command'
+} from '@/components/ai-elements/deps/command'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ai-elements-ui/dialog'
-import { Spinner } from '@/components/ai-elements-ui/spinner'
+} from '@/components/ai-elements/deps/dialog'
+import { Spinner } from '@/components/ai-elements/deps/spinner'
 import { cn } from '@/utils/style'
 
 interface VoiceSelectorContextValue {

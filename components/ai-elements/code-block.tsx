@@ -15,14 +15,14 @@ import {
 import type { BundledLanguage, BundledTheme, HighlighterGeneric, ThemedToken } from 'shiki'
 import { createHighlighter } from 'shiki'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ai-elements-ui/select'
+} from '@/components/ai-elements/deps/select'
 import { cn } from '@/utils/style'
 
 // Shiki uses bitflags for font styles: 1=italic, 2=bold, 4=underline

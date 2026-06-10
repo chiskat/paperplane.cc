@@ -6,7 +6,7 @@ import type { ComponentProps } from 'react'
 import { useCallback } from 'react'
 import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import { cn } from '@/utils/style'
 
 export type ConversationProps = ComponentProps<typeof StickToBottom>

@@ -10,13 +10,13 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/components/ai-elements-ui/command'
+} from '@/components/ai-elements/deps/command'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ai-elements-ui/dialog'
+} from '@/components/ai-elements/deps/dialog'
 import { cn } from '@/utils/style'
 
 export type ModelSelectorProps = ComponentProps<typeof Dialog>

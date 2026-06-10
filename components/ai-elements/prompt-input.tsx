@@ -35,33 +35,33 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ai-elements-ui/command'
+} from '@/components/ai-elements/deps/command'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ai-elements-ui/dropdown-menu'
+} from '@/components/ai-elements/deps/dropdown-menu'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ai-elements-ui/hover-card'
+} from '@/components/ai-elements/deps/hover-card'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
-} from '@/components/ai-elements-ui/input-group'
+} from '@/components/ai-elements/deps/input-group'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ai-elements-ui/select'
-import { Spinner } from '@/components/ai-elements-ui/spinner'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ai-elements-ui/tooltip'
+} from '@/components/ai-elements/deps/select'
+import { Spinner } from '@/components/ai-elements/deps/spinner'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ai-elements/deps/tooltip'
 import { cn } from '@/utils/style'
 
 // ============================================================================

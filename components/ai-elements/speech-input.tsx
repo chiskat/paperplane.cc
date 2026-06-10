@@ -4,8 +4,8 @@ import { MicIcon, SquareIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
-import { Spinner } from '@/components/ai-elements-ui/spinner'
+import { Button } from '@/components/ai-elements/deps/button'
+import { Spinner } from '@/components/ai-elements/deps/spinner'
 import { cn } from '@/utils/style'
 
 interface SpeechRecognition extends EventTarget {

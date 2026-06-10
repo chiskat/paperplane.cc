@@ -10,7 +10,7 @@ import {
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
-} from '@/components/ai-elements-ui/input-group'
+} from '@/components/ai-elements/deps/input-group'
 import { cn } from '@/utils/style'
 
 interface SnippetContextType {

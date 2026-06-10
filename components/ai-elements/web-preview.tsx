@@ -4,19 +4,19 @@ import { ChevronDownIcon } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
-import { Input } from '@/components/ai-elements-ui/input'
+} from '@/components/ai-elements/deps/collapsible'
+import { Input } from '@/components/ai-elements/deps/input'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ai-elements-ui/tooltip'
+} from '@/components/ai-elements/deps/tooltip'
 import { cn } from '@/utils/style'
 
 export interface WebPreviewContextValue {

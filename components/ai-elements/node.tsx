@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ai-elements-ui/card'
+} from '@/components/ai-elements/deps/card'
 import { cn } from '@/utils/style'
 
 export type NodeProps = ComponentProps<typeof Card> & {

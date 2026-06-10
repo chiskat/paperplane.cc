@@ -4,7 +4,7 @@ import { ChevronDownIcon, ExternalLinkIcon, MessageCircleIcon } from 'lucide-rea
 import type { ComponentProps } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ai-elements-ui/dropdown-menu'
+} from '@/components/ai-elements/deps/dropdown-menu'
 import { cn } from '@/utils/style'
 
 const providers = {

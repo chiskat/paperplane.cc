@@ -5,15 +5,15 @@ import { ChevronsUpDownIcon } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ai-elements-ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ai-elements-ui/popover'
+} from '@/components/ai-elements/deps/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ai-elements/deps/popover'
 import { cn } from '@/utils/style'
 
 const deviceIdRegex = /\(([\da-fA-F]{4}:[\da-fA-F]{4})\)$/

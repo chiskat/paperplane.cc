@@ -4,7 +4,7 @@ import { ArrowRightIcon, MinusIcon, PackageIcon, PlusIcon } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { Badge } from '@/components/ai-elements-ui/badge'
+import { Badge } from '@/components/ai-elements/deps/badge'
 import { cn } from '@/utils/style'
 
 type ChangeType = 'major' | 'minor' | 'patch' | 'added' | 'removed'

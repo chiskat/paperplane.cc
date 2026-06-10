@@ -4,9 +4,9 @@ import { CheckIcon, CopyIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import type { ComponentProps, HTMLAttributes } from 'react'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Badge } from '@/components/ai-elements-ui/badge'
-import { Button } from '@/components/ai-elements-ui/button'
-import { Switch } from '@/components/ai-elements-ui/switch'
+import { Badge } from '@/components/ai-elements/deps/badge'
+import { Button } from '@/components/ai-elements/deps/button'
+import { Switch } from '@/components/ai-elements/deps/switch'
 import { cn } from '@/utils/style'
 
 interface EnvironmentVariablesContextType {

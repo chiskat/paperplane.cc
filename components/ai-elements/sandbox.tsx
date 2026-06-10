@@ -8,8 +8,8 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ai-elements-ui/tabs'
+} from '@/components/ai-elements/deps/collapsible'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ai-elements/deps/tabs'
 import { cn } from '@/utils/style'
 import { getStatusBadge } from './tool'
 

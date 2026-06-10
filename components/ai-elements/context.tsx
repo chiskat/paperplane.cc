@@ -5,13 +5,13 @@ import type { ComponentProps } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 import { getUsage } from 'tokenlens'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ai-elements-ui/hover-card'
-import { Progress } from '@/components/ai-elements-ui/progress'
+} from '@/components/ai-elements/deps/hover-card'
+import { Progress } from '@/components/ai-elements/deps/progress'
 import { cn } from '@/utils/style'
 
 const PERCENT_MAX = 100

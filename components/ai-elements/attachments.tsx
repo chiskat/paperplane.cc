@@ -13,12 +13,12 @@ import {
 import type { ComponentProps, HTMLAttributes, ReactNode } from 'react'
 import { createContext, useCallback, useContext, useMemo } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ai-elements-ui/hover-card'
+} from '@/components/ai-elements/deps/hover-card'
 import { cn } from '@/utils/style'
 
 // ============================================================================

@@ -10,14 +10,14 @@ import type { ComponentProps, HTMLAttributes, ReactElement } from 'react'
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Streamdown } from 'streamdown'
 
-import { Button } from '@/components/ai-elements-ui/button'
-import { ButtonGroup, ButtonGroupText } from '@/components/ai-elements-ui/button-group'
+import { Button } from '@/components/ai-elements/deps/button'
+import { ButtonGroup, ButtonGroupText } from '@/components/ai-elements/deps/button-group'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ai-elements-ui/tooltip'
+} from '@/components/ai-elements/deps/tooltip'
 import { cn } from '@/utils/style'
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {

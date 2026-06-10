@@ -3,13 +3,13 @@
 import { ChevronDownIcon, PaperclipIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
-import { ScrollArea } from '@/components/ai-elements-ui/scroll-area'
+} from '@/components/ai-elements/deps/collapsible'
+import { ScrollArea } from '@/components/ai-elements/deps/scroll-area'
 import { cn } from '@/utils/style'
 
 export interface QueueMessagePart {

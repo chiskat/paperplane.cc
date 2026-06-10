@@ -8,7 +8,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 
 interface FileTreeContextType {

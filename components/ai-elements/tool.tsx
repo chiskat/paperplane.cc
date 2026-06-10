@@ -12,12 +12,12 @@ import {
 import type { ComponentProps, ReactNode } from 'react'
 import { isValidElement } from 'react'
 
-import { Badge } from '@/components/ai-elements-ui/badge'
+import { Badge } from '@/components/ai-elements/deps/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 import { CodeBlock } from './code-block'
 

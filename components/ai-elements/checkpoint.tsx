@@ -4,9 +4,9 @@ import type { LucideProps } from 'lucide-react'
 import { BookmarkIcon } from 'lucide-react'
 import type { ComponentProps, HTMLAttributes } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
-import { Separator } from '@/components/ai-elements-ui/separator'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ai-elements-ui/tooltip'
+import { Button } from '@/components/ai-elements/deps/button'
+import { Separator } from '@/components/ai-elements/deps/separator'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ai-elements/deps/tooltip'
 import { cn } from '@/utils/style'
 
 export type CheckpointProps = HTMLAttributes<HTMLDivElement>

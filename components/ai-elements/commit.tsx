@@ -4,13 +4,13 @@ import { CheckIcon, CopyIcon, FileIcon, GitCommitIcon, MinusIcon, PlusIcon } fro
 import type { ComponentProps, HTMLAttributes } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Avatar, AvatarFallback } from '@/components/ai-elements-ui/avatar'
-import { Button } from '@/components/ai-elements-ui/button'
+import { Avatar, AvatarFallback } from '@/components/ai-elements/deps/avatar'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 
 export type CommitProps = ComponentProps<typeof Collapsible>

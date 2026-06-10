@@ -14,12 +14,12 @@ import {
   useState,
 } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 
 // Regex patterns for parsing stack traces

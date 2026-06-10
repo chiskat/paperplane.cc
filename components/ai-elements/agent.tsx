@@ -10,8 +10,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ai-elements-ui/accordion'
-import { Badge } from '@/components/ai-elements-ui/badge'
+} from '@/components/ai-elements/deps/accordion'
+import { Badge } from '@/components/ai-elements/deps/badge'
 import { cn } from '@/utils/style'
 import { CodeBlock } from './code-block'
 

@@ -4,7 +4,7 @@ import { ChevronsUpDownIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import {
   Card,
   CardAction,
@@ -13,12 +13,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ai-elements-ui/card'
+} from '@/components/ai-elements/deps/card'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 import { Shimmer } from './shimmer'
 

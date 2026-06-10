@@ -4,7 +4,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
 import * as React from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
+import { Button } from '@/components/ai-elements/deps/button'
 import { cn } from '@/utils/style'
 
 type CarouselApi = UseEmblaCarouselType[1]

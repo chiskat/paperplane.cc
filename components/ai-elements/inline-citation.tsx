@@ -4,14 +4,14 @@ import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { Badge } from '@/components/ai-elements-ui/badge'
-import type { CarouselApi } from '@/components/ai-elements-ui/carousel'
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ai-elements-ui/carousel'
+import { Badge } from '@/components/ai-elements/deps/badge'
+import type { CarouselApi } from '@/components/ai-elements/deps/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ai-elements/deps/carousel'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ai-elements-ui/hover-card'
+} from '@/components/ai-elements/deps/hover-card'
 import { cn } from '@/utils/style'
 
 export type InlineCitationProps = ComponentProps<'span'>

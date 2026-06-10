@@ -15,8 +15,8 @@ import {
 } from 'media-chrome/react'
 import type { ComponentProps, CSSProperties } from 'react'
 
-import { Button } from '@/components/ai-elements-ui/button'
-import { ButtonGroup, ButtonGroupText } from '@/components/ai-elements-ui/button-group'
+import { Button } from '@/components/ai-elements/deps/button'
+import { ButtonGroup, ButtonGroupText } from '@/components/ai-elements/deps/button-group'
 import { cn } from '@/utils/style'
 
 export type AudioPlayerProps = Omit<ComponentProps<typeof MediaController>, 'audio'>

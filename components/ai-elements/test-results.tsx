@@ -10,12 +10,12 @@ import {
 import type { ComponentProps, HTMLAttributes } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { Badge } from '@/components/ai-elements-ui/badge'
+import { Badge } from '@/components/ai-elements/deps/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ai-elements-ui/collapsible'
+} from '@/components/ai-elements/deps/collapsible'
 import { cn } from '@/utils/style'
 
 type TestStatus = 'passed' | 'failed' | 'skipped' | 'running'

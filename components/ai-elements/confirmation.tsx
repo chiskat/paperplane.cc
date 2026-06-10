@@ -4,8 +4,8 @@ import type { ToolUIPart } from 'ai'
 import type { ComponentProps, ReactNode } from 'react'
 import { createContext, useContext, useMemo } from 'react'
 
-import { Alert, AlertDescription } from '@/components/ai-elements-ui/alert'
-import { Button } from '@/components/ai-elements-ui/button'
+import { Alert, AlertDescription } from '@/components/ai-elements/deps/alert'
+import { Button } from '@/components/ai-elements/deps/button'
 import { cn } from '@/utils/style'
 
 type ToolUIPartApproval =
