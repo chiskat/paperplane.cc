@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { useMounted } from '@/hooks/use-mounted'
 
 function Dialog(props: { show: boolean; onClose: () => void; children: React.ReactNode }) {
   const { show, onClose, children } = props
@@ -19,6 +20,9 @@ function Dialog(props: { show: boolean; onClose: () => void; children: React.Rea
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
+        transition: 'opacity 500ms',
+        opacity: show ? 1 : 0,
+        visibility: show ? 'visible' : 'hidden',
       }}
     >
       <div
@@ -34,11 +38,16 @@ function Dialog(props: { show: boolean; onClose: () => void; children: React.Rea
     </div>
   )
 
-  return show ? createPortal(component, document.body) : null
+  return createPortal(component, document.body)
 }
 
-export default function Model1() {
+export function ModelTransitionAppear() {
   const [show, setShow] = useState(false)
+  const mounted = useMounted()
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div>

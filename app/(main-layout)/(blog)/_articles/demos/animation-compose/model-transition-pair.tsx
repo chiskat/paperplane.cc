@@ -54,7 +54,7 @@ function Dialog(props: { show: boolean; onClose: () => void; children: React.Rea
   return createPortal(component, document.body)
 }
 
-export default function Model3() {
+export function ModelTransitionPair() {
   const [show, setShow] = useState(false)
   const mounted = useMounted()
 

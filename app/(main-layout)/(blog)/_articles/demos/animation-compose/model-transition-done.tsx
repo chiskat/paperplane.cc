@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,13 @@ import { useMounted } from '@/hooks/use-mounted'
 
 function Dialog(props: { show: boolean; onClose: () => void; children: React.ReactNode }) {
   const { show, onClose, children } = props
+
+  const [delayedShow, setDelayedShow] = useState(!!show)
+
+  useEffect(() => {
+    const timerId = setTimeout(() => void setDelayedShow(!!show), show ? 0 : 500)
+    return () => void clearTimeout(timerId)
+  }, [show])
 
   const component = (
     <div
@@ -21,8 +28,7 @@ function Dialog(props: { show: boolean; onClose: () => void; children: React.Rea
         justifyContent: 'center',
         zIndex: 1000,
         transition: 'opacity 500ms',
-        opacity: show ? 1 : 0,
-        visibility: show ? 'visible' : 'hidden',
+        opacity: show && delayedShow ? 1 : 0,
       }}
     >
       <div
@@ -38,10 +44,10 @@ function Dialog(props: { show: boolean; onClose: () => void; children: React.Rea
     </div>
   )
 
-  return createPortal(component, document.body)
+  return createPortal(delayedShow || show ? component : null, document.body)
 }
 
-export default function Model2() {
+export function ModelTransitionDone() {
   const [show, setShow] = useState(false)
   const mounted = useMounted()
 

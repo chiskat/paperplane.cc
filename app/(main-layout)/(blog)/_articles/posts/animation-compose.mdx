@@ -7,10 +7,10 @@ categories: [React]
 ---
 
 import { DemoShell } from '@/components/helper/demo-shell'
-import Model1 from '../demos/animation-compose/Model1'
-import Model2 from '../demos/animation-compose/Model2'
-import Model3 from '../demos/animation-compose/Model3'
-import Model4 from '../demos/animation-compose/Model4'
+import { ModelNoTransition } from '../demos/animation-compose/model-no-transition'
+import { ModelTransitionAppear } from '../demos/animation-compose/model-transition-appear'
+import { ModelTransitionPair } from '../demos/animation-compose/model-transition-pair'
+import { ModelTransitionDone } from '../demos/animation-compose/model-transition-done'
 
 建议先阅读 [《FLIP 动画与实现原理》](https://paperplane.cc/post/flip-animation) 这篇博文。
 
@@ -93,7 +93,7 @@ export default function App() {
 ![](../images/dialog-demo-1.gif)
 
 <DemoShell>
-  <Model1 />
+  <ModelNoTransition />
 </DemoShell>
 
 这样我们成功实现了模态框的切换显示，但是，这个过程太突兀，没有任何过渡动画。
@@ -163,7 +163,7 @@ function Dialog(props: IDialogProps) {
 ![](../images/dialog-demo-2.gif)
 
 <DemoShell>
-  <Model2 />
+  <ModelTransitionAppear />
 </DemoShell>
 
 ---
@@ -226,7 +226,7 @@ function Dialog(props: IDialogProps) {
 ![](../images/dialog-demo-3.gif)
 
 <DemoShell>
-  <Model3 />
+  <ModelTransitionPair />
 </DemoShell>
 
 这样显示和隐藏的动画就都能显示了。
@@ -328,7 +328,7 @@ function Dialog(props: IDialogProps) {
 ![](../images/dialog-demo-4.gif)
 
 <DemoShell>
-  <Model4 />
+  <ModelTransitionDone />
 </DemoShell>
 
 而且我们这个模态框的实现相对比较 “完善”，在关闭时，DOM 也会被移除，不会有残留。
