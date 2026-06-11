@@ -10,7 +10,6 @@
     "build:prod": "dotenv -c production -v CI=true -- next build",
     "start": "next start",
     "start:prod": "dotenv -e .env.production.local -e .env.production -- node ./.next/standalone/server.js",
-    "ci:prepare-docker": "npx -y docker-deps",
     "lint": "eslint",
     "format": "prettier --list-different .",
     "check-types": "tsc --noEmit",

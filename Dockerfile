@@ -7,6 +7,7 @@ WORKDIR /paperplane.cc
 
 ENV NODE_ENV=production
 ENV DO_NOT_TRACK=1
+ENV HUSKY=0
 
 COPY .docker-deps /paperplane.cc
 RUN --mount=type=cache,id=pnpm,target=/paperplane.cc/.pnpm-store pnpm i --frozen-lockfile --store-dir /paperplane.cc/.pnpm-store --registry=$NPM_REGISTRY
