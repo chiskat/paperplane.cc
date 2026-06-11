@@ -1,10 +1,12 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
-onlyBuiltDependencies:
-  - '@prisma/engines'
-  - msw
-  - prisma
+allowBuilds:
+  '@prisma/engines': true
+  esbuild: true
+  msw: false
+  prisma: true
+  protobufjs: true
+  puppeteer: false
+  sharp: true
+  unrs-resolver: true
 overrides:
   react-jsx-parser>@types/react: $@types/react
   react-jsx-parser>@types/react-dom: $@types/react-dom

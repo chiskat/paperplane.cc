@@ -49,3 +49,9 @@ pnpm db:gen
 # 开发环境下迁移数据库结构
 pnpm db:mi
 ```
+
+在当前环境为 Puppeteer 安装 Chrome：
+
+```bash
+npx puppeteer browsers install chrome
+```
