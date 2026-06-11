@@ -1,4 +1,4 @@
-FROM chiskat/baseline-node20-puppeteer:2026.4.26
+FROM chiskat/baseline-node24-puppeteer:2026.6.8
 
 ARG NPM_REGISTRY=https://registry.npmjs.org
 
