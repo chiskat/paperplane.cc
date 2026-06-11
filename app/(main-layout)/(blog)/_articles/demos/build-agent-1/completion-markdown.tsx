@@ -1,15 +1,18 @@
 'use client'
 
 import { useCompletion } from '@ai-sdk/react'
+import { cjk } from '@streamdown/cjk'
+import { code } from '@streamdown/code'
+import { Streamdown } from 'streamdown'
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
-export function StreamText() {
+export function CompletionMarkdown() {
   const { completion, complete, error, input, isLoading, setCompletion, setInput } = useCompletion({
     api: '/api/agent/demo/build-agent-1/text',
     streamProtocol: 'text',
-    initialInput: '单词 “zebra” 的中文意思是？',
+    initialInput: '生成一段 docker-compose.yml 示例',
   })
 
   function handleSend() {
@@ -38,14 +41,14 @@ export function StreamText() {
         </Button>
       </div>
 
-      {completion ? (
-        <div
-          aria-live="polite"
-          className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 leading-7 whitespace-pre-wrap text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-100"
-        >
-          {completion}
-        </div>
-      ) : null}
+      <Streamdown
+        controls={{ code: true, table: true }}
+        isAnimating={isLoading}
+        plugins={{ cjk, code }}
+        animated
+      >
+        {completion}
+      </Streamdown>
     </div>
   )
 }

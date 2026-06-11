@@ -6,8 +6,8 @@ categories: [AI]
 ---
 
 import { DemoShell } from '@/components/helper/demo-shell'
-import { StreamText } from '../demos/build-agent-1/stream-text'
-import { WithStreamdown } from '../demos/build-agent-1/with-streamdown'
+import { Completion } from '../demos/build-agent-1/completion'
+import { CompletionMarkdown } from '../demos/build-agent-1/completion-markdown'
 import { BaseChat } from '../demos/build-agent-1/base-chat'
 import { ServerToolUse } from '../demos/build-agent-1/server-tool-use'
 import { ClientToolUse } from '../demos/build-agent-1/client-tool-use'
@@ -176,7 +176,7 @@ export default function ChatDemo1() {
 将它们组装，渲染组件如下（样式经过了额外美化）：
 
 <DemoShell rerender>
-  <StreamText />
+  <Completion />
 </DemoShell>
 
 我们完成了最基础的文本输出 AI 大模型对接。
@@ -252,7 +252,7 @@ export default function ChatDemo1() {
 渲染组件如下（样式经过了额外美化）：
 
 <DemoShell rerender>
-  <WithStreamdown />
+  <CompletionMarkdown />
 </DemoShell>
 
 点击输出，可以看出，现在可以在保持流式输出的同时，正确渲染各种 Markdown 标记语法，甚至代码块的代码高亮也可以正确显示。
