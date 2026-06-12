@@ -12,7 +12,7 @@ import 'dayjs/locale/zh-cn'
 dayjs.extend(utc)
 dayjs.locale('zh-cn')
 
-const getCurrentTimeByTimeZone = tool({
+const get_current_time_by_time_zone = tool({
   description: '获取指定时区的当前时间。',
   inputSchema: z.object({
     timeZone: z
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   const result = streamText({
     model: mainModel,
     messages: modelMessage,
-    tools: { getCurrentTimeByTimeZone },
+    tools: { get_current_time_by_time_zone },
     stopWhen: stepCountIs(5),
   })
 

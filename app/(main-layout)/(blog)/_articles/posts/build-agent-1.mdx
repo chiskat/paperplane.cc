@@ -467,7 +467,7 @@ import 'dayjs/locale/zh-cn'
 dayjs.extend(utc)
 dayjs.locale('zh-cn')
 
-const getCurrentTimeByTimeZone = tool({
+const get_current_time_by_time_zone = tool({
   // 工具的描述
   description: '获取指定时区的当前时间。',
 
@@ -512,7 +512,7 @@ export async function POST(request: Request) {
   const result = streamText({
     model: mainModel,
     messages: modelMessage,
-    tools: { getCurrentTimeByTimeZone },
+    tools: { get_current_time_by_time_zone },
   })
 
   return result.toUIMessageStreamResponse()
@@ -557,7 +557,7 @@ export default function ToolUse() {
               case 'text':
                 return <span key={`${message.id}-${index}`}>{part.text}</span>
 
-              case 'tool-getCurrentTimeByTimeZone':
+              case 'tool-get_current_time_by_time_zone':
                 return (
                   <div key={`${message.id}-${index}`}>
                     <div>正在获取指定时区的当前时间</div>
@@ -640,7 +640,7 @@ export default function ToolUse() {
                         </MessageResponse>
                       )
 
-                    case 'tool-getCurrentTimeByTimeZone':
+                    case 'tool-get_current_time_by_time_zone':
                       return (
                         <Tool key={`${message.id}-${index}`}>
                           <ToolHeader
@@ -760,7 +760,7 @@ export async function POST(request: Request) {
   const result = streamText({
     model: mainModel,
     messages: modelMessage,
-    tools: { getCurrentTimeByTimeZone },
+    tools: { get_current_time_by_time_zone },
     stopWhen: stepCountIs(5),
   })
 

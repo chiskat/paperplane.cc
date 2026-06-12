@@ -63,7 +63,7 @@ export function ServerToolUse({
                         </MessageResponse>
                       )
 
-                    case 'tool-getCurrentTimeByTimeZone':
+                    case 'tool-get_current_time_by_time_zone':
                       return (
                         <Tool key={`${message.id}-${index}`}>
                           <ToolHeader
