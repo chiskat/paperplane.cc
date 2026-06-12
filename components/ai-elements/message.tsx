@@ -8,7 +8,8 @@ import type { UIMessage } from 'ai'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import type { ComponentProps, HTMLAttributes, ReactElement } from 'react'
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { Streamdown } from 'streamdown'
+import remarkBreaks from 'remark-breaks'
+import { defaultRemarkPlugins, Streamdown } from 'streamdown'
 
 import { Button } from '@/components/ai-elements/deps/button'
 import { ButtonGroup, ButtonGroupText } from '@/components/ai-elements/deps/button-group'
@@ -274,12 +275,14 @@ export const MessageBranchPage = ({ className, ...props }: MessageBranchPageProp
 export type MessageResponseProps = ComponentProps<typeof Streamdown>
 
 const streamdownPlugins = { cjk, code, math, mermaid }
+const streamdownRemarkPlugins = [...Object.values(defaultRemarkPlugins), remarkBreaks]
 
 export const MessageResponse = memo(
   ({ className, ...props }: MessageResponseProps) => (
     <Streamdown
       className={cn('size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0', className)}
       plugins={streamdownPlugins}
+      remarkPlugins={streamdownRemarkPlugins}
       {...props}
     />
   ),
