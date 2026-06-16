@@ -48,7 +48,7 @@ export function ServerToolUse({
     <div>
       <Conversation>
         <ConversationContent>
-          {messages.map(message => (
+          {messages.map((message, messageIndex) => (
             <Message from={message.role} key={message.id}>
               <MessageContent>
                 {message.parts.map((part, index) => {
@@ -56,7 +56,12 @@ export function ServerToolUse({
                     case 'text':
                       return (
                         <MessageResponse
-                          isAnimating={message.role === 'assistant' && status === 'streaming'}
+                          isAnimating={
+                            message.role === 'assistant' &&
+                            status === 'streaming' &&
+                            messageIndex === messages.length - 1 &&
+                            index === message.parts.length - 1
+                          }
                           key={`${message.id}-${index}`}
                         >
                           {part.text}

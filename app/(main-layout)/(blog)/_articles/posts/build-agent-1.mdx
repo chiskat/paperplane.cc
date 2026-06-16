@@ -387,7 +387,12 @@ export default function Chat() {
                 {message.parts.map((part, index) =>
                   part.type === 'text' ? (
                     <MessageResponse
-                      isAnimating={message.role === 'assistant' && status === 'streaming'}
+                      isAnimating={
+                        message.role === 'assistant' &&
+                        status === 'streaming' &&
+                        messageIndex === messages.length - 1 &&
+                        index === message.parts.length - 1
+                      }
                       key={`${message.id}-${index}`}
                     >
                       {part.text}
@@ -633,7 +638,12 @@ export default function ToolUse() {
                     case 'text':
                       return (
                         <MessageResponse
-                          isAnimating={message.role === 'assistant' && status === 'streaming'}
+                          isAnimating={
+                            message.role === 'assistant' &&
+                            status === 'streaming' &&
+                            messageIndex === messages.length - 1 &&
+                            index === message.parts.length - 1
+                          }
                           key={`${message.id}-${index}`}
                         >
                           {part.text}
@@ -1217,7 +1227,12 @@ export default function ClientToolUse() {
                     case 'text':
                       return (
                         <MessageResponse
-                          isAnimating={message.role === 'assistant' && status === 'streaming'}
+                          isAnimating={
+                            message.role === 'assistant' &&
+                            status === 'streaming' &&
+                            messageIndex === messages.length - 1 &&
+                            index === message.parts.length - 1
+                          }
                           key={`${message.id}-${index}`}
                         >
                           {part.text}

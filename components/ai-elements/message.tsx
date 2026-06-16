@@ -283,6 +283,9 @@ export const MessageResponse = memo(
       className={cn('size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0', className)}
       plugins={streamdownPlugins}
       remarkPlugins={streamdownRemarkPlugins}
+      linkSafety={{ enabled: false }}
+      caret="circle"
+      animated
       {...props}
     />
   ),
