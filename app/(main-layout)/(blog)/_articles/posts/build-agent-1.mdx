@@ -85,7 +85,7 @@ Vercel AI SDK 内置了对他们自家的 AI Gateway 的适配，可以零配置
 >
 > 而且，现在免费政策收紧，这笔赠金只能用最高 GPT-5.2 这种模型，每个模型还有用量限制，差不多用 2.5 美元就必须换别的模型了，免费赠金意义不大。
 
-在这个项目中，为了节约成本，我使用 OpenAI 接口的智谱 GLM-5.1 模型，因此需要安装以下适配器：
+在这个项目中，为了节约成本，我使用支持 1M 上下文且兼容 OpenAI 请求格式的智谱 GLM-5.2 模型，因此需要安装以下适配器：
 
 ```bash
 pnpm add @ai-sdk/openai-compatible
@@ -108,7 +108,7 @@ Vercel AI SDK 需要创建 “模型”：
 ```typescript
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 
-export const mainModelId = 'GLM-5.1'
+export const mainModelId = 'GLM-5.2'
 
 export const mainModel = createOpenAICompatible({
   name: mainModelId,
