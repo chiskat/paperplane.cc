@@ -7,28 +7,25 @@ title: config.toml
 以下给出一份推荐配置：
 
 ```toml
-model = "gpt-5.4"        # 主模型，按需调整
-review_model = "gpt-5.4" # 审查模型
-
-model_reasoning_effort = "xhigh" # 思考强度超高
+model = "gpt-5.6-sol"            # 主模型，按需调整
+review_model = "gpt-5.6-luna"    # 审查模型
+model_reasoning_effort = "high"  # 思考强度
 
 model_context_window = 1000000           # 模型上下文窗口大小，这里设置的是 1M
 model_auto_compact_token_limit = 800000  # 虽然是 1M，但是有效注意力不够，不建议开的太高
 
+# 以下是使用非官方接口需要的配置
 
-[model_providers.apibox]
-name = "OpenAI" # 如果用的是中转站，建议把名字改成 OpenAI（注意大小写），命中缓存节省 token
+model_provider = "custom"
+supports_websockets = false # 需要关闭 WebSocket
+
+[model_providers.custom]
+name = "OpenAI" # 建议把名字改成 OpenAI，注意大小写必须对，只有这样才能使用缓存
+wire_api = "responses"
+requires_openai_auth = true
 
 [features]
-memories = true  # 开启记忆
-fast_mode = true # 极大提高使用体验，会让 token 用量变 2 倍
-
-[memories]
-consolidation_model = "gpt-5.4" # 总结记忆用的模型
-extract_model = "gpt-5.4"
-max_raw_memories_for_consolidation = 512
-max_unused_days = 30       # 默认 30
-max_rollout_age_days = 45  # 默认 30
+apps = false # 如果不适用 ChatGPT App，避免每次启动报错 “MCP startup interrupted ... codex_apps”
 ```
 
 注意模型名称可能会更新，本文不一定是最新的，使用时替换即可。
