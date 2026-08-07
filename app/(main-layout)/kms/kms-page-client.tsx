@@ -13,6 +13,7 @@ import OfficeActiveDoc from './_docs/office-active.mdx'
 import OfficeInstallDoc from './_docs/office-install.mdx'
 import WindowsActiveDoc from './_docs/windows-active.mdx'
 import WindowsInstallDoc from './_docs/windows-install.mdx'
+import WindowsSkipLogin from './_docs/windows-skip-login.mdx'
 
 type KmsDocComponent = (props: { components?: MDXComponents }) => React.JSX.Element
 
@@ -82,6 +83,7 @@ const docDefinitions: Array<{ path: string; Content: KmsDocComponent }> = [
   { path: 'intro', Content: IntroDoc },
   { path: 'windows-install', Content: WindowsInstallDoc },
   { path: 'windows-active', Content: WindowsActiveDoc },
+  { path: 'windows-skip-login', Content: WindowsSkipLogin },
   { path: 'office-install', Content: OfficeInstallDoc },
   { path: 'office-active', Content: OfficeActiveDoc },
 ]
