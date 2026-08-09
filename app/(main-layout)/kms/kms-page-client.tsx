@@ -9,9 +9,9 @@ import { Highlighter } from '@/components/ui/highlighter'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/utils/style'
 import IntroDoc from './_docs/intro.mdx'
-import OfficeActiveDoc from './_docs/office-activation.mdx'
+import OfficeActivationDoc from './_docs/office-activation.mdx'
 import OfficeInstallDoc from './_docs/office-install.mdx'
-import WindowsActiveDoc from './_docs/windows-activation.mdx'
+import WindowsActivationDoc from './_docs/windows-activation.mdx'
 import WindowsInstallDoc from './_docs/windows-install.mdx'
 import WindowsSkipLogin from './_docs/windows-skip-login.mdx'
 
@@ -82,10 +82,10 @@ function KmsSidebarItem({ active, title, onClick }: KmsSidebarItemProps) {
 const docDefinitions: Array<{ path: string; Content: KmsDocComponent }> = [
   { path: 'intro', Content: IntroDoc },
   { path: 'windows-install', Content: WindowsInstallDoc },
-  { path: 'windows-active', Content: WindowsActiveDoc },
+  { path: 'windows-activation', Content: WindowsActivationDoc },
   { path: 'windows-skip-login', Content: WindowsSkipLogin },
   { path: 'office-install', Content: OfficeInstallDoc },
-  { path: 'office-active', Content: OfficeActiveDoc },
+  { path: 'office-activation', Content: OfficeActivationDoc },
 ]
 
 const mdxComponents = kmsMDX()
