@@ -5,17 +5,9 @@ group: Windows
 
 激活 Windows 系统的步骤：
 
-1. 运行 **管理员权限** 的命令行；
+1. 右键点击开始菜单按钮，选择 “终端管理员” 或 “终端(管理员)”；
+   如果弹出了用户权限控制对话框，请点击 “是” 来批准这次操作；
 2. 输入命令 `slmgr /skms kms.p01.cc` 然后按下回车键，稍等数秒弹窗 “密钥管理服务计算机名称成功地设置为 kms.p01.cc” 即为成功；
-3. 输入命令 `slmgr /ato` 然后按下回车键，稍等十秒左右弹窗 “...成功地激活了产品” 即完成。
-
----
-
-激活发生问题时，例如提示 “...在运行 Microsoft Windows 非核心版本的计算机上” 或 “找不到产品”，可以这样解决：
-
-1. 运行 **管理员权限** 的命令行；
-2. 输入命令 `slmgr /upk` 然后按下回车键，清除之前的旧密钥；
-3. 输入命令 `slmgr /cpky` 然后按下回车键，从注册表中清除之前的旧密钥；
-4. 前往 [微软官网 KMS 密钥网页](https://learn.microsoft.com/zh-cn/windows-server/get-started/kms-client-activation-keys)，查找你要激活的系统版本，找到密钥并复制；
-   例如 Windows 10/11 专业版的密钥是 `W269N-WFGWX-YVC9B-4J6C9-T83GX`；
-5. 输入命令 `slmgr /ipk 复制的密钥`，然后按下回车键，稍等十秒左右弹窗 “...成功地激活了产品” 即完成。
+3. 输入命令 `slmgr /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX`，然后按下回车键；
+   此密钥来源于 [微软官网 KMS 密钥网页](https://learn.microsoft.com/zh-cn/windows-server/get-started/kms-client-activation-keys)，其它系统版本的密钥也可在此页面查询；
+4. 输入命令 `slmgr /ato` 然后按下回车键，稍等十秒左右弹窗 “...成功地激活了产品” 即完成。
