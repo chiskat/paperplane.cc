@@ -1,9 +1,9 @@
-import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
 import type { Root } from 'mdast'
 import { NextResponse } from 'next/server'
 import { remark } from 'remark'
 
+import { articleList } from '@/app/(main-layout)/(blog)/post/article-list'
 import { getSiteUrl, sitePages } from '@/app/sitemap'
 
 export const dynamic = 'force-static'
@@ -16,7 +16,7 @@ const llmsTextIntro = [
 ].join('\n')
 
 function getArticleItems() {
-  return allArticles
+  return articleList
     .map(article => {
       const date = dayjs(article.date)
 

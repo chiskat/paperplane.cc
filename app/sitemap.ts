@@ -1,5 +1,6 @@
-import { allArticles } from 'content-collections'
 import type { MetadataRoute } from 'next'
+
+import { articleList } from './(main-layout)/(blog)/post/article-list'
 
 export const dynamic = 'force-static'
 
@@ -60,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly',
   }))
 
-  const articles: MetadataRoute.Sitemap = allArticles.map(item => {
+  const articles: MetadataRoute.Sitemap = articleList.map(item => {
     const encodedPath = item._meta.path
       .split('/')
       .map(part => encodeURIComponent(part))

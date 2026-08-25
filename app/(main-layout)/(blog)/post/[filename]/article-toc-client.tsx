@@ -78,9 +78,10 @@ function getActiveHeadingId(tocItems: TocItem[]): string | null {
 export interface TocClientProps {
   title: string
   tocItems: TocItem[]
+  draft?: boolean
 }
 
-export default function TocClient({ title, tocItems }: TocClientProps) {
+export default function TocClient({ title, tocItems, draft = false }: TocClientProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [isIndicatorSoftTransition, setIsIndicatorSoftTransition] = useState(false)
   const [indicatorRect, setIndicatorRect] = useState<IndicatorRect | null>(null)
@@ -347,6 +348,11 @@ export default function TocClient({ title, tocItems }: TocClientProps) {
     <aside className="mb-6 lg:absolute lg:inset-y-0 lg:right-0 lg:mb-0 lg:w-68">
       <div className="relative overflow-hidden rounded-sm border border-[#d6dce5] px-4 py-3 shadow-[0px_0px_3px_1px_#eee] backdrop-blur-xs before:pointer-events-none before:absolute before:top-0 before:right-0 before:left-0 before:h-8 before:bg-linear-to-b before:from-white/60 before:to-transparent lg:sticky lg:top-36 lg:flex lg:max-h-[calc(100vh-10rem)] lg:flex-col">
         <h2 className="font-title-serif relative mb-4 pb-3 text-base text-[18px] text-[#4a5665] after:absolute after:-right-4 after:bottom-0 after:-left-4 after:border-b after:border-dashed after:border-[#2f629d]/40">
+          {draft ? (
+            <span className="mr-2 inline-flex items-center rounded-sm border border-[#d9a441] bg-[#fff8df] px-2 py-0.5 align-middle font-sans text-sm font-semibold tracking-wide text-[#8a6500]">
+              草稿
+            </span>
+          ) : null}
           <a href="#article-top" onClick={handleTocTitleClick}>
             {title}
           </a>

@@ -65,8 +65,9 @@ export function extractTocFromMdx(
 export interface ArticleTocProps {
   title: string
   tocItems: TocItem[]
+  draft?: boolean
 }
 
-export function Toc({ title, tocItems }: ArticleTocProps) {
-  return <TocClient title={title} tocItems={tocItems} />
+export function Toc({ title, tocItems, draft }: ArticleTocProps) {
+  return <TocClient title={title} tocItems={tocItems} draft={draft} />
 }

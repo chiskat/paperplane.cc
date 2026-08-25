@@ -6,30 +6,40 @@ import { useState, type ReactNode } from 'react'
 import { Highlighter } from '@/components/ui/highlighter'
 import { cn } from '@/utils/style'
 
-export interface ArticleTitleLinkProps {
-  href: string
+export interface ArticleTitleLinkArticle {
+  slug: string
   title: string
   dateText: string
   categories?: string[]
   tags?: string[]
+  draft?: boolean
+}
+
+export interface ArticleTitleLinkProps {
+  article: ArticleTitleLinkArticle
   metaExtra?: ReactNode
   className?: string
   titleClassName?: string
 }
 
 export function ArticleTitleLink({
-  href,
-  title,
-  dateText,
-  categories = [],
-  tags = [],
+  article,
   metaExtra,
   className,
   titleClassName,
 }: ArticleTitleLinkProps) {
+  const { title, dateText, categories = [], tags = [], draft = false } = article
   const [hovered, setHovered] = useState(false)
   const metaItems: ReactNode[] = [
     <span key="date">{dateText}</span>,
+    draft ? (
+      <span
+        key="draft"
+        className="inline-flex items-center rounded-sm border border-[#d9a441] bg-[#fff8df] px-2 py-0.5 font-sans text-sm font-semibold tracking-wide text-[#8a6500]"
+      >
+        草稿
+      </span>
+    ) : null,
     categories.length > 0 ? (
       <span key="categories" className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
         {categories.map((category, index) => (
@@ -73,7 +83,7 @@ export function ArticleTitleLink({
         ))}
       </div>
       <Link
-        href={href}
+        href={`/post/${article.slug}`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={cn(

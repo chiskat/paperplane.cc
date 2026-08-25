@@ -65,11 +65,7 @@ export default async function ArchiveMonthPage({ params }: PageProps<'/archives/
         {posts.map(item => (
           <ArticleTitleLink
             key={item.slug}
-            href={`/post/${item.slug}`}
-            title={item.title}
-            dateText={item.dateText}
-            categories={item.categories}
-            tags={item.tags}
+            article={item}
             metaExtra={
               <Link href={`/archives/${year}`} className="hover:text-primary transition-colors">
                 {year} 年归档

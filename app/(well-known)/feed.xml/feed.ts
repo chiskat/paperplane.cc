@@ -1,5 +1,6 @@
-import { allArticles } from 'content-collections'
 import { Feed } from 'feed'
+
+import { articleList } from '@/app/(main-layout)/(blog)/post/article-list'
 
 export const siteUrl = process.env.NEXT_PUBLIC_BASE_URL!
 export const canonicalSiteUrl = new URL('/', siteUrl).toString()
@@ -28,7 +29,7 @@ export function getFeedDescription(content: string) {
 }
 
 export function getSortedArticles() {
-  return [...allArticles].sort((a, b) => {
+  return [...articleList].sort((a, b) => {
     const timestampDiff = new Date(b.date).valueOf() - new Date(a.date).valueOf()
     return timestampDiff || a._meta.path.localeCompare(b._meta.path)
   })

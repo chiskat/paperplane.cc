@@ -1,20 +1,12 @@
-import { readdir } from 'fs/promises'
-import path from 'path'
 import dayjs from 'dayjs'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { articleList } from './(blog)/post/article-list'
 import { ArticleTitleLink } from './article-title-link'
 
 export const metadata: Metadata = {
   title: '首页 - PaperPlane.cc',
-}
-
-interface PostFrontmatter {
-  title: string
-  date: string
-  tags?: string[]
-  categories?: string[]
 }
 
 interface PostListItem {
@@ -24,39 +16,25 @@ interface PostListItem {
   year: number
   categories: string[]
   tags: string[]
+  draft: boolean
   timestamp: number
 }
 
-async function getPostList(): Promise<PostListItem[]> {
-  const files = await readdir(
-    path.join(process.cwd(), './app/(main-layout)/(blog)/_articles/posts'),
-    { recursive: true }
-  )
-  const mdxFiles = (files as string[]).filter(file => /\.mdx$/.test(file))
+function getPostList(): PostListItem[] {
+  const list = articleList.map(article => {
+    const parsedDate = dayjs(article.date)
 
-  const list = await Promise.all(
-    mdxFiles.map(async file => {
-      const normalizedPath = file.split(path.sep).join('/')
-      const slug = normalizedPath.replace(/\.mdx$/, '')
-      const articleModule = (await import(
-        `@/app/(main-layout)/(blog)/_articles/posts/${normalizedPath}`
-      )) as {
-        frontmatter: PostFrontmatter
-      }
-      const frontmatter = articleModule.frontmatter
-      const parsedDate = dayjs(frontmatter.date)
-
-      return {
-        slug,
-        title: frontmatter.title,
-        dateText: parsedDate.format('YYYY年 M月 D日'),
-        year: parsedDate.year(),
-        categories: frontmatter.categories ?? [],
-        tags: frontmatter.tags ?? [],
-        timestamp: parsedDate.valueOf(),
-      } satisfies PostListItem
-    })
-  )
+    return {
+      slug: article._meta.path,
+      title: article.title,
+      dateText: parsedDate.format('YYYY年 M月 D日'),
+      year: parsedDate.year(),
+      categories: article.categories,
+      tags: article.tags,
+      draft: article.draft ?? false,
+      timestamp: parsedDate.valueOf(),
+    }
+  })
 
   return list.sort((a, b) => b.timestamp - a.timestamp || a.slug.localeCompare(b.slug))
 }
@@ -76,7 +54,7 @@ function groupPostsByYear(posts: PostListItem[]) {
 }
 
 export default async function HomePage() {
-  const posts = await getPostList()
+  const posts = getPostList()
   const groupedPosts = groupPostsByYear(posts)
 
   return (
@@ -90,14 +68,7 @@ export default async function HomePage() {
           </h2>
           <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
             {items.map(item => (
-              <ArticleTitleLink
-                key={item.slug}
-                href={`/post/${item.slug}`}
-                title={item.title}
-                dateText={item.dateText}
-                categories={item.categories}
-                tags={item.tags}
-              />
+              <ArticleTitleLink key={item.slug} article={item} />
             ))}
           </ul>
         </section>

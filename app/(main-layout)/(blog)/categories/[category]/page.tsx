@@ -44,14 +44,7 @@ export default async function CategoryPage({ params }: PageProps<'/categories/[c
 
       <ul className="ml-1 space-y-6 border-l border-[#ddd] pl-5">
         {posts.map(item => (
-          <ArticleTitleLink
-            key={item.slug}
-            href={`/post/${item.slug}`}
-            title={item.title}
-            dateText={item.dateText}
-            categories={item.categories}
-            tags={item.tags}
-          />
+          <ArticleTitleLink key={item.slug} article={item} />
         ))}
       </ul>
     </div>

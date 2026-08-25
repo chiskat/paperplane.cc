@@ -1,11 +1,12 @@
-import { allArticles } from 'content-collections'
 import { NextResponse } from 'next/server'
+
+import { articleList } from '../../article-list'
 
 export { generateStaticParams } from '../page'
 
 export async function GET(_request: Request, { params }: RouteContext<'/post/[filename]/md'>) {
   const { filename } = await params
-  const article = allArticles.find(item => item._meta.path === filename)
+  const article = articleList.find(item => item._meta.path === filename)
 
   if (!article) {
     return new NextResponse('Not Found', { status: 404 })

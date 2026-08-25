@@ -1,4 +1,3 @@
-import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -10,15 +9,16 @@ import baseMDX from '@/components/mdx/base-render'
 import Commet from './article-commet'
 import { extractTocFromMdx, Toc } from './article-toc'
 import History from './edit-history'
+import { articleList } from '../article-list'
 
 export const dynamicParams = false
 
 function getArticle(filename: string) {
-  return allArticles.find(item => item._meta.path === filename)
+  return articleList.find(item => item._meta.path === filename)
 }
 
 export function generateStaticParams() {
-  return allArticles.map(item => ({
+  return articleList.map(item => ({
     filename: item._meta.path,
   }))
 }
@@ -55,7 +55,7 @@ export default async function ArticlePage({ params }: PageProps<'/post/[filename
 
   return (
     <div id="article-top" className="relative my-8 scroll-mt-40">
-      <Toc title={article.title} tocItems={tocItems} />
+      <Toc title={article.title} tocItems={tocItems} draft={article.draft ?? false} />
 
       <div className="lg:mr-75">
         <div

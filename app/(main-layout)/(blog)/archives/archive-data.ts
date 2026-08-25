@@ -1,5 +1,6 @@
-import { allArticles } from 'content-collections'
 import dayjs from 'dayjs'
+
+import { articleList } from '../post/article-list'
 
 export interface ArchivePostItem {
   slug: string
@@ -10,9 +11,10 @@ export interface ArchivePostItem {
   month: number
   categories: string[]
   tags: string[]
+  draft: boolean
 }
 
-export const archivePosts = allArticles
+export const archivePosts = articleList
   .map<ArchivePostItem>(item => {
     const parsedDate = dayjs(item.date)
 
@@ -25,6 +27,7 @@ export const archivePosts = allArticles
       month: parsedDate.month() + 1,
       categories: item.categories ?? [],
       tags: item.tags ?? [],
+      draft: item.draft ?? false,
     }
   })
   .sort((a, b) => b.timestamp - a.timestamp || a.slug.localeCompare(b.slug))

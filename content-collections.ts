@@ -12,6 +12,7 @@ const articles = defineCollection({
     tags: z.array(z.string()),
     categories: z.array(z.string()).length(1),
     content: z.string(),
+    draft: z.boolean().optional(),
   }),
 })
 
