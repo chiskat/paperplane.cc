@@ -422,6 +422,18 @@ export default {
 
 ## 腾讯云云函数搭建 URL 前缀转发
 
+腾讯云云函数有一些特殊点：
+
+1. 腾讯云认为 URL 的 path 部分中 `//` 是不合法的，在进入云函数之前就会被事先拦截，把 URL 中的 `//` 规范化为 `/`，并进行 301 跳转；
+2. 响应会被强制添加 `content-disposition: attachment` 响应头，避免用户对外展示为网站。
+
+第一个问题，会导致拼接在 URL 里的 `https://xxxx.com` 会变成 `https:/xxxx.com`，需要特殊处理；
+此外，有的客户端不会自动跟随 301 而是直接报错，我们可以允许用户不填写开头的 `https://`，把去除协议头部分的 URL 拼接在末尾即可，这样因为 URL 合法，不会被腾讯云 301 跳转。
+
+第二个问题，对我们没有任何影响，因为我们只是转发 API 而不是代理网页。
+
+<br />
+
 创建云函数时，选择 Node.js 18，类型选择 Web 函数；
 （如果需要使用 AI，地区请选择 **硅谷**）
 
@@ -437,7 +449,10 @@ const http = require('http')
 const app = express()
 
 app.use((req, res) => {
-  const targetUrl = req.originalUrl.slice(1)
+  let targetUrl = req.originalUrl.slice(1).replace(/^(https?:)\/(?!\/)/, '$1//')
+  if (!targetUrl.startsWith('http')) {
+    targetUrl = 'https://' + targetUrl
+  }
   const parsedUrl = new URL(targetUrl)
 
   const client = parsedUrl.protocol === 'https:' ? https : http
@@ -510,7 +525,7 @@ Invoke-WebRequest -Uri "https://www.google.com"
 ::: code-group
 
 ```bash [Linux 或 macOS]
-curl https://xxxxxxxxx.na-siliconvalley.tencentscf.com/https://www.google.com
+curl -L https://xxxxxxxxx.na-siliconvalley.tencentscf.com/https://www.google.com
 ```
 
 ```powershell [Windows]
