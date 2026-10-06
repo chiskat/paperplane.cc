@@ -11,8 +11,7 @@ export const dynamic = 'force-static'
 const llmsTextIntro = [
   '# PaperPlane.cc - A full-stack personal website by chiskat',
   '',
-  '> 此网站 [PaperPlane.cc](https://paperplane.cc) 是由来自中国的 Web 全栈开发者 [chiskat](https://github.com/chiskat) 设计与开发的基于 Next.js 技术的全栈个人网站，用于刊登个人技术博客、实现一些技术 Demo、提供一些在线服务。',
-  '',
+  '> 此网站 [PaperPlane.cc](https://paperplane.cc) 是由来自中国的 Web 全栈开发者 [chiskat](https://github.com/chiskat) 设计与开发的基于 Next.js 技术的全栈个人网站，用于刊登个人技术博客、实现一些技术 Demo、提供一些在线服务。\n\n',
 ].join('\n')
 
 function getArticleItems() {
