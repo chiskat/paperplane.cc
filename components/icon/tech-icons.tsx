@@ -1,6 +1,7 @@
 import Image, { type StaticImageData } from 'next/image'
 import type { CSSProperties } from 'react'
 
+import AiGatewayAsset from '@/assets/tech-icons/ai-gateway.svg'
 import AlistAsset from '@/assets/tech-icons/alist.svg'
 import AntdAsset from '@/assets/tech-icons/antd.svg'
 import CodeReferenceAsset from '@/assets/tech-icons/code-reference.svg'
@@ -16,6 +17,7 @@ import HexoAsset from '@/assets/tech-icons/hexo.svg'
 import ITToolsAsset from '@/assets/tech-icons/it-tools.png'
 import JoplinAsset from '@/assets/tech-icons/joplin.png'
 import MantineAsset from '@/assets/tech-icons/mantine.svg'
+import McpHubAsset from '@/assets/tech-icons/mcphub.svg'
 import MemosAsset from '@/assets/tech-icons/memos.png'
 import MongodbAsset from '@/assets/tech-icons/mongodb.svg'
 import MuiAsset from '@/assets/tech-icons/mui.svg'
@@ -64,6 +66,7 @@ export function createTechIcon(src: StaticImageData, alt: string) {
   }
 }
 
+export const AiGatewayIcon = createTechIcon(AiGatewayAsset, 'ai-gateway')
 export const AlistIcon = createTechIcon(AlistAsset, 'alist')
 export const AntdIcon = createTechIcon(AntdAsset, 'antd')
 export const CodeReferenceIcon = createTechIcon(CodeReferenceAsset, 'code-reference')
@@ -79,6 +82,7 @@ export const HexoIcon = createTechIcon(HexoAsset, 'hexo')
 export const ITToolsIcon = createTechIcon(ITToolsAsset, 'it-tools')
 export const JoplinIcon = createTechIcon(JoplinAsset, 'joplin')
 export const MantineIcon = createTechIcon(MantineAsset, 'mantine')
+export const McpHubIcon = createTechIcon(McpHubAsset, 'mcphub')
 export const MemosIcon = createTechIcon(MemosAsset, 'memos')
 export const MongodbIcon = createTechIcon(MongodbAsset, 'mongodb')
 export const MuiIcon = createTechIcon(MuiAsset, 'mui')
@@ -108,6 +112,7 @@ export const VueIcon = createTechIcon(VueAsset, 'vue')
 export const WebpackIcon = createTechIcon(WebpackAsset, 'webpack')
 
 export const techIcons = {
+  'ai-gateway': AiGatewayIcon,
   alist: AlistIcon,
   antd: AntdIcon,
   'code-reference': CodeReferenceIcon,
@@ -123,6 +128,7 @@ export const techIcons = {
   'it-tools': ITToolsIcon,
   joplin: JoplinIcon,
   mantine: MantineIcon,
+  mcphub: McpHubIcon,
   memos: MemosIcon,
   mongodb: MongodbIcon,
   mui: MuiIcon,

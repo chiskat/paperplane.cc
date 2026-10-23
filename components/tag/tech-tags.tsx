@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { ImageProps } from 'next/image'
 import Link from 'next/link'
 
+import aiGatewayIcon from '@/assets/tech-icons/ai-gateway.svg'
 import antdIcon from '@/assets/tech-icons/antd.svg'
 import codeReferenceIcon from '@/assets/tech-icons/code-reference.svg'
 import craIcon from '@/assets/tech-icons/cra.svg'
@@ -12,6 +13,7 @@ import hexoIcon from '@/assets/tech-icons/hexo.svg'
 import itToolsIcon from '@/assets/tech-icons/it-tools.png'
 import joplinIcon from '@/assets/tech-icons/joplin.png'
 import mantineIcon from '@/assets/tech-icons/mantine.svg'
+import mcpHubIcon from '@/assets/tech-icons/mcphub.svg'
 import memosIcon from '@/assets/tech-icons/memos.png'
 import mongodbIcon from '@/assets/tech-icons/mongodb.svg'
 import muiIcon from '@/assets/tech-icons/mui.svg'
@@ -33,39 +35,6 @@ import viteIcon from '@/assets/tech-icons/vite.svg'
 import vueIcon from '@/assets/tech-icons/vue.svg'
 import webpackIcon from '@/assets/tech-icons/webpack.svg'
 import { cn } from '@/utils/style'
-
-export const techIcons = {
-  antd: antdIcon,
-  codereference: codeReferenceIcon,
-  cra: craIcon,
-  docker: dockerIcon,
-  dumi: dumiIcon,
-  element: elementIcon,
-  hexo: hexoIcon,
-  ittools: itToolsIcon,
-  joplin: joplinIcon,
-  mantine: mantineIcon,
-  memos: memosIcon,
-  mongodb: mongodbIcon,
-  mui: muiIcon,
-  nestjs: nestjsIcon,
-  nextchat: nextchatIcon,
-  nextjs: nextjsIcon,
-  nodejs: nodejsIcon,
-  openwebui: openwebuiIcon,
-  postgresql: postgresqlIcon,
-  prisma: prismaIcon,
-  react: reactIcon,
-  redis: redisIcon,
-  restify: restifyIcon,
-  shadcn: shadcnIcon,
-  shieldsio: shieldsIcon,
-  tdesign: tdesignIcon,
-  trpc: trpcIcon,
-  vite: viteIcon,
-  vue: vueIcon,
-  webpack: webpackIcon,
-} satisfies Record<string, ImageProps['src']>
 
 export interface TechTagProps {
   icon: ImageProps['src']
@@ -291,7 +260,20 @@ export const ShadcnTag = createTechTag({
   alt: 'shadcn/ui',
 })
 
+export const AiGatewayTag = createTechTag({
+  name: 'GT AI Gateway',
+  href: 'https://github.com/alexazhou/gt_ai_gateway',
+  icon: aiGatewayIcon,
+})
+
+export const McpHubTag = createTechTag({
+  name: 'MCP Hub',
+  href: 'https://github.com/samanhappy/mcphub',
+  icon: mcpHubIcon,
+})
+
 const techTagsByName: Record<string, CreatedTechTag> = {
+  aigateway: AiGatewayTag,
   antd: AntDTag,
   codereference: QuickReferenceTag,
   createreactapp: CRATag,
@@ -304,6 +286,7 @@ const techTagsByName: Record<string, CreatedTechTag> = {
   joplin: JoplinTag,
   mantine: MantineTag,
   mantineui: MantineTag,
+  mcphub: McpHubTag,
   memos: MemosTag,
   mongodb: MongoDBTag,
   mui: MuiTag,

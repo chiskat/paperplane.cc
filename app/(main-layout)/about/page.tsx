@@ -5,6 +5,7 @@ import MoonFavicon from '@/assets/nav-icons/favicon-moon.png'
 import PaperPlaneFavicon from '@/assets/nav-icons/favicon-paperplane.png'
 import { KVPairs, KVPairsItem } from '@/components/data/kv-pairs'
 import {
+  AiGatewayIcon,
   CodeReferenceIcon,
   createTechIcon,
   DockerIcon,
@@ -13,8 +14,10 @@ import {
   GithubIcon,
   ITToolsIcon,
   JoplinIcon,
+  McpHubIcon,
   NpmIcon,
   OpenwebuiIcon,
+  PypiIcon,
   ShieldsioIcon,
 } from '@/components/icon/tech-icons'
 import Website, { type WebsiteProps } from './website-list'
@@ -65,6 +68,13 @@ const techs: WebsiteProps[] = [
     desc: '我的 Docker Hub 主页',
   },
   {
+    title: 'PyPI',
+    icon: <PypiIcon />,
+    href: 'https://pypi.org/user/chiskat',
+    hrefHighlight: '/chiskat',
+    desc: '我的 PyPI 主页',
+  },
+  {
     title: 'Drone CI',
     icon: <DroneIcon />,
     href: 'https://drone.paperplane.cc',
@@ -88,6 +98,22 @@ const services: WebsiteProps[] = [
     hrefHighlight: 'gpt.',
     desc: '自部署 AI Agent 与知识库',
     techs: ['openwebui'],
+  },
+  {
+    title: 'AI Gateway',
+    icon: <AiGatewayIcon />,
+    href: 'https://ai-gateway.paperplane.cc',
+    hrefHighlight: 'ai-gateway.',
+    desc: '自部署 AI 统一网关',
+    techs: ['ai-gateway'],
+  },
+  {
+    title: 'Mcp Hub',
+    icon: <McpHubIcon />,
+    href: 'https://mcp.paperplane.cc',
+    hrefHighlight: 'mcp.',
+    desc: '自部署 MCP 服务网关',
+    techs: ['mcphub'],
   },
   {
     title: '开发工具合集',
