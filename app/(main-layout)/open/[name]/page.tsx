@@ -68,7 +68,7 @@ export default async function OpenItemPage({ params }: PageProps<'/open/[name]'>
       ? `https://www.npmjs.com/package/${packageNameInLink}`
       : project.type === 'docker'
         ? `https://hub.docker.com/r/${packageNameInLink}`
-        : `https://pypi.org/project/meme-generator/${packageNameInLink}`
+        : `https://pypi.org/project/${packageNameInLink}`
   const githubLink = `https://github.com/${project.repo}`
   const giteaLink = `https://git.paperplane.cc/${project.repo}`
 

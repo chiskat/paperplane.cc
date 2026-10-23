@@ -3,6 +3,7 @@ export const sort = [
   'omn',
   'docker-deps',
   'mp-websocket-polyfill',
+  'unsymlink',
   'cra-template-antd',
   'cra-template-mui',
   'baseline-node',
