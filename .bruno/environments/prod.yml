@@ -1,0 +1,6 @@
+name: prod
+variables:
+  - name: API-HOST
+    value: https://paperplane.cc/api
+  - secret: true
+    name: X-API-KEY

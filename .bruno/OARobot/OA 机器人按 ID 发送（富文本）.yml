@@ -1,0 +1,38 @@
+info:
+  name: OA 机器人按 ID 发送（富文本）
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{API-HOST}}/oa-robot/:robotId/send"
+  params:
+    - name: robotId
+      value: ""
+      type: path
+  body:
+    type: json
+    data: "{\r
+
+      \  \"message\": \"MARKDOWN\",\r
+
+      \  \"markdown\": \"测试\",\r
+
+      \  \"title\": \"\",\r
+
+      \  \"atAll\": \"\",\r
+
+      \  \"atList\": []\r
+
+      }"
+  auth:
+    type: apikey
+    key: X-API-KEY
+    value: "{{X-API-KEY}}"
+    placement: header
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
