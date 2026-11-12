@@ -1,0 +1,22 @@
+info:
+  name: 获取图片上传 URL
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{API-HOST}}/user-content/presign"
+  body:
+    type: json
+    data: |-
+      {
+        "usage": "OA_ROBOT_MESSAGE",
+        "filename": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

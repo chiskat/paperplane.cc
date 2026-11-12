@@ -1,0 +1,24 @@
+info:
+  name: 创建短链接
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{API-HOST}}/short"
+  body:
+    type: json
+    data: |-
+      {
+        "url": "",
+        "redirectType": "PERMANENTLY",
+        "public": true,
+        "reuse": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,18 @@
+info:
+  name: 定时触发器
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{API-HOST}}/wlb/cron-trigger"
+  body:
+    type: json
+    data: "{}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
