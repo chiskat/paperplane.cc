@@ -85,7 +85,7 @@ function getLlmsText() {
               children: [
                 {
                   type: 'link',
-                  url: article.url,
+                  url: article.url + '.md',
                   children: [{ type: 'text', value: article.title }],
                 },
               ],
