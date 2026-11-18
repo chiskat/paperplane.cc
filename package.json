@@ -105,6 +105,7 @@
     "rehype-slug": "^6.0.0",
     "remark": "^15.0.1",
     "remark-breaks": "^4.0.0",
+    "remark-mdx": "^3.1.1",
     "rough-notation": "^0.5.1",
     "server-only": "^0.0.1",
     "shadcn": "^4.1.1",
