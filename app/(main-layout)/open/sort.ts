@@ -10,6 +10,8 @@ export const sort = [
   'artalk-go-full',
   'docker-logrotate',
   'acme.sh-deploy-docker',
+  'meme-generator-next',
+  'pil-utils-fix-deps',
 ]
 
 export function filterAndSortByOpenOrder<T extends { _meta: { path: string } }>(items: T[]): T[] {

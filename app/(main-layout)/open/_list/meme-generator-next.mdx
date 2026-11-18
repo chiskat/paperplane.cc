@@ -1,0 +1,20 @@
+---
+name: meme-generator-next
+repo: chiskat/meme-generator-next
+type: pypi
+techs: ["docker"]
+---
+
+[`MemeCrafters/meme-generator`](https://github.com/MemeCrafters/meme-generator) 是基于 Python 的表情包生成器，可根据已开发好的表情包模板拼接处理图片素材和文字，生成表情包。
+顾名思义，此项目作为其 “Next 版”，提供了大量扩展与升级。
+
+升级特性：
+
+- 处理了 `Pillow` 和 `pil-utils` 的依赖版本，以避免和 Astrbot 等工具的新版本不兼容；
+- 依赖项包含 `pycairo`，因此在加载 [meme_emoji](https://github.com/anyliew/meme_emoji) 时不再提示缺少依赖；
+- 支持自定义 `config.toml` 文件路径；
+- 支持自动上传 S3 并返回 URL；
+- 支持通过 Redis 连接，缓存预览图。
+
+此外，对于 Astrbot 用户，可直接使用 [astrbot-plugin-memelite-python-patched](https://github.com/chiskat/astrbot-plugin-memelite-python-patched) 作为机器人插件集成；
+它使用了新版依赖库，和 Astrbot 兼容，且随附的文档针对各种常见问题都提供了解决方案。

@@ -23,7 +23,7 @@ const open = defineCollection({
   schema: z.object({
     name: z.string(),
     repo: z.string(),
-    type: z.enum(['npm', 'docker']),
+    type: z.enum(['npm', 'docker', 'pypi']),
     homepage: z.url().optional(),
     techs: z.array(z.string()).optional(),
     override: z.object({ nameInLink: z.string().optional() }).optional(),
