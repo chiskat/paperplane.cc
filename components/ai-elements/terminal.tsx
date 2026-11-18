@@ -8,6 +8,16 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Button } from '@/components/ai-elements/deps/button'
 import { cn } from '@/utils/style'
 
+function sanitizeTerminalOutput(output: string) {
+  return output
+    .replace(/\u001B\][^\u0007\u001B]*(?:\u0007|\u001B\\)/g, '')
+    .replace(/\u001B[P^_X][\s\S]*?\u001B\\/g, '')
+    .replace(/\u001B\[[0-?]*[ -/]*([@-~])/g, (sequence, command: string) =>
+      command === 'm' ? sequence : ''
+    )
+    .replace(/[\u0000-\u0008\u000B-\u001A\u001C-\u001F\u007F]/g, '')
+}
+
 interface TerminalContextType {
   output: string
   isStreaming: boolean
@@ -40,7 +50,7 @@ export type TerminalTitleProps = HTMLAttributes<HTMLDivElement>
 export const TerminalTitle = ({ className, children, ...props }: TerminalTitleProps) => (
   <div className={cn('flex items-center gap-2 text-sm text-zinc-400', className)} {...props}>
     <TerminalIcon className="size-4" />
-    {children ?? 'Terminal'}
+    {children ?? '终端'}
   </div>
 )
 
@@ -170,7 +180,16 @@ export const TerminalContent = ({ className, children, ...props }: TerminalConte
 
   return (
     <div
-      className={cn('max-h-96 overflow-auto p-4 font-mono text-sm leading-relaxed', className)}
+      className={cn(
+        'max-h-96 overflow-auto p-4 font-mono text-sm leading-relaxed',
+        '[scrollbar-color:rgba(244,244,245,0.28)_transparent] [scrollbar-width:thin]',
+        '[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar]:w-2.5',
+        '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-solid [&::-webkit-scrollbar-thumb]:border-zinc-950/95 [&::-webkit-scrollbar-thumb]:bg-zinc-500/55',
+        '[&::-webkit-scrollbar-thumb:hover]:bg-zinc-400/75',
+        '[&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent',
+        '[&::-webkit-scrollbar-corner]:bg-transparent',
+        className
+      )}
       ref={containerRef}
       {...props}
     >
@@ -202,9 +221,10 @@ export const Terminal = ({
   children,
   ...props
 }: TerminalProps) => {
+  const sanitizedOutput = useMemo(() => sanitizeTerminalOutput(output), [output])
   const contextValue = useMemo(
-    () => ({ autoScroll, isStreaming, onClear, output }),
-    [autoScroll, isStreaming, onClear, output]
+    () => ({ autoScroll, isStreaming, onClear, output: sanitizedOutput }),
+    [autoScroll, isStreaming, onClear, sanitizedOutput]
   )
 
   return (

@@ -170,11 +170,11 @@ export const JSXPreview = memo(
         setError,
         setLastGoodJsx,
       }),
-      [bindings, components, error, isStreaming, jsx, onError, processedJsx, setError]
+      [bindings, components, error, isStreaming, jsx, onError, processedJsx, setLastGoodJsx]
     )
 
     return (
-      <JSXPreviewContext.Provider value={contextValue}>
+      <JSXPreviewContext.Provider value={contextValue as any}>
         <div className={cn('relative', className)} {...props}>
           {children}
         </div>

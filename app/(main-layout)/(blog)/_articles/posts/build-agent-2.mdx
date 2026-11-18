@@ -1,0 +1,894 @@
+---
+title: 从零开始搭建 Agent：② 工具调用
+date: 2026-06-02 09:40:00
+tags: [AI, JS]
+categories: [AI]
+---
+
+import { DemoShell } from '@/components/helper/demo-shell'
+import { ServerToolUse } from '../demos/build-agent-2/server-tool-use'
+import { ClientToolUse } from '../demos/build-agent-2/client-tool-use'
+
+截至上篇，我们实现了类似于 2023 年 ChatGPT 那样的 AI 对话系统。
+本文介绍 Agent 最重要的功能——工具调用能力。
+
+# 工具调用功能介绍
+
+在传统的 AI 对话系统种，AI 大模型只能根据预训练的数据，生成文本答案回答用户的问题；而 Agent 则功能更强，能拆解复杂任务、上网搜索、访问文件系统等等。
+这些所有与外界系统的交互，都是通过工具调用来触发的。
+
+---
+
+工具调用的流程是这样：
+
+1. 给大模型发消息前，需要带上 “工具声明”，它是一个数组，描述工具名称、参数格式等，然后发送；
+2. 如果大模型需要调用工具，会在接下来的输出中添加一次或多次的 “发起工具调用”，还会带上参数；
+3. Agent 只要发现大模型的输出带有 “发起工具调用”，就会解读这些参数，运行工具代码，得到返回值；
+4. Agent 会把返回值包装为 “工具调用结果”，塞回消息体，然后重新发给大模型；
+5. 大模型通过上下文得知，自己发起的某次工具调用有了结果，根据结果继续生成内容。
+
+可以看出，上面的 1、4 步骤都给大模型发送了消息，也就是说 Agent 有可能在用户的一次输入后与大模型完成多轮交互，这也是 “Agent 对话循环” 的含义。
+
+# 服务端工具调用
+
+工具调用的原生支持、参数格式等，大模型厂商已经提前规定好了；本文不赘述那些规定格式，因为我们使用 SDK，这些格式 SDK 会帮我们处理。
+
+首先，想让大模型认识工具，需要用一段文字来介绍工具的作用、返回值；
+如果工具支持传参，那么每个参数也需要一段文字来介绍，主要介绍参数的格式、作用。
+
+这个过程，就是向 AI 注册工具。
+
+<br />
+
+举例：注册一个 “提供时区，获取当前时间” 的工具：
+
+```typescript
+import 'server-only'
+
+import { tool } from 'ai'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import { z } from 'zod'
+
+import 'dayjs/locale/zh-cn'
+
+dayjs.extend(utc)
+dayjs.locale('zh-cn')
+
+const get_current_time_by_time_zone = tool({
+  // 工具的描述
+  description: '获取指定时区的当前时间。',
+
+  // 如果工具支持参数，此处定义参数的格式
+  inputSchema: z.object({
+    timeZone: z.int().min(-12).max(14)
+      .optional().default(8)
+      .describe('UTC 时区偏移小时数，仅支持数字，例如 8、-8、0；不提供时默认为 8。'),
+  }),
+
+  // 工具自身的运行代码
+  execute: async ({ timeZone }) => {
+    return { formatted: dayjs().utcOffset(timeZone).format('YYYY年M月D日 dddd HH:mm:ss') }
+  },
+})
+```
+
+工具的名称必须使用 snake_case，也就是下划线分隔形式；如果使用驼峰式命名，SDK 会自动转化。
+此处建议在代码中保持正确的命名方式，避免出现不一致的情况。
+
+通过代码示例可以看出，其中：
+
+- `description` 是最重要的字段之一，它是工具的完整介绍；
+- 工具如果支持参数输入，那么需要配置 `inputSchema`；
+  SDK 预期用户使用 `zod` 来定义参数的校验和描述，这里需要为每个字段定义校验规则、报错信息和描述，其中最重要的就是 `.describe()` 定义的描述文字；
+- `execute` 就是工具实际执行代码了，AI 输入参数后，就会运行这个函数并使用它的返回值。
+
+注册好工具后，我们要把工具传递给大模型。
+
+更新后端代码：
+
+```typescript {14}
+import 'server-only'
+
+import { convertToModelMessages, streamText, type UIMessage } from 'ai'
+
+import { mainModel } from '@/lib/agent/models'
+
+export async function POST(request: Request) {
+  const { messages } = (await request.json()) as { messages: UIMessage[] }
+  const modelMessage = await convertToModelMessages(messages)
+
+  const result = streamText({
+    model: mainModel,
+    messages: modelMessage,
+    tools: { get_current_time_by_time_zone },
+  })
+
+  return result.toUIMessageStreamResponse()
+}
+```
+
+这里，使用 `tools` 字段把工具列表注册给大模型。
+
+工具调用规范中明确了工具名只能使用 snake_case 格式，也就是下划线分隔单词；AI SDK 内部会自动转换工具名，但仍建议显式声明工具名为 snake_case。
+
+<br />
+
+接下来，更新前端组件。
+
+Vercel AI SDK 支持多种消息，普通文本是一种类型，工具调用则有一种专门的类型来区分出来；因此，我们需要通过代码分支判断决定渲染何种组件。
+
+而且，消息中可能包含多个部分，因为 Vercel AI SDK 返回的结果中，一条消息中可能包含多次工具调用，这是允许的行为；这部分内容也要用循环的方式依次渲染。
+
+更新后的前端代码如下：
+
+::: code-group
+
+```tsx [简化版]
+'use client'
+
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport, type UIMessage } from 'ai'
+import { useState } from 'react'
+
+const transport = new DefaultChatTransport<UIMessage>({ api: '后端接口的路径' })
+
+export default function ToolUse() {
+  const [input, setInput] = useState('')
+  const { messages, sendMessage, status } = useChat<UIMessage>({ transport })
+
+  return (
+    <div>
+      {messages.map(message => (
+        <div key={message.id}>
+          <strong>{message.role === 'user' ? '用户' : 'AI'}：</strong>
+
+          {message.parts.map((part, index) => {
+            switch (part.type) {
+              case 'text':
+                return <span key={`${message.id}-${index}`}>{part.text}</span>
+
+              case 'tool-get_current_time_by_time_zone':
+                return (
+                  <div key={`${message.id}-${index}`}>
+                    <div>正在获取指定时区的当前时间</div>
+                    <pre>{JSON.stringify(part.input, null, 2)}</pre>
+                    <pre>{JSON.stringify(part.output, null, 2)}</pre>
+                  </div>
+                )
+
+              default:
+                return null
+            }
+          })}
+        </div>
+      ))}
+
+      <textarea onChange={event => setInput(event.target.value)} value={input} />
+      <button
+        disabled={!input.trim() || status !== 'ready'}
+        onClick={() => {
+          setInput('')
+          sendMessage({ text: input.trim() })
+        }}
+      >
+        发送
+      </button>
+    </div>
+  )
+}
+```
+
+```tsx [完整版]
+'use client'
+
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport, type UIMessage } from 'ai'
+
+import { Conversation, ConversationContent } from '@/components/ai-elements/conversation'
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+} from '@/components/ai-elements/prompt-input'
+import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from '@/components/ai-elements/tool'
+
+const chatHistory: UIMessage[] = [
+  {
+    id: 'welcome',
+    parts: [{ text: '你好，我是一个支持全世界不同时区的报时机器人！', type: 'text' }],
+    role: 'assistant',
+  },
+]
+
+const transport = new DefaultChatTransport<UIMessage>({ api: '后端接口的路径' })
+
+export default function ToolUse() {
+  const { error, messages, sendMessage, status, stop } = useChat<UIMessage>({
+    messages: chatHistory,
+    transport,
+  })
+
+  return (
+    <div>
+      <Conversation>
+        <ConversationContent>
+          {messages.map(message => (
+            <Message from={message.role} key={message.id}>
+              <MessageContent>
+                {message.parts.map((part, index) => {
+                  switch (part.type) {
+                    case 'text':
+                      return (
+                        <MessageResponse
+                          isAnimating={
+                            message.role === 'assistant' &&
+                            status === 'streaming' &&
+                            messageIndex === messages.length - 1 &&
+                            index === message.parts.length - 1
+                          }
+                          key={`${message.id}-${index}`}
+                        >
+                          {part.text}
+                        </MessageResponse>
+                      )
+
+                    case 'tool-get_current_time_by_time_zone':
+                      return (
+                        <Tool key={`${message.id}-${index}`}>
+                          <ToolHeader
+                            state={part.state}
+                            title="获取指定时区的当前时间"
+                            type={part.type}
+                          />
+
+                          <ToolContent>
+                            <ToolInput input={part.input || ''} />
+                            <ToolOutput errorText={part.errorText || ''} output={part.output} />
+                          </ToolContent>
+                        </Tool>
+                      )
+
+                    default:
+                      return null
+                  }
+                })}
+              </MessageContent>
+            </Message>
+          ))}
+        </ConversationContent>
+      </Conversation>
+
+      <PromptInput
+        onSubmit={message => void sendMessage({ text: message.text.trim() })}
+        className="mt-5"
+      >
+        <PromptInputBody>
+          <PromptInputTextarea
+            disabled={status !== 'ready'}
+            placeholder="问问 AI 当前时间..."
+            rows={2}
+          />
+        </PromptInputBody>
+
+        <PromptInputFooter>
+          <span>{error?.message ?? (status === 'submitted' ? '等待响应...' : '')}</span>
+
+          <PromptInputSubmit onStop={stop} status={status} />
+        </PromptInputFooter>
+      </PromptInput>
+    </div>
+  )
+}
+```
+
+:::
+
+渲染组件如下：
+
+<DemoShell rerender>
+  <ServerToolUse />
+</DemoShell>
+
+我已提供了默认的问题 “美国现在的时间是？”，可以尝试一下点击发送。
+
+你可能发现问题了：**AI 先说出 “我帮你查查” 之后，发起了工具调用，但最后不会继续输出内容了，只有工具调用的过程，却没有最终回答！**
+
+这是因为：Vercel AI SDK 默认是以 **“一问一答”** 的模式运行，问指的是用户的输入；答指的是把问题发送给 AI 大模型供应商。
+也就是说：每次用户输入，默认只能给大模型提交一次消息。
+
+我们的流程是：
+用户询问 AI：“美国现在的时间是？” → AI 回答：“我帮你查查”，并发起工具调用，经过工具执行拿到工具调用的结果。
+
+这并不能完成需求，接下来还要：
+把之前的对话和工具调用结果继续发给 AI → AI 回答：“根据工具结果，告诉你美国的时间……”。
+
+这期间，需要给 AI 大模型提供商发送两次消息。
+
+<br />
+
+接下来，介绍一种并非最完善的前端解决方式。
+
+这种方式是，只要前端检测到最末尾的消息是工具调用，则表明缺少一个让 AI 最终回答的步骤，此时，应该自动续发消息，让 AI 继续。
+
+Vercel AI SDK 的客户端部分，提供了 `sendAutomaticallyWhen` 这个参数，它让 SDK 在满足特定条件时自动发送；同时还提供了 `lastAssistantMessageIsCompleteWithToolCalls` 这个参数，它表示 “最后一条 AI 返回的消息是工具调用”。
+这两者组合使用，便可避免 “工具调用出现在消息最末尾” 这种情况。
+
+更新前端代码：
+
+```typescript {6}
+import { lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+
+const { error, messages, sendMessage, status, stop } = useChat<UIMessage>({
+  messages: chatHistory,
+  transport,
+  sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+})
+```
+
+添加了这一行之后，只要前端检测到末尾消息是 AI 的工具调用，便会自动续发。
+
+更新后的组件如下：
+
+<DemoShell rerender>
+  <ServerToolUse autoResend/>
+</DemoShell>
+
+点击按钮发送消息，可以看出，工具调用后 AI 会继续回答问题，我们似乎解决了问题。
+
+<br />
+
+这种解决方式，只是单纯的 “前端续发” 方案，它更多适用于后端异常中断时的恢复措施；
+我们希望解决办法是，尽可能从根源来解决。
+
+其实，Vercel AI SDK 已经提供了配置方式。这里先直接给出后端代码：
+
+```typescript {11}
+import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from 'ai'
+
+export async function POST(request: Request) {
+  const { messages } = (await request.json()) as { messages: UIMessage[] }
+  const modelMessage = await convertToModelMessages(messages)
+
+  const result = streamText({
+    model: mainModel,
+    messages: modelMessage,
+    tools: { get_current_time_by_time_zone },
+    stopWhen: stepCountIs(5),
+  })
+
+  return result.toUIMessageStreamResponse()
+}
+```
+
+注意高亮行，这里我们使用 `stopWhen: stepCountIs(5)` 向 SDK 传递了要求：现在允许 “一问五答”。 这样，即使触发了工具调用，消耗掉了一个步骤，还剩余好几个步骤可以让 AI 总结文字返回给用户。
+
+这才是根本性的解决方式。
+
+更新后端代码并接入，新组件如下：
+
+<DemoShell rerender>
+  <ServerToolUse multipleSteps/>
+</DemoShell>
+
+新的组件同样可以正常在工具调用后输出最终回答。
+
+<br />
+
+也可以写成 `stopWhen: stepCountIs(2)`，但这样会遇到一些问题：有时，AI 会在发起一轮工具调用后，返回文字：“考虑到美国有夏令时，我再次以夏令时的时区偏移查询一遍”，然后开始第二轮工具调用，此时 `stepCountIs(2)` 就不够用了，会导致这轮工具调用后 AI 无法总结回答。
+
+实际开发中，Agent 可能还会执行更多的步骤，因此 `stopWhen: stepCountIs(5)` 的值会调的比较大，例如 `50`；前端方面，也会开启 `sendAutomaticallyWhen`，通过前后端同时采取措施，避免工具调用作为最后一条消息的情况。
+
+# 客户端工具调用
+
+上文中，使用的 “获取时间” 工具是服务端执行一个函数，把 AI 的输入转化为函数运行的结果并放回对话历史中，让 AI 根据它来继续生成文字。
+这种方式，我们称之为 “服务端工具调用”。
+
+接下来尝试开发 “客户端工具”，在前端渲染一些 UI 组件，让用户与之产生交互。
+
+<br />
+
+在用户使用 AI 工具时，有时对需求的描述可能不够清晰，因此，我们希望 AI 可以在适当的时机弹出表单，让用户进一步选择明确自己的需求；这个表单将尽可能减少交互复杂度，以选择为主，但也提供输入框允许用户自行输入。
+
+我们给这个工具取名为 `ask_user_question`。
+
+首先，在后端 SDK 处注册这个工具：
+
+```typescript
+import 'server-only'
+
+import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from 'ai'
+import { z } from 'zod'
+
+import { mainModel } from '@/lib/agent/models'
+
+const askUserQuestion = tool({
+  description:
+    '当用户的需求不够明确，无法可靠地继续处理时，向用户确认需求。优先提供 2 到 4 个简短、互斥、容易选择的选项；如仍需要更多细节，可允许用户补充文本。',
+  inputSchema: z.object({
+    question: z.string().describe('需要向用户确认的问题。问题应简短具体，一次只确认一个关键点。'),
+    options: z
+      .array(
+        z.object({
+          label: z.string().describe('选项名称 Key，尽量简短。'),
+          description: z.string().optional().describe('选中此项代表的含义或影响。'),
+        })
+      )
+      .min(2)
+      .max(4)
+      .describe('给用户选择的候选项，优先覆盖最可能的需求方向。'),
+    allowCustomText: z
+      .boolean()
+      .optional()
+      .default(true)
+      .describe('是否允许用户手动输入补充说明；默认允许。'),
+    customTextPlaceholder: z
+      .string()
+      .optional()
+      .default('也可以补充你的具体想法...')
+      .describe('补充文本输入框的占位文案。'),
+  }),
+})
+
+export async function POST(request: Request) {
+  const { messages } = (await request.json()) as { messages: UIMessage[] }
+  const modelMessage = await convertToModelMessages(messages)
+
+  const result = streamText({
+    model: mainModel,
+    messages: modelMessage,
+    tools: { askUserQuestion },
+    stopWhen: stepCountIs(10),
+  })
+
+  return result.toUIMessageStreamResponse()
+}
+```
+
+因为这是一个给前端用户使用的组件，它不需要执行代码，所以它没有 `execute`。
+
+然后，在前端为这个工具创建 UI 界面；
+这是一个由按钮和输入框组成的表单，允许用户选择某一项，或者对选项都不满意时直接在输入框输入文本并提交。
+
+代码如下：
+
+::: code-group
+
+```tsx [简化版]
+type ToolOutput = { answer: string; source: 'custom' | 'option'; description?: string }
+
+export interface ToolaskUserQuestionProps {
+  part: any
+  customText: string
+  onCustomTextChange: (toolCallId: string, value: string) => void
+  onSubmit: (toolCallId: string, output: ToolOutput) => void
+}
+
+export function ToolaskUserQuestion({
+  part,
+  customText,
+  onCustomTextChange,
+  onSubmit,
+}: ToolaskUserQuestionProps) {
+  if (part.state === 'input-streaming') return <div>正在整理需要确认的问题...</div>
+  if (part.state === 'output-available') return <div>已选择：{part.output.answer}</div>
+  if (part.state === 'output-error') return <div>{part.errorText}</div>
+  if (part.state !== 'input-available') return null
+
+  const customTextValue = customText.trim()
+
+  return (
+    <div>
+      <p>{part.input.question}</p>
+
+      {part.input.options.map(option => (
+        <button
+          key={option.label}
+          onClick={() =>
+            onSubmit(part.toolCallId, {
+              answer: option.label,
+              description: option.description,
+              source: 'option',
+            })
+          }
+          type="button"
+        >
+          {option.label}
+          {option.description && <span>：{option.description}</span>}
+        </button>
+      ))}
+
+      {part.input.allowCustomText !== false && (
+        <>
+          <textarea
+            onChange={event => onCustomTextChange(part.toolCallId, event.currentTarget.value)}
+            placeholder={part.input.customTextPlaceholder ?? '也可以补充你的具体想法...'}
+            value={customText}
+          />
+
+          <button
+            disabled={!customTextValue}
+            onClick={() =>
+              onSubmit(part.toolCallId, { answer: customTextValue, source: 'custom' })
+            }
+            type="button"
+          >
+            提交补充
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+```
+
+```tsx [完整版]
+import type { UIMessage } from 'ai'
+import { CheckIcon, MessageCircleQuestionIcon, SendIcon } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+
+interface askUserQuestionOption {
+  label: string
+  description?: string
+}
+
+interface askUserQuestionInput {
+  question: string
+  options: askUserQuestionOption[]
+  allowCustomText?: boolean
+  customTextPlaceholder?: string
+}
+
+export interface askUserQuestionOutput {
+  answer: string
+  source: 'custom' | 'option'
+  description?: string
+}
+
+export type ClientToolUseMessage = UIMessage<
+  unknown,
+  never,
+  {
+    askUserQuestion: {
+      input: askUserQuestionInput
+      output: askUserQuestionOutput
+    }
+  }
+>
+
+export interface ToolaskUserQuestionProps {
+  part: Extract<ClientToolUseMessage['parts'][number], { type: 'tool-askUserQuestion' }>
+  customText: string
+  onCustomTextChange: (toolCallId: string, value: string) => void
+  onSubmit: (toolCallId: string, output: askUserQuestionOutput) => void
+}
+
+export function ToolaskUserQuestion({
+  part,
+  customText,
+  onCustomTextChange,
+  onSubmit,
+}: ToolaskUserQuestionProps) {
+  const isWaitingForUser = part.state === 'input-available'
+  const customTextValue = customText.trim()
+
+  return (
+    <div className="not-prose space-y-3 text-sm">
+      {part.state === 'input-streaming' && (
+        <div className="text-muted-foreground flex items-center gap-2">
+          <MessageCircleQuestionIcon className="size-4" />
+          正在整理需要确认的问题...
+        </div>
+      )}
+
+      {isWaitingForUser && (
+        <>
+          <div className="space-y-1.5">
+            <div className="font-medium">{part.input.question}</div>
+            <div className="text-muted-foreground text-xs">请选择一个最接近的方向。</div>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            {part.input.options.map(option => (
+              <Button
+                className="h-auto min-h-12 justify-start px-3 py-2 text-left whitespace-normal"
+                key={option.label}
+                onClick={() =>
+                  onSubmit(part.toolCallId, {
+                    answer: option.label,
+                    description: option.description,
+                    source: 'option',
+                  })
+                }
+                type="button"
+                variant="outline"
+              >
+                <span className="flex min-w-0 flex-col items-start gap-0.5">
+                  <span className="text-foreground text-sm">{option.label}</span>
+                  {option.description && (
+                    <span className="text-muted-foreground text-xs leading-snug">
+                      {option.description}
+                    </span>
+                  )}
+                </span>
+              </Button>
+            ))}
+          </div>
+
+          {part.input.allowCustomText !== false && (
+            <div className="space-y-2">
+              <Textarea
+                className="min-h-20 resize-y"
+                onChange={event => onCustomTextChange(part.toolCallId, event.currentTarget.value)}
+                placeholder={part.input.customTextPlaceholder ?? '也可以补充你的具体想法...'}
+                value={customText}
+              />
+
+              <Button
+                disabled={!customTextValue}
+                onClick={() =>
+                  onSubmit(part.toolCallId, { answer: customTextValue, source: 'custom' })
+                }
+                type="button"
+              >
+                <SendIcon className="size-3.5" />
+                提交补充
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+
+      {part.state === 'output-available' && (
+        <div className="bg-muted/50 flex items-center gap-2 rounded-md px-3 py-2">
+          <CheckIcon className="size-4 text-green-600" />
+          已选择：{part.output.answer}
+        </div>
+      )}
+
+      {part.state === 'output-error' && (
+        <div className="bg-destructive/10 text-destructive rounded-md px-3 py-2">
+          {part.errorText}
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+:::
+
+这样这个请求用户详细描述问题的表单组件就完成了，我们把它接入 AI 对话流程中。
+
+更新工具调用，针对消息的类型进行判断，如果发现是这个客户端工具调用，则渲染这个组件：
+
+::: code-group
+
+```tsx [简化版]
+'use client'
+
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+import { useState } from 'react'
+
+import {
+  ToolaskUserQuestion,
+  type askUserQuestionOutput,
+  type ClientToolUseMessage,
+} from './tool-ask-user-questions'
+
+const chatHistory: ClientToolUseMessage[] = [
+  {
+    id: 'welcome',
+    parts: [{ text: '你好，我是你的 AI 助理。', type: 'text' }],
+    role: 'assistant',
+  },
+]
+
+const transport = new DefaultChatTransport<ClientToolUseMessage>({
+  api: '后端接口的路径',
+})
+
+export default function ClientToolUse() {
+  const [input, setInput] = useState('帮我想一个品牌名')
+  const [customTextByToolCallId, setCustomTextByToolCallId] = useState<Record<string, string>>({})
+
+  const { addToolOutput, messages, sendMessage, status } = useChat<ClientToolUseMessage>({
+    messages: chatHistory,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    transport,
+  })
+
+  return (
+    <div>
+      {messages.map(message => (
+        <div key={message.id}>
+          <strong>{message.role === 'user' ? '用户' : 'AI'}：</strong>
+
+          {message.parts.map((part, index) => {
+            switch (part.type) {
+              case 'text':
+                return <div key={`${message.id}-${index}`}>{part.text}</div>
+
+              case 'tool-ask_user_question':
+                return (
+                  <ToolaskUserQuestion
+                    customText={customTextByToolCallId[part.toolCallId] ?? ''}
+                    key={`${message.id}-${index}`}
+                    onCustomTextChange={(toolCallId, value) => {
+                      setCustomTextByToolCallId(prev => ({ ...prev, [toolCallId]: value }))
+                    }}
+                    onSubmit={(toolCallId, output: askUserQuestionOutput) => {
+                      addToolOutput({ output, tool: 'ask_user_question', toolCallId })
+                    }}
+                    part={part}
+                  />
+                )
+
+              default:
+                return null
+            }
+          })}
+        </div>
+      ))}
+
+      <textarea
+        disabled={status !== 'ready'}
+        onChange={event => setInput(event.currentTarget.value)}
+        value={input}
+      />
+      <button
+        disabled={!input.trim() || status !== 'ready'}
+        onClick={() => {
+          sendMessage({ text: input.trim() })
+          setInput('')
+        }}
+        type="button"
+      >
+        发送
+      </button>
+    </div>
+  )
+}
+
+```
+
+```tsx [完整版]
+'use client'
+
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+import { useState } from 'react'
+
+import { Conversation, ConversationContent } from '@/components/ai-elements/conversation'
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputProvider,
+  PromptInputSubmit,
+  PromptInputTextarea,
+} from '@/components/ai-elements/prompt-input'
+import {
+  ToolaskUserQuestion,
+  type askUserQuestionOutput,
+  type ClientToolUseMessage,
+} from './ToolaskUserQuestion'
+
+const chatHistory: ClientToolUseMessage[] = [
+  {
+    id: 'welcome',
+    parts: [{ text: '你好，我是你的 AI 助理。', type: 'text' }],
+    role: 'assistant',
+  },
+]
+
+const transport = new DefaultChatTransport<ClientToolUseMessage>({
+  api: '后端接口的路径',
+})
+
+export default function ClientToolUse() {
+  const [customTextByToolCallId, setCustomTextByToolCallId] = useState<Record<string, string>>({})
+
+  const { addToolOutput, error, messages, sendMessage, status, stop } =
+    useChat<ClientToolUseMessage>({
+      messages: chatHistory,
+      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+      transport,
+    })
+
+  return (
+    <div>
+      <Conversation>
+        <ConversationContent>
+          {messages.map(message => (
+            <Message from={message.role} key={message.id}>
+              <MessageContent>
+                {message.parts.map((part, index) => {
+                  switch (part.type) {
+                    case 'text':
+                      return (
+                        <MessageResponse
+                          isAnimating={
+                            message.role === 'assistant' &&
+                            status === 'streaming' &&
+                            messageIndex === messages.length - 1 &&
+                            index === message.parts.length - 1
+                          }
+                          key={`${message.id}-${index}`}
+                        >
+                          {part.text}
+                        </MessageResponse>
+                      )
+
+                    case 'tool-ask_user_question':
+                      return (
+                        <ToolaskUserQuestion
+                          customText={customTextByToolCallId[part.toolCallId] ?? ''}
+                          key={`${message.id}-${index}`}
+                          onCustomTextChange={(toolCallId: string, value: string) => {
+                            setCustomTextByToolCallId(prev => ({ ...prev, [toolCallId]: value }))
+                          }}
+                          onSubmit={(toolCallId: string, output: askUserQuestionOutput) => {
+                            addToolOutput({ output, tool: 'ask_user_question', toolCallId })
+                          }}
+                          part={part}
+                        />
+                      )
+
+                    default:
+                      return null
+                  }
+                })}
+              </MessageContent>
+            </Message>
+          ))}
+        </ConversationContent>
+      </Conversation>
+
+      <PromptInputProvider initialInput="帮我想一个品牌名">
+        <PromptInput
+          onSubmit={message => void sendMessage({ text: message.text.trim() })}
+          className="mt-5"
+        >
+          <PromptInputBody>
+            <PromptInputTextarea
+              disabled={status !== 'ready'}
+              placeholder="提出一个可能需要确认细节的需求..."
+              rows={2}
+            />
+          </PromptInputBody>
+
+          <PromptInputFooter>
+            <span>{error?.message ?? (status === 'submitted' ? '等待响应...' : '')}</span>
+
+            <PromptInputSubmit onStop={stop} status={status} />
+          </PromptInputFooter>
+        </PromptInput>
+      </PromptInputProvider>
+    </div>
+  )
+}
+
+```
+
+:::
+
+Vercel AI SDK 的核心 hook `useChat()` 返回了 `addToolOutput` 这个函数，它是专为客户端工具调用场景设计，在与用户交互时回传工具调用的结果。
+
+对于服务端工具，大模型 “请求工具调用” 后，SDK 会先校验参数是否正确，然后把参数传入 `execute`，获取运行结果，将结果重新发给大模型，这个过程中不涉及用户交互；
+对于客户端工具，大模型 “请求工具调用” 后，SDK 会先校验参数是否正确，然后把包含最末尾是 “请求工具调用” 的消息传给前端，我们需要针对这种工具调用开发对应的组件，将大模型回传的参数渲染为组件，等待用户的交互，用户交互后，使用 `addToolOutput()` 把工具调用的结果放入消息序列并重新发给大模型。
+
+更新代码后，渲染出的组件如下：
+
+<DemoShell rerender>
+  <ClientToolUse />
+</DemoShell>
+
+可以直接点击发送按钮，使用我预设的问题，体会客户端工具调用的效果。

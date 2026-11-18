@@ -4,19 +4,19 @@ import { CheckIcon, MessageCircleQuestionIcon, SendIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
-interface ClarifyingRequirementOption {
+interface ToolaskUserQuestionOption {
   label: string
   description?: string
 }
 
-interface ClarifyingRequirementInput {
+interface ToolaskUserQuestionInput {
   question: string
-  options: ClarifyingRequirementOption[]
+  options: ToolaskUserQuestionOption[]
   allowCustomText?: boolean
   customTextPlaceholder?: string
 }
 
-export interface ClarifyingRequirementOutput {
+export interface ToolaskUserQuestionOutput {
   answer: string
   source: 'custom' | 'option'
   description?: string
@@ -26,26 +26,26 @@ export type ClientToolUseMessage = UIMessage<
   unknown,
   never,
   {
-    clarifyingRequirement: {
-      input: ClarifyingRequirementInput
-      output: ClarifyingRequirementOutput
+    ask_user_question: {
+      input: ToolaskUserQuestionInput
+      output: ToolaskUserQuestionOutput
     }
   }
 >
 
-export interface ToolClarifyingRequirementProps {
-  part: Extract<ClientToolUseMessage['parts'][number], { type: 'tool-clarifyingRequirement' }>
+export interface ToolaskUserQuestionProps {
+  part: Extract<ClientToolUseMessage['parts'][number], { type: 'tool-ask_user_question' }>
   customText: string
   onCustomTextChange: (toolCallId: string, value: string) => void
-  onSubmit: (toolCallId: string, output: ClarifyingRequirementOutput) => void
+  onSubmit: (toolCallId: string, output: ToolaskUserQuestionOutput) => void
 }
 
-export function ToolClarifyingRequirement({
+export function ToolAskUserQuestion({
   part,
   customText,
   onCustomTextChange,
   onSubmit,
-}: ToolClarifyingRequirementProps) {
+}: ToolaskUserQuestionProps) {
   const isWaitingForUser = part.state === 'input-available'
   const customTextValue = customText.trim()
 

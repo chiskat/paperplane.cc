@@ -1,9 +1,13 @@
 'use client'
 
 import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai'
+import { DefaultChatTransport, type UIMessage } from 'ai'
 import { useState } from 'react'
 
+import {
+  defaultSimpleSkills,
+  type AgentSkills,
+} from '@/app/api/agent/demo/build-agent-3/skills-meeting'
 import { Conversation, ConversationContent } from '@/components/ai-elements/conversation'
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
 import {
@@ -14,33 +18,26 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from '@/components/ai-elements/prompt-input'
-import {
-  ToolClarifyingRequirement,
-  type ClarifyingRequirementOutput,
-  type ClientToolUseMessage,
-} from './tool-clarifying-requirement'
+import { SimpleSkill } from './simple-skill'
+import { ToolCallReadSkill } from './tool-call-read-skill'
 
-const chatHistory: ClientToolUseMessage[] = [
+const chatHistory: UIMessage[] = [
   {
     id: 'welcome',
-    parts: [{ text: '你好，我是你的 AI 助理。', type: 'text' }],
+    parts: [{ text: '你好，我是 AI 工作助理，工作安排等问题尽管问我！', type: 'text' }],
     role: 'assistant',
   },
 ]
 
-const transport = new DefaultChatTransport<ClientToolUseMessage>({
-  api: '/api/agent/demo/build-agent-1/client-tool',
-})
+const transport = new DefaultChatTransport({ api: '/api/agent/demo/build-agent-3/simple-skill' })
 
-export function ClientToolUse() {
-  const [customTextByToolCallId, setCustomTextByToolCallId] = useState<Record<string, string>>({})
+export function SimpleSkillChat() {
+  const [skills, setSkills] = useState<AgentSkills[]>(defaultSimpleSkills)
 
-  const { addToolOutput, error, messages, sendMessage, status, stop } =
-    useChat<ClientToolUseMessage>({
-      messages: chatHistory,
-      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-      transport,
-    })
+  const { error, messages, sendMessage, status, stop } = useChat({
+    messages: chatHistory,
+    transport,
+  })
 
   return (
     <div>
@@ -66,20 +63,8 @@ export function ClientToolUse() {
                         </MessageResponse>
                       )
 
-                    case 'tool-clarifyingRequirement':
-                      return (
-                        <ToolClarifyingRequirement
-                          customText={customTextByToolCallId[part.toolCallId] ?? ''}
-                          key={`${message.id}-${index}`}
-                          onCustomTextChange={(toolCallId: string, value: string) => {
-                            setCustomTextByToolCallId(prev => ({ ...prev, [toolCallId]: value }))
-                          }}
-                          onSubmit={(toolCallId: string, output: ClarifyingRequirementOutput) => {
-                            addToolOutput({ output, tool: 'clarifyingRequirement', toolCallId })
-                          }}
-                          part={part}
-                        />
-                      )
+                    case 'tool-read_skill':
+                      return <ToolCallReadSkill key={`${message.id}-${index}`} part={part} />
 
                     default:
                       return null
@@ -91,15 +76,17 @@ export function ClientToolUse() {
         </ConversationContent>
       </Conversation>
 
-      <PromptInputProvider initialInput="帮我想一个品牌名">
+      <PromptInputProvider initialInput="编写一份会议通知示例，里面的人名、主题、地点你都自主发挥">
         <PromptInput
-          onSubmit={message => void sendMessage({ text: message.text.trim() })}
+          onSubmit={message =>
+            void sendMessage({ text: message.text.trim() }, { body: { skills } })
+          }
           className="mt-5"
         >
           <PromptInputBody>
             <PromptInputTextarea
               disabled={status !== 'ready'}
-              placeholder="提出一个可能需要确认细节的需求..."
+              placeholder="和 AI 说点什么..."
               rows={2}
             />
           </PromptInputBody>
@@ -111,6 +98,8 @@ export function ClientToolUse() {
           </PromptInputFooter>
         </PromptInput>
       </PromptInputProvider>
+
+      <SimpleSkill value={skills} onChange={setSkills} className="mt-4" />
     </div>
   )
 }

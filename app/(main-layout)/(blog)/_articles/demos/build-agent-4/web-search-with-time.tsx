@@ -18,30 +18,24 @@ import {
   PromptInputTextarea,
 } from '@/components/ai-elements/prompt-input'
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from '@/components/ai-elements/tool'
+import { ToolCallWebExtract } from './tool-call-web-extract'
+import { ToolCallWebSearch } from './tool-call-web-search'
 
 const chatHistory: UIMessage[] = [
   {
     id: 'welcome',
-    parts: [{ text: '你好，我是一个支持全世界不同时区的报时机器人！', type: 'text' }],
+    parts: [{ text: '你好，我是 AI 智能助理，有问题尽管问我！', type: 'text' }],
     role: 'assistant',
   },
 ]
 
-export function ServerToolUse({
-  multipleSteps,
-  autoResend,
-}: {
-  multipleSteps: boolean
-  autoResend: boolean
-}) {
+export function WebSearchWithTime() {
   const { error, messages, sendMessage, status, stop } = useChat<UIMessage>({
     messages: chatHistory,
     transport: new DefaultChatTransport<UIMessage>({
-      api: multipleSteps
-        ? '/api/agent/demo/build-agent-1/server-tool-steps'
-        : '/api/agent/demo/build-agent-1/server-tool',
+      api: '/api/agent/demo/build-agent-4/web-search-with-time',
     }),
-    sendAutomaticallyWhen: autoResend ? lastAssistantMessageIsCompleteWithToolCalls : undefined,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   })
 
   return (
@@ -68,14 +62,10 @@ export function ServerToolUse({
                         </MessageResponse>
                       )
 
-                    case 'tool-get_current_time_by_time_zone':
+                    case 'tool-get_current_time':
                       return (
                         <Tool key={`${message.id}-${index}`}>
-                          <ToolHeader
-                            state={part.state}
-                            title="获取指定时区的当前时间"
-                            type={part.type}
-                          />
+                          <ToolHeader state={part.state} title="获取当前时间" type={part.type} />
 
                           <ToolContent>
                             <ToolInput input={part.input || ''} />
@@ -83,6 +73,12 @@ export function ServerToolUse({
                           </ToolContent>
                         </Tool>
                       )
+
+                    case 'tool-web_extract':
+                      return <ToolCallWebExtract key={`${message.id}-${index}`} part={part} />
+
+                    case 'tool-web_search':
+                      return <ToolCallWebSearch key={`${message.id}-${index}`} part={part} />
 
                     default:
                       return null
@@ -94,17 +90,13 @@ export function ServerToolUse({
         </ConversationContent>
       </Conversation>
 
-      <PromptInputProvider initialInput="美国现在的时间是？">
+      <PromptInputProvider initialInput="最近一个月，体育界有什么新闻？">
         <PromptInput
           onSubmit={message => void sendMessage({ text: message.text.trim() })}
           className="mt-5"
         >
           <PromptInputBody>
-            <PromptInputTextarea
-              disabled={status !== 'ready'}
-              placeholder="问问 AI 当前时间..."
-              rows={2}
-            />
+            <PromptInputTextarea disabled={status !== 'ready'} placeholder="问问 AI ..." rows={2} />
           </PromptInputBody>
 
           <PromptInputFooter>

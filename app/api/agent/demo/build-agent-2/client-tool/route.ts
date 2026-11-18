@@ -1,13 +1,21 @@
 import 'server-only'
 
-import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from 'ai'
+import {
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  stepCountIs,
+  streamText,
+  tool,
+  toUIMessageStream,
+  type UIMessage,
+} from 'ai'
 import { z } from 'zod'
 
 import { mainModel } from '@/lib/agent/models'
 
-const clarifyingRequirement = tool({
+const ask_user_question = tool({
   description:
-    '当用户的需求不够明确，无法可靠继续处理时，向用户确认需求。优先提供 2 到 6 个简短、互斥、容易选择的选项；如仍需要更多细节，可允许用户补充文本。',
+    '当用户的需求不够明确，无法可靠地继续处理时，向用户确认需求。优先提供 2 到 6 个简短、互斥、容易选择的选项；如仍需要更多细节，可允许用户补充文本。',
   inputSchema: z.object({
     question: z.string().describe('需要向用户确认的问题。问题应简短具体，一次只确认一个关键点。'),
     options: z
@@ -40,9 +48,11 @@ export async function POST(request: Request) {
   const result = streamText({
     model: mainModel,
     messages: modelMessage,
-    tools: { clarifyingRequirement },
+    tools: { ask_user_question },
     stopWhen: stepCountIs(10),
   })
 
-  return result.toUIMessageStreamResponse()
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
+  })
 }
