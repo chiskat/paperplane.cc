@@ -58,7 +58,7 @@ const DEFAULT_ROBOT_TYPE = OARobotType.DINGTALK
 const TOKEN_GUIDE_MAP: Record<OARobotType, { title: string; description: string }> = {
   [OARobotType.DINGTALK]: {
     title: '钉钉机器人配置说明',
-    description: '群管理 → 添加机器人 → 自定义；安全设置仅支持"加签"。',
+    description: '群管理 → 添加机器人 → 自定义；安全设置仅支持“加签”。',
   },
   [OARobotType.WXBIZ]: {
     title: '企业微信机器人配置说明',
@@ -66,12 +66,12 @@ const TOKEN_GUIDE_MAP: Record<OARobotType, { title: string; description: string 
   },
   [OARobotType.FEISHU]: {
     title: '飞书机器人配置说明',
-    description: '群机器人 → 添加 → 自定义机器人；安全设置仅支持"签名校验"。',
+    description: '群机器人 → 添加 → 自定义机器人；安全设置仅支持“签名校验”。',
   },
 }
 
 const FEISHU_AUTH_TIP =
-  '飞书发送图片和"@用户"需要点此链接创建平台应用，并在下方填入平台应用的 AppId 和 AppSecret。在"开发配置"→"权限管理"中开通"获取与上传图片或文件资源"权限，才可以发送图片；开通"通过手机号或邮箱获取用户 ID"和"获取用户 userID"权限，才能"@用户"。'
+  '飞书发送图片和“@用户”需要点先创建平台应用，并在下方填入平台应用的 AppId 和 AppSecret。在“开发配置”→“权限管理”中开通“获取与上传图片或文件资源”权限，才可以发送图片；开通“通过手机号或邮箱获取用户 ID”和“获取用户 userID”权限，才能“@用户”。'
 
 const ROBOT_TYPE_OPTIONS = oaRobotTypeOptions.map(option => ({
   value: option.value,

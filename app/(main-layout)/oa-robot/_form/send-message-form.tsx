@@ -64,9 +64,9 @@ const messageTypeOptions: Array<{ value: MessageTypeValue; label: string }> = [
 
 const atAllDescriptions: Partial<Record<OARobotType, string>> = {
   [OARobotType.DINGTALK]:
-    '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾；开启后无法“@用户”',
-  [OARobotType.FEISHU]: '可通过消息中的“@all”来调整“@所有人”文本的位置，默认在消息的末尾',
-  [OARobotType.WXBIZ]: '消息末尾会“@所有人”且无法调整位置',
+    '可通过消息中的 “@all” 来调整 “@所有人” 文本的位置，默认在消息的末尾；开启后无法 “@用户”',
+  [OARobotType.FEISHU]: '可通过消息中的 “@all” 来调整 “@所有人” 文本的位置，默认在消息的末尾',
+  [OARobotType.WXBIZ]: '消息末尾会 “@所有人” 且无法调整位置',
 }
 
 function normalizeAtList(value: string[]) {
