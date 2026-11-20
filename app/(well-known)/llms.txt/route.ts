@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import type { Root } from 'mdast'
 import { NextResponse } from 'next/server'
+import { tagTemplate } from 'omn'
 import { remark } from 'remark'
 
 import { articleList } from '@/app/(main-layout)/(blog)/post/article-list'
@@ -8,11 +9,11 @@ import { getSiteUrl, sitePages } from '@/app/sitemap'
 
 export const dynamic = 'force-static'
 
-const llmsTextIntro = [
-  '# PaperPlane.cc - A full-stack personal website by chiskat',
-  '',
-  '> 此网站 [PaperPlane.cc](https://paperplane.cc) 是由来自中国的 Web 全栈开发者 [chiskat](https://github.com/chiskat) 设计与开发的基于 Next.js 技术的全栈个人网站，用于刊登个人技术博客、实现一些技术 Demo、提供一些在线服务。\n\n',
-].join('\n')
+const llmsTextIntro = tagTemplate`
+  # PaperPlane.cc - A full-stack personal website by chiskat
+
+  > 此网站 [PaperPlane.cc](https://paperplane.cc) 是由来自中国的 Web 全栈开发者 [chiskat](https://github.com/chiskat) 设计与开发的基于 Next.js 技术的全栈个人网站，用于刊登个人技术博客、实现一些技术 Demo、提供一些在线服务。
+`
 
 function getArticleItems() {
   return articleList
@@ -96,7 +97,7 @@ function getLlmsText() {
     ],
   }
 
-  return `${llmsTextIntro}${remark().data('settings', { bullet: '-' }).stringify(tree)}`
+  return `${llmsTextIntro}\n\n${remark().data('settings', { bullet: '-' }).stringify(tree)}`
 }
 
 export async function GET() {
