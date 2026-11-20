@@ -4,7 +4,7 @@ import { HighlighterLink } from '@/components/animate-ui/primitives/effects/high
 import { PackageIcon } from '@/components/icon/package-icon'
 import { cn } from '@/utils/style'
 
-export type OpenProjectType = 'npm' | 'docker'
+export type OpenProjectType = 'npm' | 'docker' | 'pypi'
 
 export interface OpenSidebarItemProps {
   active: boolean
