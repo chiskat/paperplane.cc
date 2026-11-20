@@ -7,6 +7,8 @@ allowBuilds:
   puppeteer: false
   sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - omn
 overrides:
   react-jsx-parser>@types/react: $@types/react
   react-jsx-parser>@types/react-dom: $@types/react-dom
