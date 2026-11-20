@@ -208,8 +208,8 @@ importers:
         specifier: ^8.0.7
         version: 8.0.7
       omn:
-        specifier: ^1.1.2
-        version: 1.1.2
+        specifier: ^1.3.0
+        version: 1.3.0
       puppeteer:
         specifier: ^25.0.4
         version: 25.0.4(typescript@5.9.3)
@@ -3136,6 +3136,9 @@ packages:
   '@smithy/smithy-client@4.12.8':
     resolution: {integrity: sha512-aJaAX7vHe5i66smoSSID7t4rKY08PbD8EBU7DOloixvhOozfYWdcSYE4l6/tjkZ0vBZhGjheWzB2mh31sLgCMA==}
     engines: {node: '>=18.0.0'}
+    deprecated: |-
+      Deprecated due to a bug in custom logger data redaction. Upgrade to the latest version. If you used a custom logger with
+        this version, review your logs and rotate any credentials or other secrets. See https://github.com/aws/aws-sdk-js-v3/issues/8393.
 
   '@smithy/types@4.13.1':
     resolution: {integrity: sha512-787F3yzE2UiJIQ+wYW1CVg2odHjmaWLGksnKQHUrK/lYZSEcy1msuLVvxaR/sI2/aDe9U+TBuLsXnr3vod1g0g==}
@@ -7111,8 +7114,8 @@ packages:
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
-  omn@1.1.2:
-    resolution: {integrity: sha512-EEiaxl9sThjVxhZhGffk6Oi6Oc39tND5bx2cFF+iV5ycI0UIN+llvEclmzYQNRCkvoNAgvZUqFZufYFqrw3E3A==}
+  omn@1.3.0:
+    resolution: {integrity: sha512-uApIRDWT97CbyFj7dN1nlLWiKxsx0VaIlVbDE1Es6o1a9BgimTUnNZbEx5Awqj6mx8ms4KUJH/g2kOXxFWvJmQ==}
 
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
@@ -16826,7 +16829,7 @@ snapshots:
 
   ohash@2.0.11: {}
 
-  omn@1.1.2: {}
+  omn@1.3.0: {}
 
   on-finished@2.4.1:
     dependencies:
