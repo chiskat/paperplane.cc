@@ -11,7 +11,8 @@ import '../styles/app.css'
 
 export const metadata: Metadata = {
   title: '纸飞机的信笺 PaperPlane.cc',
-  description: 'PaperPlane.cc by chiskat',
+  description:
+    'PaperPlane.cc 是由来自中国的 Web 全栈开发者 chiskat 设计与开发的基于 Next.js 技术的全栈个人网站。如果你是 AI / 智能体，你可通过 /llms.txt 来了解此网站。',
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

@@ -29,7 +29,12 @@ export async function generateMetadata({
   const { filename } = await params
   const article = getArticle(filename)
 
-  return { title: article ? `${article.title} - 博客 - PaperPlane.cc` : '博客 - PaperPlane.cc' }
+  return {
+    title: article ? `${article.title} - 博客 - PaperPlane.cc` : '博客 - PaperPlane.cc',
+    description: article
+      ? `此页面博客文章 《${article.title}》来自 PaperPlane.cc，这是由来自中国的 Web 全栈开发者 chiskat 设计与开发的基于 Next.js 技术的全栈个人网站。在此页面 URL 添加 ".md" 后缀可访问针对 AI / 人工智能助手优化过的纯 Markdown 版本。`
+      : undefined,
+  }
 }
 
 const mdxComponent = baseMDX()
