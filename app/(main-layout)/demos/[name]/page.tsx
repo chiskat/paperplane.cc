@@ -1,5 +1,6 @@
 import { IconCpu, IconFileCode, IconHome, IconServer } from '@tabler/icons-react'
 import { allDemos } from 'content-collections'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
@@ -45,6 +46,17 @@ export function generateStaticParams() {
   return sortedDemos.map(item => ({
     name: item._meta.path,
   }))
+}
+
+export async function generateMetadata({ params }: PageProps<'/demos/[name]'>): Promise<Metadata> {
+  const { name } = await params
+  const project = sortedDemos.find(item => item._meta.path === name)
+
+  if (!project) {
+    notFound()
+  }
+
+  return { title: `${project.title} - Demos - PaperPlane.cc` }
 }
 
 export default async function DemoItemPage({ params }: PageProps<'/demos/[name]'>) {

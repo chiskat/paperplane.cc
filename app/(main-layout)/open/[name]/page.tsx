@@ -6,6 +6,7 @@ import {
   IconVersions,
 } from '@tabler/icons-react'
 import { allOpens } from 'content-collections'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
@@ -54,9 +55,21 @@ export function generateStaticParams() {
   }))
 }
 
+export async function generateMetadata({ params }: PageProps<'/open/[name]'>): Promise<Metadata> {
+  const { name } = await params
+  const project = sortedOpens.find(item => item._meta.path === name)
+
+  if (!project) {
+    notFound()
+  }
+
+  return { title: `${project.name} - 开源项目 - PaperPlane.cc` }
+}
+
 export default async function OpenItemPage({ params }: PageProps<'/open/[name]'>) {
   const { name } = await params
   const project = sortedOpens.find(item => item._meta.path === name)
+
   if (!project) {
     notFound()
   }

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { SnippetCatalogLayoutClient, type SnippetCatalogOption } from './layout-client'
@@ -34,6 +35,19 @@ export const dynamicParams = false
 
 export function generateStaticParams() {
   return catalogOptions.map(option => ({ catelog: option.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: LayoutProps<'/snippet/[catelog]'>): Promise<Metadata> {
+  const { catelog } = await params
+  const currentCatalog = catalogMap.get(catelog)
+
+  if (!currentCatalog) {
+    notFound()
+  }
+
+  return { title: `${currentCatalog.title} - 样板与配置 - PaperPlane.cc` }
 }
 
 export default async function SnippetCatalogLayout({

@@ -2,9 +2,15 @@ import { prefetchSession } from '@daveyplate/better-auth-tanstack/server'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { headers } from 'next/headers'
 
+import { getAwesomeMetadata } from '@/app/(main-layout)/awesome/_item/awesome-metadata'
 import { auth } from '@/lib/auth'
 import { getQueryClient } from '@/lib/query-client'
 import { trpcServer } from '@/lib/trpc-server'
+
+export async function generateMetadata({ params }: LayoutProps<'/awesome/[id]'>) {
+  const { id } = await params
+  return getAwesomeMetadata(id)
+}
 
 export default async function AwesomeDetailLayout({
   children,

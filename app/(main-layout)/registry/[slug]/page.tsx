@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import { allRegistries } from '@/.content-collections/generated'
@@ -11,6 +12,19 @@ export function generateStaticParams() {
   return allRegistries.map(item => ({
     slug: item._meta.path,
   }))
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<'/registry/[slug]'>): Promise<Metadata> {
+  const { slug } = await params
+  const registry = allRegistries.find(item => item._meta.path === slug)
+
+  if (!registry) {
+    redirect('/registry')
+  }
+
+  return { title: `${registry.title} - 制品库 - PaperPlane.cc` }
 }
 
 export default async function RegistrySlugPage({ params }: PageProps<'/registry/[slug]'>) {

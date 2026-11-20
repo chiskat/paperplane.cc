@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'Registry - PaperPlane.cc',
+  title: '制品库 - PaperPlane.cc',
 }
 
 export default function RegistryPage() {
