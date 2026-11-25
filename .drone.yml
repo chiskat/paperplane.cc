@@ -54,6 +54,7 @@ steps:
 
   - name: server-prisma-sync-db
     image: appleboy/drone-ssh
+    pull: if-not-exists
     settings:
       host:
         from_secret: DEPLOY_SSH_HOST
@@ -71,6 +72,7 @@ steps:
 
   - name: deploy
     image: appleboy/drone-ssh
+    pull: if-not-exists
     settings:
       host:
         from_secret: DEPLOY_SSH_HOST
@@ -94,6 +96,7 @@ steps:
 
   - name: deploy-sync-s3
     image: amazon/aws-cli
+    pull: if-not-exists
     environment:
       AWS_DEFAULT_REGION:
         from_secret: S3_REGION
@@ -134,6 +137,7 @@ steps:
 
   - name: rollback-handle-ssh
     image: appleboy/drone-ssh
+    pull: if-not-exists
     when:
       status:
         - failure
