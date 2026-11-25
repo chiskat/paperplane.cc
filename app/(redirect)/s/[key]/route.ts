@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { tagTemplate } from 'omn'
 
 import { createTRPCContext } from '@/lib/trpc'
 import { createTRPCCaller } from '@/lib/trpc-server'
@@ -13,7 +14,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ key:
   const { url, redirectType } = await trpcCaller.short.items.get({ key })
 
   if (redirectType === ShortRedirectType.JAVASCRIPT) {
-    const html = `
+    const html = tagTemplate`
       <!DOCTYPE html>
       <html>
         <head>
