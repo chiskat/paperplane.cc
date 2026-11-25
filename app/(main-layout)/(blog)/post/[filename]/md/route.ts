@@ -1,5 +1,4 @@
-import { existsSync } from 'node:fs'
-import { dirname, relative, resolve, sep } from 'node:path'
+import { posix } from 'node:path'
 import { NextResponse } from 'next/server'
 import { remark } from 'remark'
 import remarkMdx from 'remark-mdx'
@@ -63,13 +62,19 @@ function articleToMd(article: (typeof articleList)[number]) {
   }
 
   function addReplacement(src: string, start?: number, end?: number) {
-    if (start === undefined || end === undefined) return
+    if (start === undefined || end === undefined) {
+      return
+    }
 
     const githubUrl = getGithubImageUrl(src, articleFilePath)
-    if (!githubUrl) return
+    if (!githubUrl) {
+      return
+    }
 
     const urlStart = article.content.indexOf(src, start)
-    if (urlStart === -1 || urlStart + src.length > end) return
+    if (urlStart === -1 || urlStart + src.length > end) {
+      return
+    }
 
     replacements.push({ start: urlStart, end: urlStart + src.length, value: githubUrl })
   }
@@ -79,9 +84,11 @@ function articleToMd(article: (typeof articleList)[number]) {
 
   return replacements
     .sort((a, b) => b.start - a.start)
-    .reduce((content, replacement) => {
-      return `${content.slice(0, replacement.start)}${replacement.value}${content.slice(replacement.end)}`
-    }, article.content)
+    .reduce(
+      (content, replacement) =>
+        `${content.slice(0, replacement.start)}${replacement.value}${content.slice(replacement.end)}`,
+      article.content
+    )
 }
 
 function addImportReplacements(
@@ -89,14 +96,19 @@ function addImportReplacements(
   articleFilePath: string,
   replacements: { start: number; end: number; value: string }[]
 ) {
-  if (node?.type !== 'mdxjsEsm') return
+  if (node?.type !== 'mdxjsEsm') {
+    return
+  }
 
   for (const declaration of node.data?.estree?.body ?? []) {
-    if (declaration.type !== 'ImportDeclaration' || typeof declaration.source?.value !== 'string')
+    if (declaration.type !== 'ImportDeclaration' || typeof declaration.source?.value !== 'string') {
       continue
+    }
 
     const rawUrl = getGithubImportUrl(declaration.source.value, articleFilePath)
-    if (!rawUrl) continue
+    if (!rawUrl) {
+      continue
+    }
 
     replacements.push({
       start: declaration.source.start + 1,
@@ -107,33 +119,32 @@ function addImportReplacements(
 }
 
 function getGithubImportUrl(source: string, articleFilePath: string) {
-  if (!source.startsWith('./') && !source.startsWith('../') && !source.startsWith('@/')) return
+  if (!source.startsWith('./') && !source.startsWith('../') && !source.startsWith('@/')) {
+    return
+  }
 
-  const importPath = source.startsWith('@/')
-    ? resolve(process.cwd(), source.slice(2))
-    : resolve(dirname(resolve(articleFilePath)), source)
-  const sourceExtensions = ['', '.tsx', '.ts', '.jsx', '.js', '.mdx']
-  const resolvedPath = sourceExtensions
-    .map(extension => `${importPath}${extension}`)
-    .find(existsSync)
+  const repositoryPath = source.startsWith('@/')
+    ? `${source.slice(2)}.tsx`
+    : posix.join(posix.dirname(articleFilePath), `${source}.tsx`)
 
-  if (!resolvedPath) return
-
-  const repositoryPath = relative(process.cwd(), resolvedPath).split(sep).join('/')
-  const encodedPath = repositoryPath.split('/').map(encodeURIComponent).join('/')
-
-  return `https://raw.githubusercontent.com/chiskat/paperplane.cc/main/${encodedPath}`
+  return getGithubRawUrl(repositoryPath)
 }
 
 function getGithubImageUrl(src: string, articleFilePath: string) {
-  if (!src.startsWith('./') && !src.startsWith('../')) return
+  if (!src.startsWith('./') && !src.startsWith('../')) {
+    return
+  }
 
   const [pathname, ...suffixParts] = src.split(/(?=[?#])/)
-  const articleDirectory = dirname(articleFilePath)
-  const imagePath = resolve(articleDirectory, decodeURIComponent(pathname))
-  const repositoryPath = relative(process.cwd(), imagePath).split(sep).join('/')
-  const encodedPath = repositoryPath.split('/').map(encodeURIComponent).join('/')
+  const articleDirectory = posix.dirname(articleFilePath)
+  const imagePath = posix.normalize(posix.join(articleDirectory, decodeURIComponent(pathname)))
   const suffix = suffixParts.join('')
 
-  return `https://raw.githubusercontent.com/chiskat/paperplane.cc/main/${encodedPath}${suffix}`
+  return `${getGithubRawUrl(imagePath)}${suffix}`
+}
+
+function getGithubRawUrl(repositoryPath: string) {
+  const encodedPath = repositoryPath.split('/').map(encodeURIComponent).join('/')
+
+  return `https://raw.githubusercontent.com/chiskat/paperplane.cc/main/${encodedPath}`
 }
