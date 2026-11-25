@@ -13,6 +13,6 @@ COPY .docker-deps /paperplane.cc
 RUN --mount=type=cache,id=pnpm,target=/paperplane.cc/.pnpm-store pnpm i --frozen-lockfile --store-dir /paperplane.cc/.pnpm-store --registry=$NPM_REGISTRY
 
 COPY . /paperplane.cc/
-RUN pnpm run build:prod
+RUN --mount=type=cache,id=paperplane-cc-cache,target=/paperplane.cc/.next/cache pnpm run build:prod
 
 CMD [ "pnpm", "run", "start:prod" ]
