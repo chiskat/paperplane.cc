@@ -13,4 +13,4 @@ RUN pnpm add -g dotenv-cli
 
 COPY .next/standalone ./
 
-CMD ["pnpm", "run", "start:prod"]
+CMD ["dotenv", "-e", ".env.production.local", "-e", ".env.production", "--", "node", "server.js"]
