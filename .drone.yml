@@ -11,6 +11,9 @@ volumes:
   - name: pnpm-cache
     host:
       path: /root/container-cache/.pnpm-cache
+  - name: build-cache
+    host:
+      path: /root/container-cache/.build-cache
   - name: envfile
     host:
       path: /root/project-config/paperplane.cc/.env.production.local
@@ -20,7 +23,7 @@ trigger:
     - main
 
 steps:
-  - name: restore-cache
+  - name: restore-pnpm-cache
     image: drillster/drone-volume-cache
     pull: if-not-exists
     settings:
@@ -39,6 +42,17 @@ steps:
       DO_NOT_TRACK: 1
       HUSKY: 0
 
+  - name: rebuild-pnpm-cache
+    image: drillster/drone-volume-cache
+    pull: if-not-exists
+    settings:
+      rebuild: true
+      mount:
+        - /paperplane.cc/src/.pnpm-store
+    volumes:
+      - name: pnpm-cache
+        path: /cache
+
   - name: check
     image: chiskat/baseline-node24-alpine:2026.6.8
     commands:
@@ -55,10 +69,32 @@ steps:
       - name: envfile
         path: /temp/.env.production.local
 
+  - name: restore-build-cache
+    image: drillster/drone-volume-cache
+    pull: if-not-exists
+    settings:
+      restore: true
+      mount:
+        - /paperplane.cc/.next/cache
+    volumes:
+      - name: build-cache
+        path: /cache
+
   - name: build
     image: chiskat/baseline-node24-alpine:2026.6.8
     commands:
       - pnpm build:prod
+
+  - name: rebuild-build-cache
+    image: drillster/drone-volume-cache
+    pull: if-not-exists
+    settings:
+      rebuild: true
+      mount:
+        - /paperplane.cc/.next/cache
+    volumes:
+      - name: build-cache
+        path: /cache
 
   - name: prisma-sync
     image: chiskat/baseline-node24-alpine:2026.6.8
@@ -72,17 +108,6 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker build --progress plain --compress -t chiskat/paperplane.cc:${DRONE_COMMIT_SHA:0:8} .
-
-  - name: rebuild-cache
-    image: drillster/drone-volume-cache
-    pull: if-not-exists
-    settings:
-      rebuild: true
-      mount:
-        - /paperplane.cc/src/.pnpm-store
-    volumes:
-      - name: pnpm-cache
-        path: /cache
 
   - name: stop-old-container
     image: docker:dind
