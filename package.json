@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "dev": "next dev",
-    "build": "next build",
+    "build": "dotenv -c development -v CI=true -- next build",
     "build:prod": "dotenv -c production -v CI=true -- next build",
     "start": "next start",
     "start:prod": "dotenv -e .env.production.local -e .env.production -- node ./.next/standalone/server.js",
