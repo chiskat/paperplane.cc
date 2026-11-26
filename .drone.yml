@@ -43,6 +43,7 @@ steps:
     image: chiskat/baseline-node24-alpine:2026.6.8
     commands:
       - pnpm lint
+      - pnpm format:prod
       - pnpm typegen
       - pnpm check-types
 

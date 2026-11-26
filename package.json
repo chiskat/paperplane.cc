@@ -13,6 +13,7 @@
     "typegen": "next typegen",
     "lint": "eslint",
     "format": "prettier --list-different .",
+    "format:prod": "prettier --list-different **/*.md **/*.mdx **/*.json **/*.yaml **/*.yml",
     "check-types": "tsc --noEmit",
     "cz": "git-cz",
     "commitlint": "commitlint --edit",
