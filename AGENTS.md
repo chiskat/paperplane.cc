@@ -29,12 +29,14 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 - `assets/`、`styles/`：静态资源、全局样式
 - `utils/`：通用工具函数
 - `plugins/`：用于扩展 Next.js 的插件，目前包含了一系列处理 .mdx 的插件
+- `scripts/`：构建脚本或代码，例如构建 E2B 沙箱
+- `sandbox/`：作为构建 E2B 沙箱时的上下文目录，此目录的内容可能被放入 E2B 沙箱
 
 ## 通用规范
 
 - 除非特殊情况，所有文件必须以 dash-case 形式命名
 - 为了提高 Next.js 约定式路由的性能，不需要作为 path 的目录请使用 `_` 下划线开头
-- 对象写法尽量写到一行内，不要把每个字段都单开一行
+- 对象写法尽量写到一行内，不要把每个字段都单开一行，if else 逻辑块就算只有一行也必须使用花括号包裹
 - Prettier 配置了每行最大字符数限制、`import` 排序规则、TailwindCSS 类名排序规则
 - ESLint 配置了 Next.js 和 React 相关最佳实践规则，ESLint 还会要求源码必须符合 Prettier 的输出
 - 可通过 `pnpm check-types` 检查 TS 错误、`pnpm lint` 检查 ESLint 错误，`pnpm format` 检查 Prettier 错误
@@ -45,7 +47,7 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 ## 前端规范
 
 - 优先使用 `@tabler/icons-react` 图标库
-- 处理 `className` 拼接请使用 @/utils/style 里的 `cn` 函数，不要手写代码拼接
+- 处理 `className` 拼接请使用 @/utils/style.ts 里的 `cn` 函数，不要手写代码拼接
 - 页面需要有 title，前面可以有一个或多个标题，末尾是 `PaperPlane.cc`，中间使用 `-` 连接
 - 组件代码中，请先导出组件参数 `interface`，然后再导出组件 `function`
 - 组件代码中，组件参数的类型名称必须是组件名后加 `Props`
@@ -57,9 +59,9 @@ PaperPlane.cc 是一个由用户 chiskat 开发的基于 Next.js 的全栈个人
 
 - 可使用 @lib/with-redis-cache.ts 对某个函数的运行结果进行缓存，前提是函数必须返回可序列化数据
 - 项目已配置 `trpc-to-openapi`，tRPC 接口通过 `.meta(...)` 即可对外暴露为 OpenAPI 接口
-- 对外暴露 OpenAPI 接口时，其 `.input(...)` 只支持最简单的 zod 数据，例如 `discriminatedUnion` 这类复杂类型都不支持
+- 对外暴露 OpenAPI 接口时，其 `.input(...)` 只支持最简单的 zod 数据，而 `discriminatedUnion` 这类复杂类型则不支持
 - 对外暴露 OpenAPI 接口时，必须有 `.output(...)` 规定输出格式；仅项目内使用的接口没有此强制要求
-- 对外暴露 OpenAPI 接口，其 path 使用 RESTful 风格，但 method 只支持 GET 和 POST
+- 对外暴露 OpenAPI 接口时，其 path 使用 RESTful 风格，但 method 只支持 GET 和 POST
 - 对外暴露 OpenAPI 接口时只支持 JSON 数据，文件上传建议让客户端先使用 S3 预签名接口，然后让客户端自行上传到 S3 并获取返回的 URL，把 URL 作为文件字段提交，服务端进行校验即可
 
 ## Prisma 规范
