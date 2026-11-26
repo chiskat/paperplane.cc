@@ -35,7 +35,7 @@ steps:
         path: /cache
 
   - name: install
-    image: chiskat/baseline-node24-alpine:2026.6.8
+    image: chiskat/baseline-node24-puppeteer:2026.6.8
     commands:
       - pnpm i --frozen-lockfile --store-dir /paperplane.cc/.pnpm-store
     environment:
@@ -54,7 +54,7 @@ steps:
         path: /cache
 
   - name: check
-    image: chiskat/baseline-node24-alpine:2026.6.8
+    image: chiskat/baseline-node24-puppeteer:2026.6.8
     commands:
       - pnpm lint
       - pnpm format:prod
@@ -62,7 +62,7 @@ steps:
       - pnpm check-types
 
   - name: copy-env
-    image: chiskat/baseline-node24-alpine:2026.6.8
+    image: chiskat/baseline-node24-puppeteer:2026.6.8
     commands:
       - cp /temp/.env.production.local /paperplane.cc/
     volumes:
@@ -81,7 +81,7 @@ steps:
         path: /cache
 
   - name: build
-    image: chiskat/baseline-node24-alpine:2026.6.8
+    image: chiskat/baseline-node24-puppeteer:2026.6.8
     commands:
       - pnpm build:prod
 
@@ -97,7 +97,7 @@ steps:
         path: /cache
 
   - name: prisma-sync
-    image: chiskat/baseline-node24-alpine:2026.6.8
+    image: chiskat/baseline-node24-puppeteer:2026.6.8
     commands:
       - pnpm db:deploy
 
