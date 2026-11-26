@@ -48,7 +48,7 @@ steps:
     settings:
       rebuild: true
       mount:
-        - /paperplane.cc/src/.pnpm-store
+        - /paperplane.cc/.pnpm-store
     volumes:
       - name: pnpm-cache
         path: /cache
