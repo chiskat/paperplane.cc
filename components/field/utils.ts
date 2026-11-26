@@ -3,9 +3,13 @@
 import type { Updater } from '@tanstack/react-form'
 
 function collectErrorMessages(error: unknown): string[] {
-  if (!error) return []
+  if (!error) {
+    return []
+  }
 
-  if (typeof error === 'string') return [error]
+  if (typeof error === 'string') {
+    return [error]
+  }
 
   if (error instanceof Error) {
     return error.message ? [error.message] : []
@@ -33,6 +37,7 @@ function collectErrorMessages(error: unknown): string[] {
 export function formatFieldErrors(errors: unknown[]): string {
   const messages = errors.flatMap(collectErrorMessages).filter(Boolean)
   const uniqueMessages = Array.from(new Set(messages))
+
   return uniqueMessages.join('；')
 }
 
