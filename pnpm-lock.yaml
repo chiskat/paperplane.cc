@@ -358,9 +358,6 @@ importers:
       commitizen:
         specifier: ^4.3.1
         version: 4.3.1(@types/node@20.19.37)(typescript@5.9.3)
-      docker-deps:
-        specifier: ^1.2.5
-        version: 1.2.5
       eslint:
         specifier: ^10.1.0
         version: 10.1.0(jiti@2.6.1)
@@ -5131,10 +5128,6 @@ packages:
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
     engines: {node: '>=0.3.1'}
-
-  docker-deps@1.2.5:
-    resolution: {integrity: sha512-/3DoQmLxA1TNW2AcRDmaBdCAKHqGrMl4d8K2ofl15CYXeb+FuoppYZAjJOSHWkqS4zZQhjFyGRyUuB43zzSXjA==}
-    hasBin: true
 
   dockerfile-ast@0.7.1:
     resolution: {integrity: sha512-oX/A4I0EhSkGqrFv0YuvPkBUSYp1XiY8O8zAKc8Djglx8ocz+JfOr8gP0ryRMC2myqvDLagmnZaU9ot1vG2ijw==}
@@ -14243,8 +14236,6 @@ snapshots:
   devtools-protocol@0.0.1608973: {}
 
   diff@8.0.4: {}
-
-  docker-deps@1.2.5: {}
 
   dockerfile-ast@0.7.1:
     dependencies:

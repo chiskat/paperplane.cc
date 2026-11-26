@@ -1,18 +1,16 @@
 FROM chiskat/baseline-node24-puppeteer:2026.6.8
 
-ARG NPM_REGISTRY=https://registry.npmjs.org
-
-EXPOSE 3000
 WORKDIR /paperplane.cc
+EXPOSE 3000
 
 ENV NODE_ENV=production
 ENV DO_NOT_TRACK=1
-ENV HUSKY=0
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+ENV TZ=Asia/Shanghai
 
-COPY .docker-deps /paperplane.cc
-RUN --mount=type=cache,id=pnpm,target=/paperplane.cc/.pnpm-store pnpm i --frozen-lockfile --store-dir /paperplane.cc/.pnpm-store --registry=$NPM_REGISTRY
+RUN pnpm add -g dotenv-cli
 
-COPY . /paperplane.cc/
-RUN --mount=type=cache,id=paperplane-cc-cache,target=/paperplane.cc/.next/cache pnpm run build:prod
+COPY .next/standalone ./
 
-CMD [ "pnpm", "run", "start:prod" ]
+CMD ["pnpm", "run", "start:prod"]

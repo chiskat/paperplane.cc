@@ -8,6 +8,9 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
+  - name: pnpm-cache
+    host:
+      path: /root/container-cache/.pnpm-cache
   - name: envfile
     host:
       path: /root/project-config/paperplane.cc/.env.production.local
@@ -17,20 +20,67 @@ trigger:
     - main
 
 steps:
-  - name: prepare
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    pull: if-not-exists
+    settings:
+      restore: true
+      mount:
+        - /paperplane.cc/.pnpm-store
+    volumes:
+      - name: pnpm-cache
+        path: /cache
+
+  - name: install
     image: chiskat/baseline-node24-alpine:2026.6.8
     commands:
-      - npx -y docker-deps
+      - pnpm i --frozen-lockfile --store-dir /paperplane.cc/.pnpm-store
+    environment:
+      DO_NOT_TRACK: 1
+      HUSKY: 0
+
+  - name: check
+    image: chiskat/baseline-node24-alpine:2026.6.8
+    commands:
+      - pnpm lint
+      - pnpm check-types
+
+  - name: copy-env
+    image: chiskat/baseline-node24-alpine:2026.6.8
+    commands:
+      - cp /temp/.env.production.local /paperplane.cc/
+    volumes:
+      - name: envfile
+        path: /temp/.env.production.local
+
+  - name: build
+    image: chiskat/baseline-node24-alpine:2026.6.8
+    commands:
+      - pnpm build:prod
+
+  - name: prisma-sync
+    image: chiskat/baseline-node24-alpine:2026.6.8
+    commands:
+      - pnpm db:deploy
 
   - name: build-image
     image: docker:dind
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
-      - name: envfile
-        path: /paperplane.cc/.env.production.local
     commands:
       - docker build --progress plain --compress -t chiskat/paperplane.cc:${DRONE_COMMIT_SHA:0:8} .
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    pull: if-not-exists
+    settings:
+      rebuild: true
+      mount:
+        - /paperplane.cc/src/.pnpm-store
+    volumes:
+      - name: pnpm-cache
+        path: /cache
 
   - name: stop-old-container
     image: docker:dind
@@ -42,7 +92,7 @@ steps:
       - docker stop paperplane-cc
       - docker rm paperplane-cc
 
-  - name: rename-old-image
+  - name: handle-old-image
     image: docker:dind
     failure: ignore
     volumes:
@@ -51,24 +101,6 @@ steps:
     commands:
       - docker tag chiskat/paperplane.cc:production chiskat/paperplane.cc:previous-prod
       - docker rmi chiskat/paperplane.cc:production
-
-  - name: server-prisma-sync-db
-    image: appleboy/drone-ssh
-    pull: if-not-exists
-    settings:
-      host:
-        from_secret: DEPLOY_SSH_HOST
-      username:
-        from_secret: DEPLOY_SSH_USER
-      key:
-        from_secret: DEPLOY_SSH_PRIKEY
-      command_timeout: 5m
-      script:
-        - cd /root/project-config/paperplane.cc
-        - |
-          docker run -t --rm --name paperplane.cc-prisma --network pgsql -e NODE_ENV=production \
-          -v ./.env.production.local:/paperplane.cc/.env.production.local:ro \
-          chiskat/paperplane.cc:${DRONE_COMMIT_SHA:0:8} pnpm db:deploy
 
   - name: deploy
     image: appleboy/drone-ssh
@@ -86,14 +118,6 @@ steps:
         - cd /root/project-config/paperplane.cc
         - docker compose up -d
 
-  - name: extract-assets
-    image: docker:dind
-    volumes:
-      - name: dockersock
-        path: /var/run/docker.sock
-    commands:
-      - docker cp paperplane-cc:/paperplane.cc/.next/ ./
-
   - name: deploy-sync-s3
     image: amazon/aws-cli
     pull: if-not-exists
@@ -109,7 +133,7 @@ steps:
       S3_ENDPOINT:
         from_secret: S3_ENDPOINT
     commands:
-      - aws s3 sync ./.next/static s3://$S3_BUCKET_NAME/paperplane.cc/_next/static --endpoint-url "$S3_ENDPOINT"
+      - aws s3 sync /paperplane.cc/.next/static s3://$S3_BUCKET_NAME/paperplane.cc/_next/static --endpoint-url "$S3_ENDPOINT"
 
   - name: clean
     image: docker:dind
